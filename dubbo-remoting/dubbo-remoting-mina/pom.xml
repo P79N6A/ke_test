@@ -17,9 +17,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.alibaba</groupId>
+		<groupId>com.lianjia.cs</groupId>
 		<artifactId>dubbo-remoting</artifactId>
-		<version>2.5.4-SNAPSHOT</version>
+		<version>1.0.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>dubbo-remoting-mina</artifactId>
 	<packaging>jar</packaging>
@@ -30,7 +30,7 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>com.alibaba</groupId>
+			<groupId>com.lianjia.cs</groupId>
 			<artifactId>dubbo-remoting-api</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>

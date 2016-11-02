@@ -21,7 +21,7 @@
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
 	</parent>
-	<groupId>com.alibaba</groupId>
+	<groupId>com.lianjia.cs</groupId>
 	<artifactId>dubbo</artifactId>
     <version>2.5.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
