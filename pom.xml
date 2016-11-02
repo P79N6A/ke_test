@@ -33,8 +33,8 @@
 		</license>
 	</licenses>
 	<organization>
-		<name>Alibaba</name>
-		<url>http://www.alibaba.com</url>
+		<name>Lianjia</name>
+		<url>http://www.lianjia.com</url>
 	</organization>
 	<modules>
 		<module>hessian-lite</module>
@@ -81,9 +81,9 @@
 	</profiles>
 	<properties>
 		<!-- Common libs -->
-		<spring_version>3.2.16.RELEASE</spring_version>
+		<spring_version>4.2.6.RELEASE</spring_version>
 		<javassist_version>3.20.0-GA</javassist_version>
-		<netty_version>3.2.5.Final</netty_version>
+		<netty_version>4.0.42.Final</netty_version>
 		<mina_version>1.1.7</mina_version>
 		<grizzly_version>2.1.4</grizzly_version>
 		<httpclient_version>4.1.2</httpclient_version>
@@ -92,10 +92,10 @@
 		<fastjson_version>1.1.39</fastjson_version>
 		<bsf_version>3.1</bsf_version>
 		<sorcerer_version>0.8</sorcerer_version>
-		<zookeeper_version>3.3.3</zookeeper_version>
+		<zookeeper_version>3.4.6</zookeeper_version>
 		<zkclient_version>0.1</zkclient_version>
-		<curator_version>1.1.16</curator_version>
-		<jedis_version>2.1.0</jedis_version>
+		<curator_version>2.11.0</curator_version>
+		<jedis_version>2.8.1</jedis_version>
 		<xmemcached_version>1.3.6</xmemcached_version>
 		<cxf_version>2.6.1</cxf_version>
 		<thrift_version>0.8.0</thrift_version>
@@ -131,8 +131,8 @@
 
         <!-- for maven compiler plugin -->
         <maven_compiler_plugin_version>3.5.1</maven_compiler_plugin_version>
-        <java_source_version>1.6</java_source_version>
-        <java_target_version>1.6</java_target_version>
+        <java_source_version>1.7</java_source_version>
+        <java_target_version>1.7</java_target_version>
         <file_encoding>UTF-8</file_encoding>
         
 	</properties>
@@ -152,8 +152,8 @@
 				<version>${javassist_version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.jboss.netty</groupId>
-				<artifactId>netty</artifactId>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-all</artifactId>
 				<version>${netty_version}</version>
 			</dependency>
 			<dependency>
@@ -476,6 +476,15 @@
 		</mailingList>
 	</mailingLists>
 	<developers>
+		<developer>
+			<name>ChengTianliang(Chris)</name>
+			<id>chris.chengtl</id>
+			<email>chris.chengtl (AT) lianjia.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>+8</timezone>
+		</developer>
 		<developer>
 			<name>QianXiao(Shawn)</name>
 			<id>shawn.qianx</id>
