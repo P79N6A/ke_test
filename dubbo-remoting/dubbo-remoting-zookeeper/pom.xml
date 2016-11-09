@@ -42,9 +42,17 @@
 			<groupId>com.github.sgroschupf</groupId>
 			<artifactId>zkclient</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.curator/curator-framework -->
 		<dependency>
-			<groupId>com.netflix.curator</groupId>
+			<groupId>org.apache.curator</groupId>
 			<artifactId>curator-framework</artifactId>
+			<version>${curator_version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.curator/curator-recipes -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>${curator_version}</version>
 		</dependency>
 	</dependencies>
 </project>

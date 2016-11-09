@@ -15,12 +15,12 @@
  */
 package com.alibaba.dubbo.remoting.transport.netty;
 
-import org.jboss.netty.logging.AbstractInternalLogger;
-import org.jboss.netty.logging.InternalLogger;
-import org.jboss.netty.logging.InternalLoggerFactory;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import io.netty.util.internal.logging.AbstractInternalLogger;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 
 /**
  * @author <a href="mailto:gang.lvg@taobao.com">kimi</a>
@@ -38,7 +38,7 @@ final class NettyHelper {
 
         @Override
         public InternalLogger newInstance(String name) {
-            return new DubboLogger(LoggerFactory.getLogger(name));
+            return new DubboLogger(LoggerFactory.getLogger(name), name);
         }
     }
 
@@ -46,61 +46,164 @@ final class NettyHelper {
 
         private Logger logger;
 
-        DubboLogger(Logger logger) {
+        DubboLogger(Logger logger, String name) {
+            super(name);
             this.logger = logger;
-        }
-
-        public boolean isDebugEnabled() {
-            return logger.isDebugEnabled();
-        }
-
-        public boolean isInfoEnabled() {
-            return logger.isInfoEnabled();
-        }
-
-        public boolean isWarnEnabled() {
-            return logger.isWarnEnabled();
-        }
-
-        public boolean isErrorEnabled() {
-            return logger.isErrorEnabled();
-        }
-
-        public void debug(String msg) {
-            logger.debug(msg);
-        }
-
-        public void debug(String msg, Throwable cause) {
-            logger.debug(msg, cause);
-        }
-
-        public void info(String msg) {
-            logger.info(msg);
-        }
-
-        public void info(String msg, Throwable cause) {
-            logger.info(msg, cause);
-        }
-
-        public void warn(String msg) {
-            logger.warn(msg);
-        }
-
-        public void warn(String msg, Throwable cause) {
-            logger.warn(msg, cause);
-        }
-
-        public void error(String msg) {
-            logger.error(msg);
-        }
-
-        public void error(String msg, Throwable cause) {
-            logger.error(msg, cause);
         }
 
         @Override
         public String toString() {
             return logger.toString();
+        }
+
+        @Override
+        public boolean isTraceEnabled() {
+            return logger.isTraceEnabled();
+        }
+
+        @Override
+        public void trace(String s) {
+            logger.trace(s);
+        }
+
+        @Override
+        public void trace(String s, Object o) {
+            logger.trace(s + "[" + o == null ? "null" : o.toString() + "]");
+        }
+
+        @Override
+        public void trace(String s, Object o, Object o1) {
+            logger.trace(s + "[" + o == null ? "null" : o.toString() + "]");
+        }
+
+        @Override
+        public void trace(String s, Object... objects) {
+
+        }
+
+        @Override
+        public void trace(String s, Throwable throwable) {
+
+        }
+
+        @Override
+        public boolean isDebugEnabled() {
+            return false;
+        }
+
+        @Override
+        public void debug(String s) {
+
+        }
+
+        @Override
+        public void debug(String s, Object o) {
+
+        }
+
+        @Override
+        public void debug(String s, Object o, Object o1) {
+
+        }
+
+        @Override
+        public void debug(String s, Object... objects) {
+
+        }
+
+        @Override
+        public void debug(String s, Throwable throwable) {
+
+        }
+
+        @Override
+        public boolean isInfoEnabled() {
+            return false;
+        }
+
+        @Override
+        public void info(String s) {
+
+        }
+
+        @Override
+        public void info(String s, Object o) {
+
+        }
+
+        @Override
+        public void info(String s, Object o, Object o1) {
+
+        }
+
+        @Override
+        public void info(String s, Object... objects) {
+
+        }
+
+        @Override
+        public void info(String s, Throwable throwable) {
+
+        }
+
+        @Override
+        public boolean isWarnEnabled() {
+            return false;
+        }
+
+        @Override
+        public void warn(String s) {
+
+        }
+
+        @Override
+        public void warn(String s, Object o) {
+
+        }
+
+        @Override
+        public void warn(String s, Object... objects) {
+
+        }
+
+        @Override
+        public void warn(String s, Object o, Object o1) {
+
+        }
+
+        @Override
+        public void warn(String s, Throwable throwable) {
+
+        }
+
+        @Override
+        public boolean isErrorEnabled() {
+            return false;
+        }
+
+        @Override
+        public void error(String s) {
+
+        }
+
+        @Override
+        public void error(String s, Object o) {
+
+        }
+
+        @Override
+        public void error(String s, Object o, Object o1) {
+
+        }
+
+        @Override
+        public void error(String s, Object... objects) {
+
+        }
+
+        @Override
+        public void error(String s, Throwable throwable) {
+
         }
     }
 

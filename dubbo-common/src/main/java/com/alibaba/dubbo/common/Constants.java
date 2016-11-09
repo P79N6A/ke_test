@@ -210,6 +210,10 @@ public class Constants {
 
     public static final String  IO_THREADS_KEY                     = "iothreads";
 
+    public static final String IO_BOSS_THREADS_KEY                 = "iobossthreads";
+
+    public static final String IO_WORKER_THREAD_KEY                = "ioworkerthreads";
+
     public static final String  CORE_THREADS_KEY                   = "corethreads";
 
     public static final String  THREADS_KEY                        = "threads";

@@ -2,10 +2,11 @@ package com.alibaba.dubbo.remoting.transport.netty;
 
 import java.nio.ByteBuffer;
 
-import org.jboss.netty.buffer.ChannelBuffers;
 
 import com.alibaba.dubbo.remoting.buffer.ChannelBuffer;
 import com.alibaba.dubbo.remoting.buffer.ChannelBufferFactory;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Wrap netty dynamic channel buffer.
@@ -20,20 +21,20 @@ public class NettyBackedChannelBufferFactory implements ChannelBufferFactory {
         return INSTANCE;
     }
 
-    
+
     public ChannelBuffer getBuffer(int capacity) {
-        return new NettyBackedChannelBuffer(ChannelBuffers.dynamicBuffer(capacity));
+        return new NettyBackedChannelBuffer(Unpooled.buffer(capacity));
     }
 
-    
+
     public ChannelBuffer getBuffer(byte[] array, int offset, int length) {
-        org.jboss.netty.buffer.ChannelBuffer buffer = ChannelBuffers.dynamicBuffer(length);
-        buffer.writeBytes(array, offset, length);
-        return new NettyBackedChannelBuffer(buffer);
+        ByteBuf byteBuf = Unpooled.buffer(length);
+        byteBuf.writeBytes(array, offset, length);
+        return new NettyBackedChannelBuffer(byteBuf);
     }
 
-    
+
     public ChannelBuffer getBuffer(ByteBuffer nioBuffer) {
-        return new NettyBackedChannelBuffer(ChannelBuffers.wrappedBuffer(nioBuffer));
+        return new NettyBackedChannelBuffer(Unpooled.wrappedBuffer(nioBuffer));
     }
 }

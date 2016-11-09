@@ -19,15 +19,7 @@ import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.ChannelFactory;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
@@ -42,56 +34,111 @@ import com.alibaba.dubbo.remoting.RemotingException;
 import com.alibaba.dubbo.remoting.Server;
 import com.alibaba.dubbo.remoting.transport.AbstractServer;
 import com.alibaba.dubbo.remoting.transport.dispatcher.ChannelHandlers;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 /**
  * NettyServer
- * 
+ *
  * @author qian.lei
  * @author chao.liuc
  */
 public class NettyServer extends AbstractServer implements Server {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
-    private Map<String, Channel>  channels; // <ip:port, channel>
+    private Map<String, Channel> channels; // <ip:port, channel>
 
-    private ServerBootstrap                 bootstrap;
+    private ServerBootstrap bootstrap;
 
-    private org.jboss.netty.channel.Channel channel;
+    private EventLoopGroup bossGroup;
 
-    public NettyServer(URL url, ChannelHandler handler) throws RemotingException{
+    private EventLoopGroup workerGroup;
+
+    private io.netty.channel.Channel channel;
+
+    private static final int DEFAULT_BOSSGROUP_THREADS = Math.max(1,
+            Runtime.getRuntime().availableProcessors() + 1);
+
+    private static final int DEFAULT_WORKERGROUP_THREADS = Math.max(1,
+            Runtime.getRuntime().availableProcessors() * 2);
+
+    private int bossThreadNum = DEFAULT_BOSSGROUP_THREADS;
+
+    private int workerThreadNum = DEFAULT_WORKERGROUP_THREADS;
+
+    private int soBackLogNum = 1024;
+
+    public NettyServer(URL url, ChannelHandler handler) throws RemotingException {
         super(url, ChannelHandlers.wrap(handler, ExecutorUtil.setThreadName(url, SERVER_THREAD_POOL_NAME)));
+        if (url.hasParameter(Constants.IO_BOSS_THREADS_KEY)) {
+            bossThreadNum = url.getPositiveParameter(Constants.IO_BOSS_THREADS_KEY, DEFAULT_BOSSGROUP_THREADS);
+        }
+        if (url.hasParameter(Constants.IO_WORKER_THREAD_KEY)) {
+            workerThreadNum = url.getPositiveParameter(Constants.IO_WORKER_THREAD_KEY, DEFAULT_WORKERGROUP_THREADS);
+        }
     }
 
     @Override
     protected void doOpen() throws Throwable {
         NettyHelper.setNettyLoggerFactory();
-        ExecutorService boss = Executors.newCachedThreadPool(new NamedThreadFactory("NettyServerBoss", true));
-        ExecutorService worker = Executors.newCachedThreadPool(new NamedThreadFactory("NettyServerWorker", true));
-        ChannelFactory channelFactory = new NioServerSocketChannelFactory(boss, worker, getUrl().getPositiveParameter(Constants.IO_THREADS_KEY, Constants.DEFAULT_IO_THREADS));
-        bootstrap = new ServerBootstrap(channelFactory);
-        
-        final NettyHandler nettyHandler = new NettyHandler(getUrl(), this);
-        channels = nettyHandler.getChannels();
-        // https://issues.jboss.org/browse/NETTY-365
-        // https://issues.jboss.org/browse/NETTY-379
-        // final Timer timer = new HashedWheelTimer(new NamedThreadFactory("NettyIdleTimer", true));
-        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-            public ChannelPipeline getPipeline() {
-                NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec() ,getUrl(), NettyServer.this);
-                ChannelPipeline pipeline = Channels.pipeline();
+        bossGroup = new NioEventLoopGroup(bossThreadNum, new NamedThreadFactory("NettyServerBoss", true));
+        workerGroup = new NioEventLoopGroup(workerThreadNum, new NamedThreadFactory("NettyServerWorker", true));
+        bootstrap = new ServerBootstrap();
+        final NettyInboundHandler nettyInboundHandler = new NettyInboundHandler(getUrl(), this);
+        final NettyOutboundHandler nettyOutboundHandler = new NettyOutboundHandler(getUrl(), this);
+        channels = nettyInboundHandler.getChannels();
+        bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).
+                childHandler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(final SocketChannel ch) throws Exception {
+                        NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(), getUrl(), NettyServer.this);
+                        ChannelPipeline pipeline = ch.pipeline();
                 /*int idleTimeout = getIdleTimeout();
                 if (idleTimeout > 10000) {
                     pipeline.addLast("timer", new IdleStateHandler(timer, idleTimeout / 1000, 0, 0));
                 }*/
-                pipeline.addLast("decoder", adapter.getDecoder());
-                pipeline.addLast("encoder", adapter.getEncoder());
-                pipeline.addLast("handler", nettyHandler);
-                return pipeline;
-            }
-        });
-        // bind
-        channel = bootstrap.bind(getBindAddress());
+                        pipeline.addLast("decoder", adapter.getDecoder());
+                        pipeline.addLast("encoder", adapter.getEncoder());
+                        pipeline.addLast("handlerIn", nettyInboundHandler);
+                        pipeline.addLast("handlerOut", nettyOutboundHandler);
+                    }
+                }).
+                option(ChannelOption.SO_BACKLOG, soBackLogNum).
+                childOption(ChannelOption.SO_REUSEADDR, true).
+                childOption(ChannelOption.SO_KEEPALIVE, true);
+//        ExecutorService boss = Executors.newCachedThreadPool(new NamedThreadFactory("NettyServerBoss", true));
+//        ExecutorService worker = Executors.newCachedThreadPool(new NamedThreadFactory("NettyServerWorker", true));
+//        ChannelFactory channelFactory = new NioServerSocketChannelFactory(boss, worker, getUrl().getPositiveParameter(Constants.IO_THREADS_KEY, Constants.DEFAULT_IO_THREADS));
+//        bootstrap = new ServerBootstrap(channelFactory);
+//
+//        final NettyInboundHandler nettyInboundHandler = new NettyInboundHandler(getUrl(), this);
+//        channels = nettyInboundHandler.getChannels();
+//        // https://issues.jboss.org/browse/NETTY-365
+//        // https://issues.jboss.org/browse/NETTY-379
+//        // final Timer timer = new HashedWheelTimer(new NamedThreadFactory("NettyIdleTimer", true));
+//        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+//            public ChannelPipeline getPipeline() {
+//                NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec() ,getUrl(), NettyServer.this);
+//                ChannelPipeline pipeline = Channels.pipeline();
+//                /*int idleTimeout = getIdleTimeout();
+//                if (idleTimeout > 10000) {
+//                    pipeline.addLast("timer", new IdleStateHandler(timer, idleTimeout / 1000, 0, 0));
+//                }*/
+//                pipeline.addLast("decoder", adapter.getDecoder());
+//                pipeline.addLast("encoder", adapter.getEncoder());
+//                pipeline.addLast("handler", nettyInboundHandler);
+//                return pipeline;
+//            }
+//        });
+//        // bind
+        channel = bootstrap.bind(getBindAddress()).channel();
     }
 
     @Override
@@ -119,10 +166,18 @@ public class NettyServer extends AbstractServer implements Server {
             logger.warn(e.getMessage(), e);
         }
         try {
-            if (bootstrap != null) { 
-                // release external resource.
-                bootstrap.releaseExternalResources();
+            if (workerGroup != null) {
+                workerGroup.shutdownGracefully();
+                workerGroup = null;
             }
+            if (bossGroup != null) {
+                bossGroup.shutdownGracefully();
+                bossGroup = null;
+            }
+//            if (bootstrap != null) {
+//                // release external resource.
+//                bootstrap.
+//            }
         } catch (Throwable e) {
             logger.warn(e.getMessage(), e);
         }
@@ -134,7 +189,7 @@ public class NettyServer extends AbstractServer implements Server {
             logger.warn(e.getMessage(), e);
         }
     }
-    
+
     public Collection<Channel> getChannels() {
         Collection<Channel> chs = new HashSet<Channel>();
         for (Channel channel : this.channels.values()) {
@@ -152,7 +207,7 @@ public class NettyServer extends AbstractServer implements Server {
     }
 
     public boolean isBound() {
-        return channel.isBound();
+        return channel.isActive();
     }
 
 }

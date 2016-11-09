@@ -1,27 +1,25 @@
 package com.alibaba.dubbo.remoting.transport.netty;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-
 import com.alibaba.dubbo.common.utils.Assert;
 import com.alibaba.dubbo.remoting.buffer.ChannelBuffer;
 import com.alibaba.dubbo.remoting.buffer.ChannelBufferFactory;
 import com.alibaba.dubbo.remoting.buffer.ChannelBuffers;
+import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * @author <a href="mailto:gang.lvg@taobao.com">kimi</a>
  */
 public class NettyBackedChannelBuffer implements ChannelBuffer {
 
-    private org.jboss.netty.buffer.ChannelBuffer buffer;
+    private ByteBuf buffer;
 
-    public org.jboss.netty.buffer.ChannelBuffer nettyChannelBuffer() {
-        return buffer;
-    }
 
-    public NettyBackedChannelBuffer(org.jboss.netty.buffer.ChannelBuffer buffer) {
+    public NettyBackedChannelBuffer(ByteBuf buffer) {
         Assert.notNull(buffer, "buffer == null");
         this.buffer = buffer;
     }
@@ -104,7 +102,7 @@ public class NettyBackedChannelBuffer implements ChannelBuffer {
 
     
     public ByteBuffer toByteBuffer(int index, int length) {
-        return buffer.toByteBuffer(index, length);
+        return buffer.nioBuffer(index, length);
     }
 
     
@@ -143,7 +141,7 @@ public class NettyBackedChannelBuffer implements ChannelBuffer {
 
     
     public void ensureWritableBytes(int writableBytes) {
-        buffer.ensureWritableBytes(writableBytes);
+        buffer.ensureWritable(writableBytes);
     }
 
     
@@ -179,7 +177,7 @@ public class NettyBackedChannelBuffer implements ChannelBuffer {
 
     
     public boolean readable() {
-        return buffer.readable();
+        return buffer.isReadable();
     }
 
     
@@ -297,12 +295,12 @@ public class NettyBackedChannelBuffer implements ChannelBuffer {
 
     
     public ByteBuffer toByteBuffer() {
-        return buffer.toByteBuffer();
+        return buffer.nioBuffer();
     }
 
     
     public boolean writable() {
-        return buffer.writable();
+        return buffer.isWritable();
     }
 
     

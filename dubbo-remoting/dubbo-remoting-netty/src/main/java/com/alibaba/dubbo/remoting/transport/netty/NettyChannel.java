@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.netty.channel.ChannelFuture;
+import io.netty.channel.Channel;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
@@ -29,6 +29,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.remoting.ChannelHandler;
 import com.alibaba.dubbo.remoting.RemotingException;
 import com.alibaba.dubbo.remoting.transport.AbstractChannel;
+import io.netty.channel.ChannelFuture;
 
 /**
  * NettyChannel.
@@ -40,13 +41,13 @@ final class NettyChannel extends AbstractChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyChannel.class);
 
-    private static final ConcurrentMap<org.jboss.netty.channel.Channel, NettyChannel> channelMap = new ConcurrentHashMap<org.jboss.netty.channel.Channel, NettyChannel>();
+    private static final ConcurrentMap<Channel, NettyChannel> channelMap = new ConcurrentHashMap<>();
 
-    private final org.jboss.netty.channel.Channel channel;
+    private final Channel channel;
 
     private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
-    private NettyChannel(org.jboss.netty.channel.Channel channel, URL url, ChannelHandler handler){
+    private NettyChannel(Channel channel, URL url, ChannelHandler handler){
         super(url, handler);
         if (channel == null) {
             throw new IllegalArgumentException("netty channel == null;");
@@ -54,14 +55,14 @@ final class NettyChannel extends AbstractChannel {
         this.channel = channel;
     }
 
-    static NettyChannel getOrAddChannel(org.jboss.netty.channel.Channel ch, URL url, ChannelHandler handler) {
+    static NettyChannel getOrAddChannel(Channel ch, URL url, ChannelHandler handler) {
         if (ch == null) {
             return null;
         }
         NettyChannel ret = channelMap.get(ch);
         if (ret == null) {
             NettyChannel nc = new NettyChannel(ch, url, handler);
-            if (ch.isConnected()) {
+            if (ch.isActive()) {
                 ret = channelMap.putIfAbsent(ch, nc);
             }
             if (ret == null) {
@@ -71,22 +72,22 @@ final class NettyChannel extends AbstractChannel {
         return ret;
     }
 
-    static void removeChannelIfDisconnected(org.jboss.netty.channel.Channel ch) {
-        if (ch != null && ! ch.isConnected()) {
+    static void removeChannelIfDisconnected(Channel ch) {
+        if (ch != null && ! ch.isActive()) {
             channelMap.remove(ch);
         }
     }
 
     public InetSocketAddress getLocalAddress() {
-        return (InetSocketAddress) channel.getLocalAddress();
+        return (InetSocketAddress) channel.localAddress();
     }
 
     public InetSocketAddress getRemoteAddress() {
-        return (InetSocketAddress) channel.getRemoteAddress();
+        return (InetSocketAddress) channel.remoteAddress();
     }
 
     public boolean isConnected() {
-        return channel.isConnected();
+        return channel.isActive();
     }
 
     public void send(Object message, boolean sent) throws RemotingException {
@@ -100,7 +101,7 @@ final class NettyChannel extends AbstractChannel {
                 timeout = getUrl().getPositiveParameter(Constants.TIMEOUT_KEY, Constants.DEFAULT_TIMEOUT);
                 success = future.await(timeout);
             }
-            Throwable cause = future.getCause();
+            Throwable cause = future.cause();
             if (cause != null) {
                 throw cause;
             }
