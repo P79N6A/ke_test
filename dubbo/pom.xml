@@ -244,7 +244,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.lianjia.cs</groupId>
-			<artifactId>dubbo-container-log4j</artifactId>
+			<artifactId>dubbo-container-logback</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>

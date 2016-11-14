@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+  <!--<property name="log.path" value="/home/work/var/xss-front/logs"/>-->
+
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="com.alibaba.dubbo.common.logger.logback.PatternEncoder">
+      <pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%-5p] [$logId] [userId:$userId][$remoteAddress] [%c{0}][%M][%L][%t] %m%n
+      </pattern>
+      <charset class="java.nio.charset.Charset">UTF-8</charset>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>
+  </appender>
+
+  <appender name="logfile"
+            class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>${logging.path}/rushi.log</File>
+    <rollingPolicy
+      class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>
+        ${logging.path}/ruishi.%d{yyyy-MM-dd}.log
+      </FileNamePattern>
+      <!-- keep 1 days worth of history -->
+      <MaxHistory>100</MaxHistory>
+    </rollingPolicy>
+    <encoder class="com.alibaba.dubbo.common.logger.logback.PatternEncoder">
+      <pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%-5p] [$logId] [userId:$userId][$remoteAddress] [%c{0}][%M][%L][%t] %m%n
+      </pattern>
+      <charset class="java.nio.charset.Charset">UTF-8</charset>
+    </encoder>
+  </appender>
+  <logger name="org.springframework" level="INFO"/>
+  <!--<logger name="org.apache.http" level="ERROR"/>-->
+  <!--<logger name="org.apache.shiro" level="ERROR"/>-->
+  <!--<logger name="net.sf.ehcache" level="ERROR"/>-->
+  <!--<logger name="org.hibernate.validator" level="ERROR"/>-->
+  <!--<logger name="org.apache.commons.beanutils" level="ERROR"/>-->
+  <!--<logger name="org.mybatis.spring.SqlSessionUtils" level="ERROR"/>-->
+  <!--<logger name="org.jasig.cas.client" level="ERROR"/>-->
+
+  <root level="INFO">
+    <appender-ref ref="console"/>
+    <!--<appender-ref ref="logfile"/>-->
+  </root>
+</configuration>
+
+
