@@ -15,19 +15,18 @@
  */
 package com.alibaba.dubbo.remoting.transport.netty;
 
-import java.io.IOException;
-import java.util.List;
-
-
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.remoting.Codec2;
 import com.alibaba.dubbo.remoting.buffer.ChannelBuffer;
 import com.alibaba.dubbo.remoting.buffer.ChannelBuffers;
 import com.alibaba.dubbo.remoting.buffer.DynamicChannelBuffer;
+import com.alibaba.dubbo.remoting.exchange.Request;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
-import io.netty.handler.codec.MessageToMessageEncoder;
+import io.netty.handler.codec.MessageToByteEncoder;
+
+import java.io.IOException;
 
 /**
  * NettyCodecAdapter.
@@ -65,9 +64,11 @@ final class NettyCodecAdapter {
     }
 
     @ChannelHandler.Sharable
-    private class InternalEncoder extends MessageToMessageEncoder {
+    private class InternalEncoder extends MessageToByteEncoder<Object> {
         @Override
-        protected void encode(ChannelHandlerContext ctx, Object msg, List out) throws Exception {
+        protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
+//            System.out.println("[==========>ecode...." + msg + "]");
+//            System.out.println("handler:" + handler.getClass().getCanonicalName());
             ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
             NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
             try {
@@ -75,8 +76,21 @@ final class NettyCodecAdapter {
             } finally {
                 NettyChannel.removeChannelIfDisconnected(ctx.channel());
             }
-            out.add(ChannelBuffers.wrappedBuffer(buffer.toByteBuffer()));
+            out.writeBytes(ChannelBuffers.wrappedBuffer(buffer.toByteBuffer()).array());
         }
+//        @Override
+//        protected void encode(ChannelHandlerContext ctx, Request msg, List out) throws Exception {
+//            System.out.println("[==========>ecode...." + msg + "]");
+//            System.out.println("handler:" + handler.getClass().getCanonicalName());
+//            ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
+//            NettyChannel channel = NettyChannel.getOrAddChannel(ctx.channel(), url, handler);
+//            try {
+//                codec.encode(channel, buffer, msg);
+//            } finally {
+//                NettyChannel.removeChannelIfDisconnected(ctx.channel());
+//            }
+//            out.add(ChannelBuffers.wrappedBuffer(buffer.toByteBuffer()));
+//        }
 
     }
 
@@ -87,6 +101,7 @@ final class NettyCodecAdapter {
 
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, ByteBuf object) throws Exception {
+//            System.out.println("[===========>Read From Remote is " + object + "]");
             int readable = object.readableBytes();
             if (readable <= 0) return;
             ByteBuf input = object;

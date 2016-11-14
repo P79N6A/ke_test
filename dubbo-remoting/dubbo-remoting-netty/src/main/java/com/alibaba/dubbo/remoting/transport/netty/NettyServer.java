@@ -92,7 +92,6 @@ public class NettyServer extends AbstractServer implements Server {
         workerGroup = new NioEventLoopGroup(workerThreadNum, new NamedThreadFactory("NettyServerWorker", true));
         bootstrap = new ServerBootstrap();
         final NettyInboundHandler nettyInboundHandler = new NettyInboundHandler(getUrl(), this);
-        final NettyOutboundHandler nettyOutboundHandler = new NettyOutboundHandler(getUrl(), this);
         channels = nettyInboundHandler.getChannels();
         bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).
                 childHandler(new ChannelInitializer<SocketChannel>() {
@@ -100,14 +99,10 @@ public class NettyServer extends AbstractServer implements Server {
                     public void initChannel(final SocketChannel ch) throws Exception {
                         NettyCodecAdapter adapter = new NettyCodecAdapter(getCodec(), getUrl(), NettyServer.this);
                         ChannelPipeline pipeline = ch.pipeline();
-                /*int idleTimeout = getIdleTimeout();
-                if (idleTimeout > 10000) {
-                    pipeline.addLast("timer", new IdleStateHandler(timer, idleTimeout / 1000, 0, 0));
-                }*/
                         pipeline.addLast("decoder", adapter.getDecoder());
                         pipeline.addLast("encoder", adapter.getEncoder());
                         pipeline.addLast("handlerIn", nettyInboundHandler);
-                        pipeline.addLast("handlerOut", nettyOutboundHandler);
+
                     }
                 }).
                 option(ChannelOption.SO_BACKLOG, soBackLogNum).

@@ -40,7 +40,7 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
                 interfaces[1] = EchoService.class;
                 for (int i = 0; i < types.length; i ++) {
                     //TODO 有bug
-                    interfaces[i + 1] = ReflectUtils.forName(types[i]);// 有bug
+                    interfaces[i + 2] = ReflectUtils.forName(types[i]);// 有bug
                 }
             }
         }

@@ -31,12 +31,13 @@ public class DemoAction {
 	public void start() throws Exception {
         for (int i = 0; i < Integer.MAX_VALUE; i ++) {
             try {
+//                System.out.println("[ Before...." + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " );
             	String hello = demoService.sayHello("world" + i);
                 System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + hello);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Thread.sleep(2000);
+            Thread.sleep(200);
         }
 	}
 

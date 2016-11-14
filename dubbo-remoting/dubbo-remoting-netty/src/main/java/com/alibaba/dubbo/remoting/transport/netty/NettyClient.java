@@ -29,6 +29,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +43,7 @@ public class NettyClient extends AbstractClient {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyClient.class);
 
-    private EventLoopGroup bossGroup;
+//    private EventLoopGroup bossGroup;
 
     private EventLoopGroup workerGroup;
 
@@ -64,18 +65,17 @@ public class NettyClient extends AbstractClient {
     @Override
     protected void doOpen() throws Throwable {
         NettyHelper.setNettyLoggerFactory();
-        bossGroup = new NioEventLoopGroup(Constants.DEFAULT_IO_THREADS, new NamedThreadFactory("NettyClientBoss", true));
+//        bossGroup = new NioEventLoopGroup(Constants.DEFAULT_IO_THREADS, new NamedThreadFactory("NettyClientBoss", true));
         workerGroup = new NioEventLoopGroup(Constants.DEFAULT_IO_THREADS, new NamedThreadFactory("NettyClientWorker", true));
 //        group = new NioEventLoopGroup(Constants.DEFAULT_IO_THREADS,);
         bootstrap = new Bootstrap();
 //        bootstrap.group(bossGroup);
-        bootstrap.group(workerGroup);
+        bootstrap.group(workerGroup).channel(NioSocketChannel.class);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
 
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, getTimeout());
         final NettyInboundHandler nettyInboundHandler = new NettyInboundHandler(getUrl(), this);
-        final NettyOutboundHandler nettyOutboundHandler = new NettyOutboundHandler(getUrl(), this);
 
         bootstrap.handler(new ChannelInitializer<SocketChannel>() {
             @Override
@@ -85,7 +85,7 @@ public class NettyClient extends AbstractClient {
                 pipeline.addLast("decoder", adapter.getDecoder());
                 pipeline.addLast("encoder", adapter.getEncoder());
                 pipeline.addLast("in-handler", nettyInboundHandler);
-                pipeline.addLast("out-handler", nettyOutboundHandler);
+
             }
         });
     }
@@ -154,6 +154,7 @@ public class NettyClient extends AbstractClient {
 
     @Override
     protected void doClose() throws Throwable {
+        workerGroup.shutdownGracefully();
         /*try {
             bootstrap.releaseExternalResources();
         } catch (Throwable t) {

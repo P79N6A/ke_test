@@ -104,7 +104,7 @@ final class HeaderExchangeChannel implements ExchangeChannel {
         }
         // create request.
         Request req = new Request();
-        req.setVersion("2.0.0");
+        req.setVersion("1.0.0.0");
         req.setTwoWay(true);
         req.setData(request);
         DefaultFuture future = new DefaultFuture(channel, req, timeout);
