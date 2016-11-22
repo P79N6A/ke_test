@@ -15,60 +15,53 @@
  */
 package com.alibaba.dubbo.rpc;
 
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.NetUtils;
+
+import java.net.InetSocketAddress;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Thread local context. (API, ThreadLocal, ThreadSafe)
- * 
+ * <p>
  * 注意：RpcContext是一个临时状态记录器，当接收到RPC请求，或发起RPC请求时，RpcContext的状态都会变化。
  * 比如：A调B，B再调C，则B机器上，在B调C之前，RpcContext记录的是A调B的信息，在B调C之后，RpcContext记录的是B调C的信息。
- * 
- * @see com.alibaba.dubbo.rpc.filter.ContextFilter
+ *
  * @author qian.lei
  * @author william.liangf
  * @export
+ * @see com.alibaba.dubbo.rpc.filter.ContextFilter
  */
 public class RpcContext {
-	
-	private static final ThreadLocal<RpcContext> LOCAL = new ThreadLocal<RpcContext>() {
-		@Override
-		protected RpcContext initialValue() {
-			return new RpcContext();
-		}
-	};
 
-	/**
-	 * get context.
-	 * 
-	 * @return context
-	 */
-	public static RpcContext getContext() {
-	    return LOCAL.get();
-	}
-	
-	/**
-	 * remove context.
-	 * 
-	 * @see com.alibaba.dubbo.rpc.filter.ContextFilter
-	 */
-	public static void removeContext() {
-	    LOCAL.remove();
-	}
+    private static final ThreadLocal<RpcContext> LOCAL = new ThreadLocal<RpcContext>() {
+        @Override
+        protected RpcContext initialValue() {
+            return new RpcContext();
+        }
+    };
+
+    /**
+     * get context.
+     *
+     * @return context
+     */
+    public static RpcContext getContext() {
+        return LOCAL.get();
+    }
+
+    /**
+     * remove context.
+     *
+     * @see com.alibaba.dubbo.rpc.filter.ContextFilter
+     */
+    public static void removeContext() {
+        LOCAL.remove();
+        LoggerFactory.clear();
+    }
 
     private Future<?> future;
 
@@ -82,29 +75,29 @@ public class RpcContext {
 
     private Object[] arguments;
 
-	private InetSocketAddress localAddress;
+    private InetSocketAddress localAddress;
 
-	private InetSocketAddress remoteAddress;
+    private InetSocketAddress remoteAddress;
 
     private final Map<String, String> attachments = new HashMap<String, String>();
 
     private final Map<String, Object> values = new HashMap<String, Object>();
-    
-	@Deprecated
+
+    @Deprecated
     private List<Invoker<?>> invokers;
-    
-	@Deprecated
+
+    @Deprecated
     private Invoker<?> invoker;
 
-	@Deprecated
+    @Deprecated
     private Invocation invocation;
-    
-	protected RpcContext() {
-	}
+
+    protected RpcContext() {
+    }
 
     /**
      * is provider side.
-     * 
+     *
      * @return provider side.
      */
     public boolean isProviderSide() {
@@ -122,13 +115,13 @@ public class RpcContext {
         } else {
             host = address.getAddress().getHostAddress();
         }
-        return url.getPort() != address.getPort() || 
-                ! NetUtils.filterLocalHost(url.getIp()).equals(NetUtils.filterLocalHost(host));
+        return url.getPort() != address.getPort() ||
+                !NetUtils.filterLocalHost(url.getIp()).equals(NetUtils.filterLocalHost(host));
     }
 
     /**
      * is consumer side.
-     * 
+     *
      * @return consumer side.
      */
     public boolean isConsumerSide() {
@@ -146,13 +139,13 @@ public class RpcContext {
         } else {
             host = address.getAddress().getHostAddress();
         }
-        return url.getPort() == address.getPort() && 
+        return url.getPort() == address.getPort() &&
                 NetUtils.filterLocalHost(url.getIp()).equals(NetUtils.filterLocalHost(host));
     }
 
     /**
      * get future.
-     * 
+     *
      * @param <T>
      * @return future
      */
@@ -163,7 +156,7 @@ public class RpcContext {
 
     /**
      * set future.
-     * 
+     *
      * @param future
      */
     public void setFuture(Future<?> future) {
@@ -188,7 +181,7 @@ public class RpcContext {
 
     /**
      * get method name.
-     * 
+     *
      * @return method name.
      */
     public String getMethodName() {
@@ -197,11 +190,12 @@ public class RpcContext {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
+        LoggerFactory.putData(Constants.LOGGER_METHODNAME, methodName);
     }
 
     /**
      * get parameter types.
-     * 
+     *
      * @serial
      */
     public Class<?>[] getParameterTypes() {
@@ -214,7 +208,7 @@ public class RpcContext {
 
     /**
      * get arguments.
-     * 
+     *
      * @return arguments.
      */
     public Object[] getArguments() {
@@ -227,22 +221,22 @@ public class RpcContext {
 
     /**
      * set local address.
-     * 
+     *
      * @param address
      * @return context
      */
-	public RpcContext setLocalAddress(InetSocketAddress address) {
-	    this.localAddress = address;
-	    return this;
-	}
+    public RpcContext setLocalAddress(InetSocketAddress address) {
+        this.localAddress = address;
+        return this;
+    }
 
-	/**
-	 * set local address.
-	 * 
-	 * @param host
-	 * @param port
-	 * @return context
-	 */
+    /**
+     * set local address.
+     *
+     * @param host
+     * @param port
+     * @return context
+     */
     public RpcContext setLocalAddress(String host, int port) {
         if (port < 0) {
             port = 0;
@@ -251,46 +245,47 @@ public class RpcContext {
         return this;
     }
 
-	/**
-	 * get local address.
-	 * 
-	 * @return local address
-	 */
-	public InetSocketAddress getLocalAddress() {
-		return localAddress;
-	}
+    /**
+     * get local address.
+     *
+     * @return local address
+     */
+    public InetSocketAddress getLocalAddress() {
+        return localAddress;
+    }
 
-	public String getLocalAddressString() {
+    public String getLocalAddressString() {
         return getLocalHost() + ":" + getLocalPort();
     }
-    
-	/**
-	 * get local host name.
-	 * 
-	 * @return local host name
-	 */
-	public String getLocalHostName() {
-		String host = localAddress == null ? null : localAddress.getHostName();
-		if (host == null || host.length() == 0) {
-		    return getLocalHost();
-		}
-		return host;
-	}
+
+    /**
+     * get local host name.
+     *
+     * @return local host name
+     */
+    public String getLocalHostName() {
+        String host = localAddress == null ? null : localAddress.getHostName();
+        if (host == null || host.length() == 0) {
+            return getLocalHost();
+        }
+        return host;
+    }
 
     /**
      * set remote address.
-     * 
+     *
      * @param address
      * @return context
      */
     public RpcContext setRemoteAddress(InetSocketAddress address) {
         this.remoteAddress = address;
+        LoggerFactory.putData(Constants.LOGGER_REMOTEADDRESS, getRemoteAddressString());
         return this;
     }
-    
+
     /**
      * set remote address.
-     * 
+     *
      * @param host
      * @param port
      * @return context
@@ -300,45 +295,46 @@ public class RpcContext {
             port = 0;
         }
         this.remoteAddress = InetSocketAddress.createUnresolved(host, port);
+        LoggerFactory.putData(Constants.LOGGER_REMOTEADDRESS, getRemoteAddressString());
         return this;
     }
 
-	/**
-	 * get remote address.
-	 * 
-	 * @return remote address
-	 */
-	public InetSocketAddress getRemoteAddress() {
-		return remoteAddress;
-	}
-	
-	/**
-	 * get remote address string.
-	 * 
-	 * @return remote address string.
-	 */
-	public String getRemoteAddressString() {
-	    return getRemoteHost() + ":" + getRemotePort();
-	}
-	
-	/**
-	 * get remote host name.
-	 * 
-	 * @return remote host name
-	 */
-	public String getRemoteHostName() {
-		return remoteAddress == null ? null : remoteAddress.getHostName();
-	}
+    /**
+     * get remote address.
+     *
+     * @return remote address
+     */
+    public InetSocketAddress getRemoteAddress() {
+        return remoteAddress;
+    }
+
+    /**
+     * get remote address string.
+     *
+     * @return remote address string.
+     */
+    public String getRemoteAddressString() {
+        return getRemoteHost() + ":" + getRemotePort();
+    }
+
+    /**
+     * get remote host name.
+     *
+     * @return remote host name
+     */
+    public String getRemoteHostName() {
+        return remoteAddress == null ? null : remoteAddress.getHostName();
+    }
 
     /**
      * get local host.
-     * 
+     *
      * @return local host
      */
     public String getLocalHost() {
-        String host = localAddress == null ? null : 
-            localAddress.getAddress() == null ? localAddress.getHostName() 
-                    : NetUtils.filterLocalHost(localAddress.getAddress().getHostAddress());
+        String host = localAddress == null ? null :
+                localAddress.getAddress() == null ? localAddress.getHostName()
+                        : NetUtils.filterLocalHost(localAddress.getAddress().getHostAddress());
         if (host == null || host.length() == 0) {
             return NetUtils.getLocalHost();
         }
@@ -347,7 +343,7 @@ public class RpcContext {
 
     /**
      * get local port.
-     * 
+     *
      * @return port
      */
     public int getLocalPort() {
@@ -356,18 +352,18 @@ public class RpcContext {
 
     /**
      * get remote host.
-     * 
+     *
      * @return remote host
      */
     public String getRemoteHost() {
-        return remoteAddress == null ? null : 
-            remoteAddress.getAddress() == null ? remoteAddress.getHostName() 
-                    : NetUtils.filterLocalHost(remoteAddress.getAddress().getHostAddress());
+        return remoteAddress == null ? null :
+                remoteAddress.getAddress() == null ? remoteAddress.getHostName()
+                        : NetUtils.filterLocalHost(remoteAddress.getAddress().getHostAddress());
     }
 
     /**
      * get remote port.
-     * 
+     *
      * @return remote port
      */
     public int getRemotePort() {
@@ -376,7 +372,7 @@ public class RpcContext {
 
     /**
      * get attachment.
-     * 
+     *
      * @param key
      * @return attachment
      */
@@ -386,7 +382,7 @@ public class RpcContext {
 
     /**
      * set attachment.
-     * 
+     *
      * @param key
      * @param value
      * @return context
@@ -402,7 +398,7 @@ public class RpcContext {
 
     /**
      * remove attachment.
-     * 
+     *
      * @param key
      * @return context
      */
@@ -413,7 +409,7 @@ public class RpcContext {
 
     /**
      * get attachments.
-     * 
+     *
      * @return attachments
      */
     public Map<String, String> getAttachments() {
@@ -422,7 +418,7 @@ public class RpcContext {
 
     /**
      * set attachments
-     * 
+     *
      * @param attachment
      * @return context
      */
@@ -433,14 +429,14 @@ public class RpcContext {
         }
         return this;
     }
-    
+
     public void clearAttachments() {
         this.attachments.clear();
     }
 
     /**
      * get values.
-     * 
+     *
      * @return values
      */
     public Map<String, Object> get() {
@@ -449,7 +445,7 @@ public class RpcContext {
 
     /**
      * set value.
-     * 
+     *
      * @param key
      * @param value
      * @return context
@@ -465,7 +461,7 @@ public class RpcContext {
 
     /**
      * remove value.
-     * 
+     *
      * @param key
      * @return value
      */
@@ -476,7 +472,7 @@ public class RpcContext {
 
     /**
      * get value.
-     * 
+     *
      * @param key
      * @return value
      */
@@ -507,6 +503,7 @@ public class RpcContext {
     public RpcContext setInvocation(Invocation invocation) {
         this.invocation = invocation;
         if (invocation != null) {
+            LoggerFactory.putData(Constants.LOGGER_INTERFACE, invocation.getInvoker().getInterface().getCanonicalName());
             setMethodName(invocation.getMethodName());
             setParameterTypes(invocation.getParameterTypes());
             setArguments(invocation.getArguments());
@@ -521,7 +518,7 @@ public class RpcContext {
     public boolean isServerSide() {
         return isProviderSide();
     }
-    
+
     /**
      * @deprecated Replace to isConsumerSide()
      */
@@ -529,14 +526,14 @@ public class RpcContext {
     public boolean isClientSide() {
         return isConsumerSide();
     }
-    
+
     /**
      * @deprecated Replace to getUrls()
      */
     @Deprecated
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<Invoker<?>> getInvokers() {
-        return invokers == null && invoker != null ? (List)Arrays.asList(invoker) : invokers;
+        return invokers == null && invoker != null ? (List) Arrays.asList(invoker) : invokers;
     }
 
     /**
@@ -554,72 +551,78 @@ public class RpcContext {
     public Invocation getInvocation() {
         return invocation;
     }
-    
+
     /**
      * 异步调用 ，需要返回值，即使步调用Future.get方法，也会处理调用超时问题.
+     *
      * @param callable
      * @return 通过future.get()获取返回结果.
      */
     @SuppressWarnings("unchecked")
-	public <T> Future<T> asyncCall(Callable<T> callable) {
-    	try {
-	    	try {
-	    		setAttachment(Constants.ASYNC_KEY, Boolean.TRUE.toString());
-				final T o = callable.call();
-				//local调用会直接返回结果.
-				if (o != null) {
-					FutureTask<T> f = new FutureTask<T>(new Callable<T>() {
-						public T call() throws Exception {
-							return o;
-						}
-					});
-					f.run();
-					return f;
-				} else {
-					
-				}
-			} catch (Exception e) {
-				throw new RpcException(e);
-			} finally {
-				removeAttachment(Constants.ASYNC_KEY);
-			}
-    	} catch (final RpcException e) {
-			return new Future<T>() {
-				public boolean cancel(boolean mayInterruptIfRunning) {
-					return false;
-				}
-				public boolean isCancelled() {
-					return false;
-				}
-				public boolean isDone() {
-					return true;
-				}
-				public T get() throws InterruptedException, ExecutionException {
-					throw new ExecutionException(e.getCause());
-				}
-				public T get(long timeout, TimeUnit unit)
-						throws InterruptedException, ExecutionException,
-						TimeoutException {
-					return get();
-				}
-			};
-		}
-    	return ((Future<T>)getContext().getFuture());
+    public <T> Future<T> asyncCall(Callable<T> callable) {
+        try {
+            try {
+                setAttachment(Constants.ASYNC_KEY, Boolean.TRUE.toString());
+                final T o = callable.call();
+                //local调用会直接返回结果.
+                if (o != null) {
+                    FutureTask<T> f = new FutureTask<T>(new Callable<T>() {
+                        public T call() throws Exception {
+                            return o;
+                        }
+                    });
+                    f.run();
+                    return f;
+                } else {
+
+                }
+            } catch (Exception e) {
+                throw new RpcException(e);
+            } finally {
+                removeAttachment(Constants.ASYNC_KEY);
+            }
+        } catch (final RpcException e) {
+            return new Future<T>() {
+                public boolean cancel(boolean mayInterruptIfRunning) {
+                    return false;
+                }
+
+                public boolean isCancelled() {
+                    return false;
+                }
+
+                public boolean isDone() {
+                    return true;
+                }
+
+                public T get() throws InterruptedException, ExecutionException {
+                    throw new ExecutionException(e.getCause());
+                }
+
+                public T get(long timeout, TimeUnit unit)
+                        throws InterruptedException, ExecutionException,
+                        TimeoutException {
+                    return get();
+                }
+            };
+        }
+        return ((Future<T>) getContext().getFuture());
     }
-    
-	/**
-	 * oneway调用，只发送请求，不接收返回结果.
-	 * @param callable
-	 */
-	public void asyncCall(Runnable runable) {
-    	try {
-    		setAttachment(Constants.RETURN_KEY, Boolean.FALSE.toString());
-    		runable.run();
-		} catch (Throwable e) {
-			//FIXME 异常是否应该放在future中？
-			throw new RpcException("oneway call error ." + e.getMessage(), e);
-		} finally {
-			removeAttachment(Constants.RETURN_KEY);
-		}
+
+    /**
+     * oneway调用，只发送请求，不接收返回结果.
+     *
+     * @param runable
+     */
+    public void asyncCall(Runnable runable) {
+        try {
+            setAttachment(Constants.RETURN_KEY, Boolean.FALSE.toString());
+            runable.run();
+        } catch (Throwable e) {
+            //FIXME 异常是否应该放在future中？
+            throw new RpcException("oneway call error ." + e.getMessage(), e);
+        } finally {
+            removeAttachment(Constants.RETURN_KEY);
+        }
     }
 }

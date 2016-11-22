@@ -117,7 +117,7 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
         } else {
             // decode request.
             Request req = new Request(id);
-            req.setVersion("2.0.0");
+            req.setVersion("1.0.0.0");
             req.setTwoWay((flag & FLAG_TWOWAY) != 0);
             if ((flag & FLAG_EVENT) != 0) {
                 req.setEvent(Request.HEARTBEAT_EVENT);

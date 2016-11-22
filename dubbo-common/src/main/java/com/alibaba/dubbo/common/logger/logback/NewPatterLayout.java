@@ -11,6 +11,15 @@ import java.util.Map;
  * Created by chengtianliang on 14/12/6.
  */
 public class NewPatterLayout extends PatternLayout {
+
+    static {
+        defaultConverterMap.put("M", NewMethodOfCallerConverter.class.getName());
+        defaultConverterMap.put("method", NewMethodOfCallerConverter.class.getName());
+
+        defaultConverterMap.put("L", NewLineOfCallerConvert.class.getName());
+        defaultConverterMap.put("line", NewLineOfCallerConvert.class.getName());
+    }
+
     @Override
     public String doLayout(ILoggingEvent event) {
         String layout = super.doLayout(event);

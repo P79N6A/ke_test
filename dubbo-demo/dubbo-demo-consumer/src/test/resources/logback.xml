@@ -5,7 +5,7 @@
 
   <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="com.alibaba.dubbo.common.logger.logback.PatternEncoder">
-      <pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%-5p] [$logId] [userId:$userId][$remoteAddress] [%c{0}][%M][%L][%t] %m%n
+      <pattern>[%d{yyyy-MM-dd HH:mm:ss}][%-5p][%c{0}][%M][%L][%t] %m%n
       </pattern>
       <charset class="java.nio.charset.Charset">UTF-8</charset>
     </encoder>
@@ -26,7 +26,7 @@
       <MaxHistory>100</MaxHistory>
     </rollingPolicy>
     <encoder class="com.alibaba.dubbo.common.logger.logback.PatternEncoder">
-      <pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%-5p] [$logId] [userId:$userId][$remoteAddress] [%c{0}][%M][%L][%t] %m%n
+      <pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%-5p][%c{0}][%M][%L][%t] %m%n
       </pattern>
       <charset class="java.nio.charset.Charset">UTF-8</charset>
     </encoder>

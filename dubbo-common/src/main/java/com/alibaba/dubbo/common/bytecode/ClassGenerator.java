@@ -221,7 +221,7 @@ public final class ClassGenerator
 
 	public ClassGenerator addMethod(String name, Method m)
 	{
-		String desc = name + ReflectUtils.getDescWithoutMethodName(m);
+		String desc = name + ReflectUtils.getDesc(m);
 		addMethod(':' + desc);
 		if( mCopyMethods == null )
 			mCopyMethods = new ConcurrentHashMap<String, Method>(8);

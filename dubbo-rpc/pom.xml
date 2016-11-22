@@ -39,5 +39,6 @@
 		<module>dubbo-rpc-thrift</module>
 		<module>dubbo-rpc-memcached</module>
 		<module>dubbo-rpc-redis</module>
-	</modules>
+        <module>dubbo-rpc-restful</module>
+    </modules>
 </project>
