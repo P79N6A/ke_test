@@ -18,6 +18,8 @@ package com.alibaba.dubbo.rpc.protocol;
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.rpc.*;
 
 import java.util.List;
@@ -29,9 +31,12 @@ import java.util.List;
  */
 public class ProtocolFilterWrapper implements Protocol {
 
+    private static Logger logger = LoggerFactory.getLogger(ProtocolFilterWrapper.class);
+
     private final Protocol protocol;
 
     public ProtocolFilterWrapper(Protocol protocol) {
+        logger.info("[ProtocolFilterWrapper created:" + protocol + "]");
         if (protocol == null) {
             throw new IllegalArgumentException("protocol == null");
         }

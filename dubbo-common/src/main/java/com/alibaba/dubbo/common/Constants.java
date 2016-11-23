@@ -591,6 +591,14 @@ public class Constants {
 
     public static final String LOGGER_REQ_ID = "requestId";
 
+    public static final String REST_METHOD_PARM = "param";
+
+    public static final String REST_RESP_STATUS = "errorCode";
+
+    public static final String REST_RESP_MSG = "msg";
+
+    public static final String DEFAULT_SERVICE_VERSION = "1.0.0.0";
+
     /*
      * private Constants(){ }
      */

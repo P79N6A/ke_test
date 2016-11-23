@@ -42,25 +42,25 @@ public class FailsafeLogger implements Logger {
         sb.append("[").append(Version.getVersion()).append("]");
         sb.append("[").append(NetUtils.getLogHost()).append("]");
         String remoteAddres = (String) LoggerFactory.getValue(Constants.LOGGER_REMOTEADDRESS);
-        sb.append("[");
+        sb.append("[remoteAddres:");
         if (remoteAddres != null) {
             sb.append(remoteAddres);
         }
         sb.append("]");
         String interfaceName = (String) LoggerFactory.getValue(Constants.LOGGER_INTERFACE);
-        sb.append("[");
+        sb.append("[interfaceName:");
         if (interfaceName != null) {
             sb.append(interfaceName);
         }
         sb.append("]");
         String methodName = (String) LoggerFactory.getValue(Constants.LOGGER_METHODNAME);
-        sb.append("[");
+        sb.append("[methodName:");
         if (methodName != null) {
             sb.append(methodName);
         }
         sb.append("]");
         Object reqId = LoggerFactory.getValue(Constants.LOGGER_REQ_ID);
-        sb.append("[");
+        sb.append("[reqId:");
         if (reqId != null) {
             sb.append(reqId);
         }

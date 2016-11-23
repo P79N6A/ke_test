@@ -503,7 +503,9 @@ public class RpcContext {
     public RpcContext setInvocation(Invocation invocation) {
         this.invocation = invocation;
         if (invocation != null) {
-            LoggerFactory.putData(Constants.LOGGER_INTERFACE, invocation.getInvoker().getInterface().getCanonicalName());
+            if (invocation.getInvoker() != null && invocation.getInvoker().getInterface() != null && invocation.getInvoker().getInterface() != null) {
+                LoggerFactory.putData(Constants.LOGGER_INTERFACE, invocation.getInvoker().getInterface().getCanonicalName());
+            }
             setMethodName(invocation.getMethodName());
             setParameterTypes(invocation.getParameterTypes());
             setArguments(invocation.getArguments());
