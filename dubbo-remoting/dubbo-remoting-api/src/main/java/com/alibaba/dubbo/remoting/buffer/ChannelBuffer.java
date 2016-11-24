@@ -965,4 +965,6 @@ public interface ChannelBuffer extends Comparable<ChannelBuffer> {
      *                                       array
      */
     int arrayOffset();
+
+    ChannelBuffer copyFull();
 }

@@ -264,6 +264,14 @@ public abstract class AbstractChannelBuffer implements ChannelBuffer {
         return copy(readerIndex, readableBytes());
     }
 
+    public ChannelBuffer copyFull() {
+        ChannelBuffer buffer = copy(0, readableBytes());
+        buffer.readerIndex(buffer.readerIndex());
+        buffer.writerIndex(buffer.writerIndex());
+
+        return buffer;
+    }
+
     public ByteBuffer toByteBuffer() {
         return toByteBuffer(readerIndex, readableBytes());
     }
@@ -271,7 +279,7 @@ public abstract class AbstractChannelBuffer implements ChannelBuffer {
     @Override
     public boolean equals(Object o) {
         return o instanceof ChannelBuffer
-            && ChannelBuffers.equals(this, (ChannelBuffer) o);
+                && ChannelBuffers.equals(this, (ChannelBuffer) o);
     }
 
     public int compareTo(ChannelBuffer that) {
@@ -281,10 +289,10 @@ public abstract class AbstractChannelBuffer implements ChannelBuffer {
     @Override
     public String toString() {
         return getClass().getSimpleName() + '(' +
-            "ridx=" + readerIndex + ", " +
-            "widx=" + writerIndex + ", " +
-            "cap=" + capacity() +
-            ')';
+                "ridx=" + readerIndex + ", " +
+                "widx=" + writerIndex + ", " +
+                "cap=" + capacity() +
+                ')';
     }
 
     protected void checkReadableBytes(int minimumReadableBytes) {

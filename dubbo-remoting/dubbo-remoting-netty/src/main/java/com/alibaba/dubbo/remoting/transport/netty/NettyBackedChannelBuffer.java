@@ -120,6 +120,11 @@ public class NettyBackedChannelBuffer implements ChannelBuffer {
         return buffer.arrayOffset();
     }
 
+    @Override
+    public ChannelBuffer copyFull() {
+        return copy();
+    }
+
 
     // AbstractChannelBuffer
 

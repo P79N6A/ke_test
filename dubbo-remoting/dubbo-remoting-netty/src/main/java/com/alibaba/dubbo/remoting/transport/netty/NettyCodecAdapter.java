@@ -152,7 +152,7 @@ final class NettyCodecAdapter {
             } finally {
                 if (message.readable()) {
                     message.discardReadBytes();
-                    buffer = message;
+                    buffer = message.copyFull();
                 } else {
                     buffer = com.alibaba.dubbo.remoting.buffer.ChannelBuffers.EMPTY_BUFFER;
                 }
