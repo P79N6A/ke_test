@@ -15,11 +15,6 @@
  */
 package com.alibaba.dubbo.remoting.http.jetty;
 
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.ServletHandler;
-import org.mortbay.jetty.servlet.ServletHolder;
-import org.mortbay.thread.QueuedThreadPool;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
@@ -29,44 +24,53 @@ import com.alibaba.dubbo.common.utils.NetUtils;
 import com.alibaba.dubbo.remoting.http.HttpHandler;
 import com.alibaba.dubbo.remoting.http.servlet.DispatcherServlet;
 import com.alibaba.dubbo.remoting.http.support.AbstractHttpServer;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 public class JettyHttpServer extends AbstractHttpServer {
 
     private static final Logger logger = LoggerFactory.getLogger(JettyHttpServer.class);
 
-    private Server              server;
+    private Server server;
 
-    public JettyHttpServer(URL url, final HttpHandler handler){
+    public JettyHttpServer(URL url, final HttpHandler handler) {
         super(url, handler);
         DispatcherServlet.addHttpHandler(url.getPort(), handler);
-        
+
         int threads = url.getParameter(Constants.THREADS_KEY, Constants.DEFAULT_THREADS);
         QueuedThreadPool threadPool = new QueuedThreadPool();
         threadPool.setDaemon(true);
         threadPool.setMaxThreads(threads);
         threadPool.setMinThreads(threads);
 
-        SelectChannelConnector connector = new SelectChannelConnector();
-        if (! url.isAnyHost() && NetUtils.isValidLocalHost(url.getHost())) {
+        server = new Server(threadPool);
+        ServerConnector connector = new ServerConnector(server);
+        if (!url.isAnyHost() && NetUtils.isValidLocalHost(url.getHost())) {
             connector.setHost(url.getHost());
         }
         connector.setPort(url.getPort());
+        server.setConnectors(new Connector[]{connector});
 
-        server = new Server();
-        server.setThreadPool(threadPool);
-        server.addConnector(connector);
-        
-        ServletHandler servletHandler = new ServletHandler();
-        ServletHolder servletHolder = servletHandler.addServletWithMapping(DispatcherServlet.class, "/*");
+        ServletContextHandler servletContextHandler = new ServletContextHandler();
+        ServletHolder servletHolder = servletContextHandler.addServlet(DispatcherServlet.class, "/");
         servletHolder.setInitOrder(2);
-        
-        server.addHandler(servletHandler);
-        
+
+        HandlerCollection handlers = new HandlerCollection();
+        handlers.setHandlers(new Handler[]{servletContextHandler, new DefaultHandler()});
+        server.setHandler(handlers);
+
         try {
             server.start();
         } catch (Exception e) {
             throw new IllegalStateException("Failed to start jetty server on " + url.getAddress() + ", cause: "
-                                            + e.getMessage(), e);
+                    + e.getMessage(), e);
         }
     }
 

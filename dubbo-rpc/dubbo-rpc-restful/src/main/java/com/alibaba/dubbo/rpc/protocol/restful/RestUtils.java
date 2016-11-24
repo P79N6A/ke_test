@@ -8,12 +8,12 @@ import com.alibaba.dubbo.common.utils.ReflectUtils;
 import com.alibaba.dubbo.rpc.RpcInvocation;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +37,7 @@ public class RestUtils {
      */
     static RpcInvocation decode(HttpServletRequest request, HttpServletResponse response, String path, Map<String, String> descMap) throws ProtocolErrorException, IOException {
         RpcInvocation rpcInvocation;
+        if (path.startsWith("/")) path = path.substring(1);
         String[] ps = path.split("/");
         if (ps.length == 0) {
             throw new ProtocolErrorException("url中没有包含接口类和方法名");
@@ -56,40 +57,61 @@ public class RestUtils {
             in.read(bytes);
             json = new String(bytes, "utf8");
         }
-        LOGGER.debug("收到请求参数：" + json);
-        String version = request.getParameter("version");
+        LOGGER.info("收到请求参数：" + json);
+        String version = request.getHeader("version");
+        rpcInvocation = new RpcInvocation();
         if (null == version) {
             version = Constants.DEFAULT_SERVICE_VERSION;
+        } else {
+            rpcInvocation.setAttachment(Constants.VERSION_KEY, version);
         }
         String methodDesc = descMap.get(serviceKey(interaceName, methodName, version));
+        if (methodDesc == null) {
+            throw new NoServiceFoundException("未找到服务");
+        }
         Class<?>[] pts;
         Object[] args;
         try {
-            rpcInvocation = new RpcInvocation();
+
             rpcInvocation.setAttachment(Constants.DUBBO_VERSION_KEY, Version.getVersion());
             rpcInvocation.setAttachment(Constants.PATH_KEY, interaceName);
-            rpcInvocation.setAttachment(Constants.VERSION_KEY, version);
             rpcInvocation.setMethodName(methodName);
             pts = ReflectUtils.desc2classArray(methodDesc);
             args = new Object[pts.length];
-            JSONObject po = JSON.parseObject(json);
-            JSONArray jps = po.getJSONArray("params");
+            JSONArray params = JSON.parseArray(json);
+            if (params.size() != args.length) {
+                LOGGER.info("[服务参数不符合，请求参数个数:{},注册服务个数：{}]", params.size(), args.length);
+                throw new NoServiceFoundException("未找到服务");
+            }
             for (int i = 0; i < args.length; i++) {
-                args[i] = jps.getObject(i, pts[i]);
+                args[i] = params.getObject(i, pts[i]);
             }
             rpcInvocation.setParameterTypes(pts);
             rpcInvocation.setArguments(args);
-            Map<String, Object> atts = po.getJSONObject("attachments");
-            if (null != atts) {
-                Map<String, String> map = rpcInvocation.getAttachments();
-                if (null == map) map = new HashMap<>();
-                for (Map.Entry<String, Object> entry : atts.entrySet()) {
-                    if (entry.getValue() != null) {
-                        map.put(entry.getKey(), entry.getValue().toString());
-                    }
+            Enumeration<String> hns = request.getHeaderNames();
+            Map<String, String> map = rpcInvocation.getAttachments();
+            if (null == map) map = new HashMap<>();
+            while (hns.hasMoreElements()) {
+                String hn = hns.nextElement();
+                if (hn.equals("version")) continue;
+                //过滤标准http头，但保留refer和UA、contentType
+                if (hn.equalsIgnoreCase("Accept") ||
+                        hn.equalsIgnoreCase("Accept-Charset") ||
+                        hn.equalsIgnoreCase("Accept-Encoding") ||
+                        hn.equalsIgnoreCase("Accept-Language") ||
+                        hn.equalsIgnoreCase("Authorization") ||
+                        hn.equalsIgnoreCase("Connection") ||
+                        hn.equalsIgnoreCase("Content-Length") ||
+                        hn.equalsIgnoreCase("Cookie") ||
+                        hn.equalsIgnoreCase("From") ||
+                        hn.equalsIgnoreCase("Host") ||
+                        hn.equalsIgnoreCase("If-Modified-Since")) {
+                    continue;
                 }
-                rpcInvocation.setAttachments(map);
+                String value = request.getHeader(hn);
+                map.put(hn, value);
             }
+            rpcInvocation.setAttachments(map);
         } catch (ClassNotFoundException e) {
             throw new ProtocolErrorException("未找到对应服务，请确认服务是否正确");
         }

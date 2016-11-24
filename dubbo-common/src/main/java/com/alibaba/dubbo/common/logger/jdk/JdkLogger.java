@@ -15,20 +15,30 @@
  */
 package com.alibaba.dubbo.common.logger.jdk;
 
-import java.util.logging.Level;
-
 import com.alibaba.dubbo.common.logger.Logger;
+
+import java.util.logging.Level;
 
 public class JdkLogger implements Logger {
 
-	private final java.util.logging.Logger logger;
+    private final java.util.logging.Logger logger;
 
-	public JdkLogger(java.util.logging.Logger logger) {
-		this.logger = logger;
-	}
+    public JdkLogger(java.util.logging.Logger logger) {
+        this.logger = logger;
+    }
 
     public void trace(String msg) {
         logger.log(Level.FINER, msg);
+    }
+
+    @Override
+    public void trace(String msg, Object o) {
+        logger.log(Level.FINER, msg, o);
+    }
+
+    @Override
+    public void trace(String s, Object... objects) {
+        logger.log(Level.FINER, s, objects);
     }
 
     public void trace(Throwable e) {
@@ -39,41 +49,81 @@ public class JdkLogger implements Logger {
         logger.log(Level.FINER, msg, e);
     }
 
-	public void debug(String msg) {
-		logger.log(Level.FINE, msg);
-	}
+    public void debug(String msg) {
+        logger.log(Level.FINE, msg);
+    }
+
+    @Override
+    public void debug(String msg, Object o) {
+        logger.log(Level.FINE, msg, o);
+    }
+
+    @Override
+    public void debug(String msg, Object... objects) {
+        logger.log(Level.FINE, msg, objects);
+    }
 
     public void debug(Throwable e) {
         logger.log(Level.FINE, e.getMessage(), e);
     }
 
-	public void debug(String msg, Throwable e) {
-		logger.log(Level.FINE, msg, e);
-	}
+    public void debug(String msg, Throwable e) {
+        logger.log(Level.FINE, msg, e);
+    }
 
-	public void info(String msg) {
-		logger.log(Level.INFO, msg);
-	}
+    public void info(String msg) {
+        logger.log(Level.INFO, msg);
+    }
 
-	public void info(String msg, Throwable e) {
-		logger.log(Level.INFO, msg, e);
-	}
+    @Override
+    public void info(String msg, Object o) {
+        logger.log(Level.INFO, msg, o);
+    }
 
-	public void warn(String msg) {
-		logger.log(Level.WARNING, msg);
-	}
+    @Override
+    public void info(String msg, Object... objects) {
+        logger.log(Level.INFO, msg, objects);
+    }
 
-	public void warn(String msg, Throwable e) {
-		logger.log(Level.WARNING, msg, e);
-	}
+    public void info(String msg, Throwable e) {
+        logger.log(Level.INFO, msg, e);
+    }
 
-	public void error(String msg) {
-		logger.log(Level.SEVERE, msg);
-	}
+    public void warn(String msg) {
+        logger.log(Level.WARNING, msg);
+    }
 
-	public void error(String msg, Throwable e) {
-		logger.log(Level.SEVERE, msg, e);
-	}
+    @Override
+    public void warn(String msg, Object o) {
+        logger.log(Level.WARNING, msg, o);
+    }
+
+    @Override
+    public void warn(String msg, Object... objects) {
+        logger.log(Level.WARNING, msg, objects);
+    }
+
+    public void warn(String msg, Throwable e) {
+        logger.log(Level.WARNING, msg, e);
+    }
+
+    public void error(String msg) {
+        logger.log(Level.SEVERE, msg);
+    }
+
+    @Override
+    public void error(String msg, Object o) {
+        logger.log(Level.SEVERE, msg, o);
+    }
+
+    @Override
+    public void error(String msg, Object... objects) {
+        logger.log(Level.SEVERE, msg, objects);
+    }
+
+    public void error(String msg, Throwable e) {
+        logger.log(Level.SEVERE, msg, e);
+    }
 
     public void error(Throwable e) {
         logger.log(Level.SEVERE, e.getMessage(), e);
@@ -91,20 +141,20 @@ public class JdkLogger implements Logger {
         return logger.isLoggable(Level.FINER);
     }
 
-	public boolean isDebugEnabled() {
-		return logger.isLoggable(Level.FINE);
-	}
+    public boolean isDebugEnabled() {
+        return logger.isLoggable(Level.FINE);
+    }
 
-	public boolean isInfoEnabled() {
-		return logger.isLoggable(Level.INFO);
-	}
+    public boolean isInfoEnabled() {
+        return logger.isLoggable(Level.INFO);
+    }
 
-	public boolean isWarnEnabled() {
-		return logger.isLoggable(Level.WARNING);
-	}
+    public boolean isWarnEnabled() {
+        return logger.isLoggable(Level.WARNING);
+    }
 
-	public boolean isErrorEnabled() {
-		return logger.isLoggable(Level.SEVERE);
-	}
+    public boolean isErrorEnabled() {
+        return logger.isLoggable(Level.SEVERE);
+    }
 
 }

@@ -90,6 +90,22 @@ public class FailsafeLogger implements Logger {
         }
     }
 
+    @Override
+    public void trace(String msg, Object o) {
+        try {
+            logger.trace(appendContextMessage(msg), o);
+        } catch (Throwable t) {
+        }
+    }
+
+    @Override
+    public void trace(String s, Object... objects) {
+        try {
+            logger.trace(appendContextMessage(s), objects);
+        } catch (Throwable t) {
+        }
+    }
+
     public void debug(String msg, Throwable e) {
         try {
             logger.debug(appendContextMessage(msg), e);
@@ -111,6 +127,22 @@ public class FailsafeLogger implements Logger {
         }
     }
 
+    @Override
+    public void debug(String msg, Object o) {
+        try {
+            logger.debug(appendContextMessage(msg), o);
+        } catch (Throwable t) {
+        }
+    }
+
+    @Override
+    public void debug(String msg, Object... objects) {
+        try {
+            logger.debug(appendContextMessage(msg), objects);
+        } catch (Throwable t) {
+        }
+    }
+
     public void info(String msg, Throwable e) {
         try {
             logger.info(appendContextMessage(msg), e);
@@ -121,6 +153,22 @@ public class FailsafeLogger implements Logger {
     public void info(String msg) {
         try {
             logger.info(appendContextMessage(msg));
+        } catch (Throwable t) {
+        }
+    }
+
+    @Override
+    public void info(String msg, Object o) {
+        try {
+            logger.info(appendContextMessage(msg), o);
+        } catch (Throwable t) {
+        }
+    }
+
+    @Override
+    public void info(String msg, Object... objects) {
+        try {
+            logger.info(appendContextMessage(msg), objects);
         } catch (Throwable t) {
         }
     }
@@ -139,6 +187,22 @@ public class FailsafeLogger implements Logger {
         }
     }
 
+    @Override
+    public void warn(String msg, Object o) {
+        try {
+            logger.warn(appendContextMessage(msg), o);
+        } catch (Throwable t) {
+        }
+    }
+
+    @Override
+    public void warn(String msg, Object... objects) {
+        try {
+            logger.warn(appendContextMessage(msg), objects);
+        } catch (Throwable t) {
+        }
+    }
+
     public void error(String msg, Throwable e) {
         try {
             logger.error(appendContextMessage(msg), e);
@@ -149,6 +213,22 @@ public class FailsafeLogger implements Logger {
     public void error(String msg) {
         try {
             logger.error(appendContextMessage(msg));
+        } catch (Throwable t) {
+        }
+    }
+
+    @Override
+    public void error(String msg, Object o) {
+        try {
+            logger.error(appendContextMessage(msg), o);
+        } catch (Throwable t) {
+        }
+    }
+
+    @Override
+    public void error(String msg, Object... objects) {
+        try {
+            logger.error(appendContextMessage(msg), objects);
         } catch (Throwable t) {
         }
     }

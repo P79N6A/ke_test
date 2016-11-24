@@ -13,7 +13,7 @@ public class Parameter {
 
     private Map<String, String> attachments = new HashMap<>();
 
-    public List<?> getParams() {
+    public List<Object> getParams() {
         return params;
     }
 

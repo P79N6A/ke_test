@@ -2,6 +2,8 @@ package com.alibaba.dubbo.rpc.protocol.restful;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.ReflectUtils;
 import com.alibaba.dubbo.remoting.exchange.Response;
 import com.alibaba.dubbo.remoting.http.HttpBinder;
@@ -28,6 +30,8 @@ import java.util.regex.Pattern;
  * Created by chengtianliang on 2016/11/23.
  */
 public class HttpRestfulProtocol extends AbstractProxyProtocol {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpRestfulProtocol.class);
 
     private static final int DEFAULT_PORT = 2220;
 
@@ -73,6 +77,7 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
                 Exporter<?> exporter = exporterMap.get(serviceKey);
                 if (exporter == null) {
                     response.addHeader(Constants.REST_RESP_STATUS, String.valueOf(Response.SERVICE_NOT_FOUND));
+                    return;
                 }
 
                 Invoker<?> invoker = exporter.getInvoker();
@@ -93,12 +98,16 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
                         response.getWriter().print(JSON.toJSONString(value));
                     }
                 }
+            } catch (NoServiceFoundException e) {
+                response.addHeader(Constants.REST_RESP_STATUS, String.valueOf(Response.SERVICE_NOT_FOUND));
+                response.addHeader(Constants.REST_RESP_MSG, e.getMessage() == null ? "" : e.getMessage());
             } catch (ProtocolErrorException e) {
                 response.addHeader(Constants.REST_RESP_STATUS, String.valueOf(Response.BAD_REQUEST));
-                response.addHeader(Constants.REST_RESP_MSG, e.getMessage());
+                response.addHeader(Constants.REST_RESP_MSG, e.getMessage() == null ? "" : e.getMessage());
             } catch (Throwable e) {
+                LOGGER.info(e);
                 response.addHeader(Constants.REST_RESP_STATUS, String.valueOf(Response.SERVER_ERROR));
-                response.addHeader(Constants.REST_RESP_MSG, e.getMessage());
+                response.addHeader(Constants.REST_RESP_MSG, e.getMessage() == null ? "" : e.getMessage());
             } finally {
                 RpcContext.getContext().clearAttachments();
             }
@@ -163,5 +172,11 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
         }
         return method;
     }
+
+//    public static void main(String[] args) {
+//        Parameter parameter = new Parameter();
+//        parameter.getParams().add("helloWorld");
+//        System.out.println(JSON.toJSONString(parameter));
+//    }
 
 }

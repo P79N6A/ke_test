@@ -15,12 +15,6 @@
  */
 package com.alibaba.dubbo.container.jetty;
 
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.FilterHolder;
-import org.mortbay.jetty.servlet.ServletHandler;
-import org.mortbay.jetty.servlet.ServletHolder;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
@@ -29,10 +23,22 @@ import com.alibaba.dubbo.common.utils.NetUtils;
 import com.alibaba.dubbo.container.Container;
 import com.alibaba.dubbo.container.page.PageServlet;
 import com.alibaba.dubbo.container.page.ResourceFilter;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 /**
  * JettyContainer. (SPI, Singleton, ThreadSafe)
- * 
+ *
  * @author william.liangf
  */
 public class JettyContainer implements Container {
@@ -47,7 +53,7 @@ public class JettyContainer implements Container {
 
     public static final int DEFAULT_JETTY_PORT = 8080;
 
-    SelectChannelConnector connector;
+    ServerConnector connector;
 
     public void start() {
         String serverPort = ConfigUtils.getProperty(JETTY_PORT);
@@ -57,23 +63,29 @@ public class JettyContainer implements Container {
         } else {
             port = Integer.parseInt(serverPort);
         }
-        connector = new SelectChannelConnector();
+
+        Server server = new Server();
+
+        connector = new ServerConnector(server);
         connector.setPort(port);
-        ServletHandler handler = new ServletHandler();
-        
-        String resources = ConfigUtils.getProperty(JETTY_DIRECTORY);
-        if (resources != null && resources.length() > 0) {
-            FilterHolder resourceHolder = handler.addFilterWithMapping(ResourceFilter.class, "/*", Handler.DEFAULT);
-            resourceHolder.setInitParameter("resources", resources);
-        }
-        
-        ServletHolder pageHolder = handler.addServletWithMapping(PageServlet.class, "/*");
+        server.setConnectors(new Connector[]{connector});
+
+        ServletContextHandler context = new ServletContextHandler();
+        context.setContextPath("/");
+        ServletHolder pageHolder = context.addServlet(PageServlet.class, "/*");
         pageHolder.setInitParameter("pages", ConfigUtils.getProperty(JETTY_PAGES));
         pageHolder.setInitOrder(2);
-        
-        Server server = new Server();
-        server.addConnector(connector);
-        server.addHandler(handler);
+        String resources = ConfigUtils.getProperty(JETTY_DIRECTORY);
+        if (resources != null && resources.length() > 0) {
+            FilterHolder resourceHolder = context.addFilter(ResourceFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
+            resourceHolder.setInitParameter("resources", resources);
+        }
+
+
+        HandlerCollection handlers = new HandlerCollection();
+        handlers.setHandlers(new Handler[]{context, new DefaultHandler()});
+        server.setHandler(handlers);
+
         try {
             server.start();
         } catch (Exception e) {

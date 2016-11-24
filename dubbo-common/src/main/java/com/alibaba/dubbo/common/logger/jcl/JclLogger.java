@@ -14,6 +14,7 @@ import com.alibaba.dubbo.common.logger.Logger;
  * @author liangfei0201@163.com
  *
  */
+@Deprecated
 public class JclLogger implements Logger, Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -28,7 +29,17 @@ public class JclLogger implements Logger, Serializable {
         logger.trace(msg);
     }
 
-    public void trace(Throwable e) {
+	@Override
+	public void trace(String msg, Object o) {
+
+	}
+
+	@Override
+	public void trace(String s, Object... objects) {
+
+	}
+
+	public void trace(Throwable e) {
         logger.trace(e);
     }
 
@@ -40,7 +51,17 @@ public class JclLogger implements Logger, Serializable {
 		logger.debug(msg);
 	}
 
-    public void debug(Throwable e) {
+	@Override
+	public void debug(String msg, Object o) {
+
+	}
+
+	@Override
+	public void debug(String msg, Object... objects) {
+
+	}
+
+	public void debug(Throwable e) {
         logger.debug(e);
     }
 
@@ -52,7 +73,17 @@ public class JclLogger implements Logger, Serializable {
 		logger.info(msg);
 	}
 
-    public void info(Throwable e) {
+	@Override
+	public void info(String msg, Object o) {
+
+	}
+
+	@Override
+	public void info(String msg, Object... objects) {
+
+	}
+
+	public void info(Throwable e) {
         logger.info(e);
     }
 
@@ -64,7 +95,17 @@ public class JclLogger implements Logger, Serializable {
 		logger.warn(msg);
 	}
 
-    public void warn(Throwable e) {
+	@Override
+	public void warn(String msg, Object o) {
+
+	}
+
+	@Override
+	public void warn(String msg, Object... objects) {
+
+	}
+
+	public void warn(Throwable e) {
         logger.warn(e);
     }
 
@@ -76,7 +117,17 @@ public class JclLogger implements Logger, Serializable {
 		logger.error(msg);
 	}
 
-    public void error(Throwable e) {
+	@Override
+	public void error(String msg, Object o) {
+
+	}
+
+	@Override
+	public void error(String msg, Object... objects) {
+
+	}
+
+	public void error(Throwable e) {
         logger.error(e);
     }
 

@@ -150,6 +150,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.lianjia.cs</groupId>
+			<artifactId>dubbo-rpc-restful</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lianjia.cs</groupId>
 			<artifactId>dubbo-rpc-thrift</artifactId>
 			<version>${project.parent.version}</version>
 			<exclusions>

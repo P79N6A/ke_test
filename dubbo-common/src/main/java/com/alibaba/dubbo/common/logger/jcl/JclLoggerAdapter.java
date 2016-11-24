@@ -8,6 +8,7 @@ import com.alibaba.dubbo.common.logger.Level;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerAdapter;
 
+@Deprecated
 public class JclLoggerAdapter implements LoggerAdapter {
 
 	public Logger getLogger(String key) {
