@@ -108,8 +108,6 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
                 LOGGER.info(e);
                 response.addHeader(Constants.REST_RESP_STATUS, String.valueOf(Response.SERVER_ERROR));
                 response.addHeader(Constants.REST_RESP_MSG, e.getMessage() == null ? "" : e.getMessage());
-            } finally {
-                RpcContext.getContext().clearAttachments();
             }
         }
     }
