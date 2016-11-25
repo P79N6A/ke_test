@@ -1,18 +1,26 @@
 package com.alibaba.dubbo.rpc.protocol.restful;
 
 import com.alibaba.dubbo.common.Constants;
+import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.Version;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.ReflectUtils;
+import com.alibaba.dubbo.remoting.exchange.Response;
+import com.alibaba.dubbo.rpc.Result;
+import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.RpcInvocation;
+import com.alibaba.dubbo.rpc.RpcResult;
+import com.alibaba.dubbo.rpc.support.RpcUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +65,7 @@ public class RestUtils {
             in.read(bytes);
             json = new String(bytes, "utf8");
         }
-        LOGGER.info("收到请求参数：" + json);
+        LOGGER.debug("收到请求参数：" + json);
         String version = request.getHeader("version");
         rpcInvocation = new RpcInvocation();
         if (null == version) {
@@ -78,13 +86,21 @@ public class RestUtils {
             rpcInvocation.setMethodName(methodName);
             pts = ReflectUtils.desc2classArray(methodDesc);
             args = new Object[pts.length];
-            JSONArray params = JSON.parseArray(json);
-            if (params.size() != args.length) {
-                LOGGER.info("[服务参数不符合，请求参数个数:{},注册服务个数：{}]", params.size(), args.length);
-                throw new NoServiceFoundException("未找到服务");
-            }
-            for (int i = 0; i < args.length; i++) {
-                args[i] = params.getObject(i, pts[i]);
+            if (json.startsWith("[") && json.endsWith("]")) {
+                JSONArray params = JSON.parseArray(json);
+                if (params.size() != args.length) {
+                    LOGGER.info("[服务参数不符合，请求参数个数:{},注册服务个数：{}]", params.size(), args.length);
+                    throw new NoServiceFoundException("未找到服务");
+                }
+                for (int i = 0; i < args.length; i++) {
+                    args[i] = params.getObject(i, pts[i]);
+                }
+            } else {
+                if (args.length == 1) {
+                    args[0] = JSON.parseObject(json, pts[0]);
+                } else {
+                    throw new ProtocolErrorException("未找到对应服务，请确认服务是否正确");
+                }
             }
             rpcInvocation.setParameterTypes(pts);
             rpcInvocation.setArguments(args);
@@ -116,6 +132,78 @@ public class RestUtils {
             throw new ProtocolErrorException("未找到对应服务，请确认服务是否正确");
         }
         return rpcInvocation;
+    }
+
+    static Result invoke(HttpClient client, RpcInvocation inv, URL url) throws IOException {
+        long startTime = System.currentTimeMillis();
+        try {
+            Map<String, String> head = new HashMap<>(inv.getAttachments());
+            String httpUrl = buildHttpUrl(inv, url);
+            String content = buildRequestJson(inv);
+            Map<String, String> respHeader = new HashMap<>();
+            String data = client.invokeWithJson(httpUrl, head, content, respHeader);
+            String status = respHeader.get(Constants.REST_RESP_STATUS);
+            String msg = respHeader.get(Constants.REST_RESP_MSG);
+            byte state = Byte.parseByte(status);
+            if (state != Response.OK) {
+                return new RpcResult(new RpcException(state, msg));
+            }
+            Object o = null;
+            Type[] returnTypes = RpcUtils.getReturnTypes(inv);
+            if (returnTypes != null && returnTypes.length > 0) {
+                o = JSON.parseObject(data, returnTypes[0]);
+            }
+
+            return new RpcResult(o);
+        } finally {
+            LOGGER.info("[Call {} cost {} ms]", url.toIdentityString(), System.currentTimeMillis() - startTime);
+        }
+    }
+
+    private static String buildRequestJson(RpcInvocation inv) {
+        String content;
+        Object[] args = inv.getArguments();
+        if (args != null) {
+            if (args.length == 1) {
+                content = JSON.toJSONString(inv.getArguments()[0], SerializerFeature.WriteClassName,
+                        SerializerFeature.DisableCircularReferenceDetect);
+            } else if (args.length > 1) {
+                content = JSON.toJSONString(inv.getArguments(), SerializerFeature.WriteClassName,
+                        SerializerFeature.DisableCircularReferenceDetect);
+            } else {
+                content = "";
+            }
+        } else {
+            content = "";
+        }
+        return content;
+    }
+
+    private static String buildHttpUrl(RpcInvocation inv, URL url) {
+        StringBuilder buf = new StringBuilder();
+        buf.append("http://");
+        String username = url.getUsername();
+        String password = url.getPassword();
+        if (username != null && username.length() > 0) {
+            buf.append(username);
+            if (password != null && password.length() > 0) {
+                buf.append(":");
+                buf.append(password);
+            }
+            buf.append("@");
+        }
+        String host = url.getHost();
+        if (host != null && host.length() > 0) {
+            buf.append(host);
+            int port = url.getPort();
+            if (port > 0) {
+                buf.append(":");
+                buf.append(port);
+            }
+        }
+        String path = inv.getInvoker().getInterface().getCanonicalName();
+        buf.append("/").append(path).append("/").append(inv.getMethodName());
+        return buf.toString();
     }
 
     static String getRelativePath(HttpServletRequest request) {

@@ -10,8 +10,10 @@ import com.alibaba.dubbo.remoting.http.HttpBinder;
 import com.alibaba.dubbo.remoting.http.HttpHandler;
 import com.alibaba.dubbo.remoting.http.HttpServer;
 import com.alibaba.dubbo.rpc.*;
+import com.alibaba.dubbo.rpc.protocol.AbstractInvoker;
 import com.alibaba.dubbo.rpc.protocol.AbstractProxyProtocol;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -60,6 +62,8 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
         this.httpBinder = httpBinder;
     }
 
+    private ConcurrentHashMap<String, HttpClient> clients = new ConcurrentHashMap<>();
+
     private class InternalHandler implements HttpHandler {
         @Override
         public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -94,8 +98,19 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
                         }
                     }
                     Object value = result.getValue();
+
                     if (value != null) {
-                        response.getWriter().print(JSON.toJSONString(value));
+                        boolean isJavaClient = isJavaClient(rpcInvocation);
+                        if (isJavaClient) {
+                            response.getWriter().print(
+                                    JSON.toJSONString(value,
+                                            SerializerFeature.WriteClassName,
+                                            SerializerFeature.DisableCircularReferenceDetect));
+                        } else {
+                            response.getWriter().print(
+                                    JSON.toJSONString(value,
+                                            SerializerFeature.DisableCircularReferenceDetect));
+                        }
                     }
                 }
             } catch (NoServiceFoundException e) {
@@ -110,6 +125,19 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
                 response.addHeader(Constants.REST_RESP_MSG, e.getMessage() == null ? "" : e.getMessage());
             }
         }
+    }
+
+    private boolean isJavaClient(RpcInvocation rpcInvocation) {
+        boolean isJavaClient = false;
+        String isJavaClientStr = rpcInvocation.getAttachment(Constants.REST_HTTP_JAVA_CLIENT);
+        if (isJavaClientStr != null) {
+            try {
+                isJavaClient = Boolean.parseBoolean(isJavaClientStr);
+            } catch (Exception e) {
+                isJavaClient = false;
+            }
+        }
+        return isJavaClient;
     }
 
 
@@ -154,6 +182,31 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
         return null;
     }
 
+    @Override
+    public <T> Invoker<T> refer(final Class<T> type, URL url) throws RpcException {
+        Invoker<T> invoker = new AbstractInvoker<T>(type, url) {
+            @Override
+            protected Result doInvoke(Invocation invocation) throws Throwable {
+                if (!(invocation instanceof RpcInvocation)) return super.invoke(invocation);
+                RpcInvocation rInv = (RpcInvocation) invocation;
+                URL url = getUrl();
+                int connectionTimeout = url.getMethodParameter(rInv.getMethodName(),
+                        Constants.CONNECT_TIMEOUT_KEY, Constants.DEFAULT_CONNECT_TIMEOUT);
+                int readTimeout = url.getMethodParameter(rInv.getMethodName(),
+                        Constants.TIMEOUT_KEY, Constants.DEFAULT_TIMEOUT);
+                rInv.setAttachmentIfAbsent(Constants.CONNECT_TIMEOUT_KEY, String.valueOf(connectionTimeout));
+                rInv.setAttachmentIfAbsent(Constants.TIMEOUT_KEY, String.valueOf(readTimeout));
+                try {
+                    return RestUtils.invoke(getClient(invocation, getUrl()), rInv, getUrl());
+                } catch (Exception e) {
+                    throw getRpcException(type, getUrl(), invocation, e);
+                }
+            }
+        };
+        invokers.add(invoker);
+        return invoker;
+    }
+
     private Method findMethod(Method[] methods, String methodName) {
         if (null == methods || methodName == null) return null;
         Method method = null;
@@ -169,6 +222,24 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
             throw new RpcException("RestFul不支持服务方法重载");
         }
         return method;
+    }
+
+    private HttpClient getClient(Invocation inv, URL url) {
+        String id = url.toIdentityString();
+        int connectionTimeout = url.getMethodParameter(inv.getMethodName(), Constants.CONNECT_TIMEOUT_KEY, Constants.DEFAULT_CONNECT_TIMEOUT);
+        int readTimeout = url.getMethodParameter(inv.getMethodName(), Constants.TIMEOUT_KEY, Constants.DEFAULT_TIMEOUT);
+        id = id + "&connectionTimeout=" + connectionTimeout + "&readTimeout=" + readTimeout;
+        HttpClient client = clients.get(id);
+        if (client == null) {
+            client = createClient(url, connectionTimeout, readTimeout);
+            clients.put(id, client);
+        }
+        return client;
+    }
+
+    private HttpClient createClient(URL url, int connectionTimeout, int readTimeout) {
+        HttpClient client = new HttpClient(connectionTimeout, readTimeout);
+        return client;
     }
 
 //    public static void main(String[] args) {
