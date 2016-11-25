@@ -17,8 +17,10 @@ package com.alibaba.dubbo.demo.provider;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import com.alibaba.dubbo.demo.DemoService;
+import com.alibaba.dubbo.demo.User;
 import com.alibaba.dubbo.rpc.RpcContext;
 
 public class DemoServiceImpl implements DemoService {
@@ -31,5 +33,24 @@ public class DemoServiceImpl implements DemoService {
         }
         return "Hello " + sb.toString() + ", response form provider: " + RpcContext.getContext().getLocalAddress();
     }
-    
+
+    @Override
+    public User login(String userName, String password) {
+        User user = new User();
+        user.setPassword("123333");
+        user.setUserName(userName+" dddd");
+        user.setSex("男fff");
+        return user;
+    }
+
+    @Override
+    public List<User> findUsers() {
+        return null;
+    }
+
+    @Override
+    public void saveUser(User user, boolean bb) {
+
+    }
+
 }

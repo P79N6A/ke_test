@@ -15,8 +15,16 @@
  */
 package com.alibaba.dubbo.demo;
 
+import java.util.List;
+
 public interface DemoService {
 
 	String sayHello(String name);
+
+	User login(String userName,String password);
+
+	List<User> findUsers();
+
+	void saveUser(User user,boolean bb);
 
 }

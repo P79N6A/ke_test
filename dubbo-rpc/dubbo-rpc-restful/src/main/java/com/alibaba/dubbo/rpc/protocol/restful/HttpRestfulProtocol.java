@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -98,16 +99,18 @@ public class HttpRestfulProtocol extends AbstractProxyProtocol {
                         }
                     }
                     Object value = result.getValue();
-
+                    response.setContentType("application/json;charset=UTF-8;pageEncoding=UTF-8");
+                    PrintWriter out = response.getWriter();
+                    response.setCharacterEncoding("UTF-8");
                     if (value != null) {
                         boolean isJavaClient = isJavaClient(rpcInvocation);
                         if (isJavaClient) {
-                            response.getWriter().print(
+                            out.print(
                                     JSON.toJSONString(value,
                                             SerializerFeature.WriteClassName,
                                             SerializerFeature.DisableCircularReferenceDetect));
                         } else {
-                            response.getWriter().print(
+                            out.print(
                                     JSON.toJSONString(value,
                                             SerializerFeature.DisableCircularReferenceDetect));
                         }

@@ -86,24 +86,27 @@ public class RestUtils {
             rpcInvocation.setMethodName(methodName);
             pts = ReflectUtils.desc2classArray(methodDesc);
             args = new Object[pts.length];
-            if (json.startsWith("[") && json.endsWith("]")) {
-                JSONArray params = JSON.parseArray(json);
-                if (params.size() != args.length) {
-                    LOGGER.info("[服务参数不符合，请求参数个数:{},注册服务个数：{}]", params.size(), args.length);
-                    throw new NoServiceFoundException("未找到服务");
-                }
-                for (int i = 0; i < args.length; i++) {
-                    args[i] = params.getObject(i, pts[i]);
-                }
-            } else {
-                if (args.length == 1) {
-                    args[0] = JSON.parseObject(json, pts[0]);
+            if (json != null) {
+                if (json.startsWith("[") && json.endsWith("]")) {
+                    JSONArray params = JSON.parseArray(json);
+                    if (params.size() != args.length) {
+                        LOGGER.info("[服务参数不符合，请求参数个数:{},注册服务个数：{}]", params.size(), args.length);
+                        throw new NoServiceFoundException("未找到服务");
+                    }
+                    for (int i = 0; i < args.length; i++) {
+                        args[i] = params.getObject(i, pts[i]);
+                    }
                 } else {
-                    throw new ProtocolErrorException("未找到对应服务，请确认服务是否正确");
+                    if (args.length == 1) {
+                        args[0] = JSON.parseObject(json, pts[0]);
+                    } else {
+                        throw new ProtocolErrorException("未找到对应服务，请确认服务是否正确");
+                    }
                 }
+                rpcInvocation.setParameterTypes(pts);
+                rpcInvocation.setArguments(args);
             }
-            rpcInvocation.setParameterTypes(pts);
-            rpcInvocation.setArguments(args);
+
             Enumeration<String> hns = request.getHeaderNames();
             Map<String, String> map = rpcInvocation.getAttachments();
             if (null == map) map = new HashMap<>();
