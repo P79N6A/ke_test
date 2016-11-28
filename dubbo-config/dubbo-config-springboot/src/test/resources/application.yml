@@ -1,0 +1,19 @@
+dubbo:
+  application: abc
+  registries:
+    - abc:
+        address:
+          properties:
+            - userName: dd
+            - password: ddfg
+  protocol:
+    - rest:
+        host: 10.10.3.12
+        port: 1111
+    - dubbo:
+        host: 11.111.2.2
+        port: 12345
+
+  monitor:
+
+  scanPackage: com.lianjia.commerce
