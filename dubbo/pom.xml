@@ -263,6 +263,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>com.lianjia.cs</groupId>
+			<artifactId>dubbo-boot</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -348,7 +353,8 @@
 									<include>com.lianjia.cs:dubbo-container-jetty</include>
 									<include>com.lianjia.cs:dubbo-container-log4j</include>
 									<include>com.lianjia.cs:dubbo-container-logback</include>
-									<include>com.lianjia.cs:dubbo-rpc-http</include>
+									<include>com.lianjia.cs:dubbo-rpc-restful</include>
+									<include>com.lianjia.cs:dubbo-boot</include>
 								</includes>
 							</artifactSet>
 							<transformers>

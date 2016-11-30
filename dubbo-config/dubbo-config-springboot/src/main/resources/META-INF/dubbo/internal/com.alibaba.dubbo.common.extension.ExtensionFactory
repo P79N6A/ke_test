@@ -1,0 +1,1 @@
+springboot=com.lianjia.dubbo.config.springboot.extension.SpringBootExtensionFactory

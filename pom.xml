@@ -51,7 +51,9 @@
 		<module>dubbo-simple</module>
 		<module>dubbo-admin</module>
 		<module>dubbo-demo</module>
-	</modules>
+        <module>dubbo-springboot</module>
+        <module>dubbo-boot</module>
+    </modules>
 	<profiles>
 		<profile>
 			<id>test</id>

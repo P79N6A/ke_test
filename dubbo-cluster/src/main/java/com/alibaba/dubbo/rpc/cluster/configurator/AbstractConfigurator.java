@@ -88,8 +88,8 @@ public abstract class AbstractConfigurator implements Configurator {
     
     protected abstract URL doConfigure(URL currentUrl, URL configUrl);
     
-    public static void main(String[] args) {
-        System.out.println(URL.encode("timeout=100"));
-    }
+//    public static void main(String[] args) {
+//        System.out.println(URL.encode("timeout=100"));
+//    }
 
 }

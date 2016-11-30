@@ -75,7 +75,7 @@ public class ConfigTest {
     
     @Test
     public void testSpringExtensionInject() {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ConfigTest.class.getPackage().getName().replace('.', '/') + "/spring-extension-inject.xml");
+        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ConfigTest.class.getPackage().getName().replace('.', '/') + "/springboot-extension-inject.xml");
         ctx.start();
         try {
             MockFilter filter = (MockFilter) ExtensionLoader.getExtensionLoader(Filter.class).getExtension("mymock");
@@ -140,7 +140,7 @@ public class ConfigTest {
         String str = reference.toString();
         assertTrue(str.startsWith("<dubbo:reference "));
         assertTrue(str.contains(" url=\"dubbo://127.0.0.1:20881\" "));
-        assertTrue(str.contains(" interface=\"com.alibaba.dubbo.config.spring.api.DemoService\" "));
+        assertTrue(str.contains(" interface=\"com.alibaba.dubbo.config.springboot.api.DemoService\" "));
         assertTrue(str.endsWith(" />"));
     }
     
@@ -191,10 +191,10 @@ public class ConfigTest {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ConfigTest.class.getPackage().getName().replace('.', '/') + "/multi-protocol-register.xml");
         ctx.start();
         try {
-            List<URL> urls = registryService.getRegistered().get("com.alibaba.dubbo.config.spring.api.DemoService");
+            List<URL> urls = registryService.getRegistered().get("com.alibaba.dubbo.config.springboot.api.DemoService");
             assertNotNull(urls);
             assertEquals(1, urls.size());
-            assertEquals("dubbo://" + NetUtils.getLocalHost() + ":20824/com.alibaba.dubbo.config.spring.api.DemoService", urls.get(0).toIdentityString());
+            assertEquals("dubbo://" + NetUtils.getLocalHost() + ":20824/com.alibaba.dubbo.config.springboot.api.DemoService", urls.get(0).toIdentityString());
         } finally {
             ctx.stop();
             ctx.close();
@@ -211,12 +211,12 @@ public class ConfigTest {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ConfigTest.class.getPackage().getName().replace('.', '/') + "/multi-registry.xml");
         ctx.start();
         try {
-            List<URL> urls1 = registryService1.getRegistered().get("com.alibaba.dubbo.config.spring.api.DemoService");
+            List<URL> urls1 = registryService1.getRegistered().get("com.alibaba.dubbo.config.springboot.api.DemoService");
             assertNull(urls1);
-            List<URL> urls2 = registryService2.getRegistered().get("com.alibaba.dubbo.config.spring.api.DemoService");
+            List<URL> urls2 = registryService2.getRegistered().get("com.alibaba.dubbo.config.springboot.api.DemoService");
             assertNotNull(urls2);
             assertEquals(1, urls2.size());
-            assertEquals("dubbo://" + NetUtils.getLocalHost() + ":20880/com.alibaba.dubbo.config.spring.api.DemoService", urls2.get(0).toIdentityString());
+            assertEquals("dubbo://" + NetUtils.getLocalHost() + ":20880/com.alibaba.dubbo.config.springboot.api.DemoService", urls2.get(0).toIdentityString());
         } finally {
             ctx.stop();
             ctx.close();
@@ -232,16 +232,16 @@ public class ConfigTest {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ConfigTest.class.getPackage().getName().replace('.', '/') + "/delay-fixed-time.xml");
         ctx.start();
         try {
-            List<URL> urls = registryService.getRegistered().get("com.alibaba.dubbo.config.spring.api.DemoService");
+            List<URL> urls = registryService.getRegistered().get("com.alibaba.dubbo.config.springboot.api.DemoService");
             assertNull(urls);
             int i = 0;
             while ((i ++) < 60 && urls == null) {
-                urls = registryService.getRegistered().get("com.alibaba.dubbo.config.spring.api.DemoService");
+                urls = registryService.getRegistered().get("com.alibaba.dubbo.config.springboot.api.DemoService");
                 Thread.sleep(10);
             }
             assertNotNull(urls);
             assertEquals(1, urls.size());
-            assertEquals("dubbo://" + NetUtils.getLocalHost() + ":20883/com.alibaba.dubbo.config.spring.api.DemoService", urls.get(0).toIdentityString());
+            assertEquals("dubbo://" + NetUtils.getLocalHost() + ":20883/com.alibaba.dubbo.config.springboot.api.DemoService", urls.get(0).toIdentityString());
         } finally {
             ctx.stop();
             ctx.close();
@@ -256,10 +256,10 @@ public class ConfigTest {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ConfigTest.class.getPackage().getName().replace('.', '/') + "/delay-on-initialized.xml");
         //ctx.start();
         try {
-            List<URL> urls = registryService.getRegistered().get("com.alibaba.dubbo.config.spring.api.DemoService");
+            List<URL> urls = registryService.getRegistered().get("com.alibaba.dubbo.config.springboot.api.DemoService");
             assertNotNull(urls);
             assertEquals(1, urls.size());
-            assertEquals("dubbo://" + NetUtils.getLocalHost() + ":20883/com.alibaba.dubbo.config.spring.api.DemoService", urls.get(0).toIdentityString());
+            assertEquals("dubbo://" + NetUtils.getLocalHost() + ":20883/com.alibaba.dubbo.config.springboot.api.DemoService", urls.get(0).toIdentityString());
         } finally {
             ctx.stop();
             ctx.close();

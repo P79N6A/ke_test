@@ -37,7 +37,7 @@
   <!--<logger name="net.sf.ehcache" level="ERROR"/>-->
   <!--<logger name="org.hibernate.validator" level="ERROR"/>-->
   <!--<logger name="org.apache.commons.beanutils" level="ERROR"/>-->
-  <!--<logger name="org.mybatis.spring.SqlSessionUtils" level="ERROR"/>-->
+  <!--<logger name="org.mybatis.springboot.SqlSessionUtils" level="ERROR"/>-->
   <!--<logger name="org.jasig.cas.client" level="ERROR"/>-->
 
   <root level="INFO">

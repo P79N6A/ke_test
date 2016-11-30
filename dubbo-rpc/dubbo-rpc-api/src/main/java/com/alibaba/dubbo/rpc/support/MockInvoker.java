@@ -135,9 +135,9 @@ final public class MockInvoker<T> implements Invoker<T> {
                 throw new IllegalArgumentException("The mock implemention class " + mockClass.getName() + " not implement interface " + serviceType.getName());
             }
 
-            if (!serviceType.isAssignableFrom(mockClass)) {
-                throw new IllegalArgumentException("The mock implemention class " + mockClass.getName() + " not implement interface " + serviceType.getName());
-            }
+//            if (!serviceType.isAssignableFrom(mockClass)) {
+//                throw new IllegalArgumentException("The mock implemention class " + mockClass.getName() + " not implement interface " + serviceType.getName());
+//            }
             try {
                 T mockObject = (T) mockClass.newInstance();
                 invoker = proxyFactory.getInvoker(mockObject, (Class<T>) serviceType, url);

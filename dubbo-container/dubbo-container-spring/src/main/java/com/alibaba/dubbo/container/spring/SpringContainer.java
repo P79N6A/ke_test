@@ -32,9 +32,9 @@ public class SpringContainer implements Container {
 
     private static final Logger logger = LoggerFactory.getLogger(SpringContainer.class);
 
-    public static final String SPRING_CONFIG = "dubbo.spring.config";
+    public static final String SPRING_CONFIG = "dubbo.springboot.config";
     
-    public static final String DEFAULT_SPRING_CONFIG = "classpath*:META-INF/spring/*.xml";
+    public static final String DEFAULT_SPRING_CONFIG = "classpath*:META-INF/springboot/*.xml";
 
     static ClassPathXmlApplicationContext context;
     

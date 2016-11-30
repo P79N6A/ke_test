@@ -378,7 +378,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                     }
                 }
                 if (urls == null || urls.size() == 0) {
-                    throw new IllegalStateException("No such any registry to reference " + interfaceName + " on the consumer " + NetUtils.getLocalHost() + " use dubbo version " + Version.getVersion() + ", please config <dubbo:registry address=\"...\" /> to your spring config.");
+                    throw new IllegalStateException("No such any registry to reference " + interfaceName + " on the consumer " + NetUtils.getLocalHost() + " use dubbo version " + Version.getVersion() + ", please config <dubbo:registry address=\"...\" /> to your springboot config.");
                 }
             }
 
