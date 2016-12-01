@@ -1,11 +1,13 @@
 package com.lianjia.dubbo.config.springboot;
 
 import com.alibaba.dubbo.common.Constants;
+import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.lianjia.dubbo.config.springboot.entity.DubboProperty;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
@@ -16,16 +18,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by chengtianliang on 2016/11/29.
  */
 @Configuration
 public class SpringBootBean implements
-        BeanDefinitionRegistryPostProcessor, EnvironmentAware {
+        BeanDefinitionRegistryPostProcessor, EnvironmentAware,BeanPostProcessor {
 
     private static final String SCAN_PACKAGE = "dubbo.scanPackage";
 
     private Environment environment;
+
+    private Set<String> refereceBeanNames = new ConcurrentHashSet<>();
+
+    public Set<String> getRefereceBeanNames() {
+        return refereceBeanNames;
+    }
 
     @Bean
     public static DubboProperty dubboProperty() {
@@ -61,5 +73,16 @@ public class SpringBootBean implements
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+
+        return bean;
     }
 }

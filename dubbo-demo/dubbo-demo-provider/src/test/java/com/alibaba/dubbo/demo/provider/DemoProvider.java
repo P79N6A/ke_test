@@ -15,10 +15,12 @@
  */
 package com.alibaba.dubbo.demo.provider;
 
+import com.lianjia.cs.dubbo.boot.Main;
+
 public class DemoProvider {
 
 	public static void main(String[] args) {
-        com.alibaba.dubbo.container.Main.main(args);
+        Main.main(args);
 	}
 
 }

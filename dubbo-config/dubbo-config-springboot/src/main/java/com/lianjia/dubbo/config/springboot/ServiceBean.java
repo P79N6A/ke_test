@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by chengtianliang on 2016/11/29.
  */
-public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean,BeanNameAware {
+public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean, BeanNameAware {
     private static final long serialVersionUID = 213195494150089726L;
 
     private DubboProperty dubboProperty;
@@ -98,6 +98,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 if (moduleProperty != null) {
                     ModuleConfig moduleConfig = new ModuleConfig();
                     PropertyConfigCopyer.copyModuleProperty2ModuleConfig(moduleProperty, moduleConfig);
+                    setModule(moduleConfig);
                 }
             }
         }
@@ -145,20 +146,23 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 && (getProvider() == null || getProvider().getProtocols() == null || getProvider().getProtocols().size() == 0)) {
             List<ProtocolProperty> protocolProperties = dubboProperty.getProtocols();
             if (protocolProperties != null && protocolProperties.size() > 0) {
-
+                List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
+                for (ProtocolProperty protocolProperty : protocolProperties) {
+                    if (protocolProperty.isDefaultProtocol()) {
+                        ProtocolConfig protocolConfig = new ProtocolConfig();
+                        PropertyConfigCopyer.copyProtocolProperty2ProtocolConfig(protocolProperty, protocolConfig);
+                        protocolConfigs.add(protocolConfig);
+                    }
+                }
+                if (protocolConfigs.size() == 0 && protocolProperties.size() == 1) {
+                    ProtocolConfig protocolConfig = new ProtocolConfig();
+                    PropertyConfigCopyer.copyProtocolProperty2ProtocolConfig(protocolProperties.get(0), protocolConfig);
+                    protocolConfigs.add(protocolConfig);
+                }
+                if (protocolConfigs.size() > 0) {
+                    setProtocols(protocolConfigs);
+                }
             }
-//            Map<String, ProtocolConfig> protocolConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProtocolConfig.class, false, false);
-//            if (protocolConfigMap != null && protocolConfigMap.size() > 0) {
-//                List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
-//                for (ProtocolConfig config : protocolConfigMap.values()) {
-//                    if (config.isDefault() == null || config.isDefault().booleanValue()) {
-//                        protocolConfigs.add(config);
-//                    }
-//                }
-//                if (protocolConfigs != null && protocolConfigs.size() > 0) {
-//                    super.setProtocols(protocolConfigs);
-//                }
-//            }
         }
         if (getPath() == null || getPath().length() == 0) {
             if (beanName != null && beanName.length() > 0

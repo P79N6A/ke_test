@@ -33,6 +33,8 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
 
     private final Set<ServiceBean<?>> serviceConfigs = new ConcurrentHashSet<>();
 
+//    private
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;

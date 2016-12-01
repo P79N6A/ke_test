@@ -107,7 +107,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
                 Method scan = scannerClass.getMethod("scan", new Class<?>[]{String[].class});
                 scan.invoke(scanner, new Object[] {packages});
             } catch (Throwable e) {
-                // springboot 2.0
+                // spring 2.0
             }
         }
     }

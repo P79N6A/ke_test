@@ -114,7 +114,7 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
                     + NetUtils.getLocalHost()
                     + " use dubbo version "
                     + Version.getVersion()
-                    + ", Please add <dubbo:registry address=\"...\" /> to your springboot config. If you want unregister, please set <dubbo:service registry=\"N/A\" />");
+                    + ", Please add <dubbo:registry address=\"...\" /> to your spring config. If you want unregister, please set <dubbo:service registry=\"N/A\" />");
         }
         for (RegistryConfig registryConfig : registries) {
             appendProperties(registryConfig);
@@ -132,7 +132,7 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
         }
         if (application == null) {
             throw new IllegalStateException(
-                    "No such application config! Please add <dubbo:application name=\"...\" /> to your springboot config.");
+                    "No such application config! Please add <dubbo:application name=\"...\" /> to your spring config.");
         }
         appendProperties(application);
 
