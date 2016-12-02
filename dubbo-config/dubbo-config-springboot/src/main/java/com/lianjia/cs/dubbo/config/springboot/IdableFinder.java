@@ -9,7 +9,7 @@ public class IdableFinder {
     public static  <T extends Idable> T findProperty(String id, List<T> list) {
         if (list == null) return null;
         for (T obj : list) {
-            if (id.equals(obj)) {
+            if (id.equals(obj.getId())) {
                 return obj;
             }
         }

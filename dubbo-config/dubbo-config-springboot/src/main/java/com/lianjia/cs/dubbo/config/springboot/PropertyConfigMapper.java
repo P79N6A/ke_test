@@ -58,7 +58,7 @@ public class PropertyConfigMapper {
             reset();
             return;
         }
-        if (hasInited.getAndSet(false)) {
+        if (!hasInited.getAndSet(true)) {
             buildConfigs();
             afterBuildConfigs();
         }

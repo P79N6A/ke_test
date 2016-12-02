@@ -270,7 +270,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
 
             if (service.protocol() != null && service.protocol().length > 0) {
                 List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
-                for (String protocolId : service.registry()) {
+                for (String protocolId : service.protocol()) {
                     if (protocolId != null && protocolId.length() > 0) {
                         ProtocolProperty protocolProperty = IdableFinder.findProperty(protocolId, dubboProperty.getProtocols());
                         if (null == protocolProperty) {
