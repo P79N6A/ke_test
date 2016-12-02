@@ -2,8 +2,8 @@ package com.lianjia.dubbo.config.springboot;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.alibaba.dubbo.config.annotation.Service;
+import com.lianjia.dubbo.config.springboot.annotation.Reference;
+import com.lianjia.dubbo.config.springboot.annotation.Service;
 import com.lianjia.dubbo.config.springboot.entity.DubboProperty;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 /**
@@ -27,11 +27,13 @@ import java.util.Set;
  */
 @Configuration
 public class SpringBootBean implements
-        BeanDefinitionRegistryPostProcessor, EnvironmentAware,BeanPostProcessor {
+        BeanDefinitionRegistryPostProcessor, EnvironmentAware, BeanPostProcessor {
 
     private static final String SCAN_PACKAGE = "dubbo.scanPackage";
 
     private Environment environment;
+
+    private String[] scanPackages;
 
     private Set<String> refereceBeanNames = new ConcurrentHashSet<>();
 
@@ -61,7 +63,7 @@ public class SpringBootBean implements
     }
 
     private void scan(BeanDefinitionRegistry registry, String scanPackage) {
-        String[] packages = Constants.COMMA_SPLIT_PATTERN.split(scanPackage);
+        String[] packages = scanPackages = Constants.COMMA_SPLIT_PATTERN.split(scanPackage);
         ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry, true);
         AnnotationTypeFilter serviceTypeFilter = new AnnotationTypeFilter(Service.class);
         AnnotationTypeFilter referenceFilter = new AnnotationTypeFilter(Reference.class);
@@ -82,7 +84,34 @@ public class SpringBootBean implements
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-
+        if (isMatch(bean)) {
+            Class<?> clazz = bean.getClass();
+            Method[] methods = clazz.getMethods();
+            for (Method method : methods) {
+                Reference reference = method.getAnnotation(Reference.class);
+                if (null != reference) {
+                    refereceBeanNames.add(beanName);
+                }
+            }
+            Field[] fields = clazz.getDeclaredFields();
+            if (null != fields) {
+                for (Field field : fields) {
+                    Reference reference = field.getAnnotation(Reference.class);
+                    if (null != reference) {
+                        refereceBeanNames.add(beanName);
+                    }
+                }
+            }
+        }
         return bean;
+    }
+
+    private boolean isMatch(Object bean) {
+        if (scanPackages == null || scanPackages.length == 0) return false;
+        String name = bean.getClass().getName();
+        for (String packageName : scanPackages) {
+            if (name.startsWith(packageName)) return true;
+        }
+        return false;
     }
 }

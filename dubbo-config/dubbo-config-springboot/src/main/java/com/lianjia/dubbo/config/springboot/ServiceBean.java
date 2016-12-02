@@ -73,9 +73,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 }
 
                 if (applicationProperty != null) {
-                    ApplicationConfig applicationConfig = new ApplicationConfig();
-                    PropertyConfigCopyer.copyApplicationProperty2ApplicationConfig(applicationProperty, applicationConfig);
-                    setApplication(applicationConfig);
+                    setApplication(PropertyConfigMapper.getInstance().getApplicationConfig(applicationProperty.getId()));
                 }
             }
         }
@@ -96,9 +94,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                     moduleProperty = moduleProperties.get(0);
                 }
                 if (moduleProperty != null) {
-                    ModuleConfig moduleConfig = new ModuleConfig();
-                    PropertyConfigCopyer.copyModuleProperty2ModuleConfig(moduleProperty, moduleConfig);
-                    setModule(moduleConfig);
+                    setModule(PropertyConfigMapper.getInstance().getModuleConfig(moduleProperty.getId()));
                 }
             }
         }
@@ -109,9 +105,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             if (registryPropertyList != null && registryPropertyList.size() > 0) {
                 List<RegistryConfig> registryConfigs = new ArrayList<RegistryConfig>();
                 for (RegistryProperty registryProperty : registryPropertyList) {
-                    RegistryConfig registryConfig = new RegistryConfig();
-                    PropertyConfigCopyer.copyRegistryProperty2RegistryConfig(registryProperty, registryConfig);
-                    registryConfigs.add(registryConfig);
+                    registryConfigs.add(PropertyConfigMapper.getInstance().getRegistryConfig(registryProperty.getId()));
                 }
                 if (registryConfigs.size() > 0) {
                     setRegistries(registryConfigs);
@@ -136,9 +130,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                     monitorProperty = monitorProperties.get(0);
                 }
                 if (monitorProperty != null) {
-                    MonitorConfig monitorConfig = new MonitorConfig();
-                    PropertyConfigCopyer.copyMonitoryProperty2MonitoryConfig(monitorProperty, monitorConfig);
-                    setMonitor(monitorConfig);
+                    setMonitor(PropertyConfigMapper.getInstance().getMonitorConfig(monitorProperty.getId()));
                 }
             }
         }
@@ -149,15 +141,11 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
                 for (ProtocolProperty protocolProperty : protocolProperties) {
                     if (protocolProperty.isDefaultProtocol()) {
-                        ProtocolConfig protocolConfig = new ProtocolConfig();
-                        PropertyConfigCopyer.copyProtocolProperty2ProtocolConfig(protocolProperty, protocolConfig);
-                        protocolConfigs.add(protocolConfig);
+                        protocolConfigs.add(PropertyConfigMapper.getInstance().getProtocolConfig(protocolProperty.getId()));
                     }
                 }
                 if (protocolConfigs.size() == 0 && protocolProperties.size() == 1) {
-                    ProtocolConfig protocolConfig = new ProtocolConfig();
-                    PropertyConfigCopyer.copyProtocolProperty2ProtocolConfig(protocolProperties.get(0), protocolConfig);
-                    protocolConfigs.add(protocolConfig);
+                    protocolConfigs.add(PropertyConfigMapper.getInstance().getProtocolConfig(protocolProperties.get(0).getId()));
                 }
                 if (protocolConfigs.size() > 0) {
                     setProtocols(protocolConfigs);
@@ -171,19 +159,21 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 setPath(beanName);
             }
         }
-//        if (!isDelay()) {
-//            export();
-//        }
+        if (!isDelay()) {
+            export();
+        }
     }
 
 
-//    private boolean isDelay() {
-//        Integer delay = getDelay();
-//        ProviderConfig provider = getProvider();
-//        if (delay == null && provider != null) {
-//            delay = provider.getDelay();
-//        }
-//    }
+    private boolean isDelay() {
+        Integer delay = getDelay();
+        ProviderConfig provider = getProvider();
+        if (delay == null && provider != null) {
+            delay = provider.getDelay();
+        }
+        return delay != null && delay > 0;
+
+    }
 
     @Override
     public void setBeanName(String name) {

@@ -85,9 +85,7 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
                     consumerProperty = consumerProperties.get(0);
                 }
                 if (consumerProperty != null) {
-                    ConsumerConfig consumerConfig = new ConsumerConfig();
-                    PropertyConfigCopyer.copyConsumeProperty2ConsumeConfig(consumerProperty, consumerConfig);
-                    setConsumer(consumerConfig);
+                    setConsumer(PropertyConfigMapper.getInstance().getConsumerConfig(consumerProperty.getId()));
                 }
             }
         }
@@ -108,9 +106,7 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
                     applicationProperty = applicationProperties.get(0);
                 }
                 if (applicationProperty != null) {
-                    ApplicationConfig applicationConfig = new ApplicationConfig();
-                    PropertyConfigCopyer.copyApplicationProperty2ApplicationConfig(applicationProperty,applicationConfig);
-                    setApplication(applicationConfig);
+                    setApplication(PropertyConfigMapper.getInstance().getApplicationConfig(applicationProperty.getId()));
                 }
             }
         }
@@ -131,9 +127,7 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
                     moduleProperty = moduleProperties.get(0);
                 }
                 if (moduleProperty != null) {
-                    ModuleConfig moduleConfig = new ModuleConfig();
-                    PropertyConfigCopyer.copyModuleProperty2ModuleConfig(moduleProperty, moduleConfig);
-                    setModule(moduleConfig);
+                    setModule(PropertyConfigMapper.getInstance().getModuleConfig(moduleProperty.getId()));
                 }
             }
         }
@@ -144,9 +138,7 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
             if (registryPropertyList != null && registryPropertyList.size() > 0) {
                 List<RegistryConfig> registryConfigs = new ArrayList<RegistryConfig>();
                 for (RegistryProperty registryProperty : registryPropertyList) {
-                    RegistryConfig registryConfig = new RegistryConfig();
-                    PropertyConfigCopyer.copyRegistryProperty2RegistryConfig(registryProperty, registryConfig);
-                    registryConfigs.add(registryConfig);
+                    registryConfigs.add(PropertyConfigMapper.getInstance().getRegistryConfig(registryProperty.getId()));
                 }
                 if (registryConfigs.size() > 0) {
                     setRegistries(registryConfigs);
@@ -171,9 +163,7 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
                     monitorProperty = monitorProperties.get(0);
                 }
                 if (monitorProperty != null) {
-                    MonitorConfig monitorConfig = new MonitorConfig();
-                    PropertyConfigCopyer.copyMonitoryProperty2MonitoryConfig(monitorProperty, monitorConfig);
-                    setMonitor(monitorConfig);
+                    setMonitor(PropertyConfigMapper.getInstance().getMonitorConfig(monitorProperty.getId()));
                 }
             }
         }

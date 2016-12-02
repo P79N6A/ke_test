@@ -39,7 +39,17 @@ public class RegistryProperty implements Idable{
 
     private Boolean dynamic;
 
-    private Map<String,Object> params;
+    private String server;
+
+    private String client;
+
+    private String cluster;
+
+    private String group;
+
+    private String version;
+
+    private Map<String,String> parameters;
 
     public String getAddress() {
         return address;
@@ -153,12 +163,20 @@ public class RegistryProperty implements Idable{
         this.dynamic = dynamic;
     }
 
-    public Map<String, Object> getParams() {
-        return params;
+    public Map<String, String> getParameters() {
+        return parameters;
     }
 
-    public void setParams(Map<String, Object> params) {
-        this.params = params;
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
+    public String getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(String cluster) {
+        this.cluster = cluster;
     }
 
     public String getId() {
@@ -167,6 +185,38 @@ public class RegistryProperty implements Idable{
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getServer() {
+        return server;
+    }
+
+    public void setServer(String server) {
+        this.server = server;
+    }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     @Override
@@ -187,7 +237,7 @@ public class RegistryProperty implements Idable{
                 ", register=" + register +
                 ", subscribe=" + subscribe +
                 ", dynamic=" + dynamic +
-                ", params=" + params +
+                ", params=" + parameters +
                 '}';
     }
 }

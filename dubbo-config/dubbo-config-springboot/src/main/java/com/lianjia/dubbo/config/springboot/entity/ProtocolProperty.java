@@ -13,7 +13,7 @@ public class ProtocolProperty implements Idable{
 
     private String host;
 
-    private short port;
+    private Integer port;
 
     private String name;
 
@@ -69,11 +69,11 @@ public class ProtocolProperty implements Idable{
         this.host = host;
     }
 
-    public short getPort() {
+    public Integer getPort() {
         return port;
     }
 
-    public void setPort(short port) {
+    public void setPort(Integer port) {
         this.port = port;
     }
 

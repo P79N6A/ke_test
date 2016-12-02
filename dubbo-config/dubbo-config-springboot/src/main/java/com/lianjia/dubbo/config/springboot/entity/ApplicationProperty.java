@@ -25,6 +25,8 @@ public class ApplicationProperty implements Idable {
 
     private boolean defaultApp;
 
+    private String version;
+
     public String getId() {
         return id == null ? name : id;
     }
@@ -95,6 +97,14 @@ public class ApplicationProperty implements Idable {
 
     public void setDefaultApp(boolean defaultApp) {
         this.defaultApp = defaultApp;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     @Override
