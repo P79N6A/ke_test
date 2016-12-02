@@ -15,6 +15,7 @@
  */
 package com.lianjia.cs.dubbo.config.springboot.annotation;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
@@ -28,7 +29,6 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
-@Component
 public @interface Reference {
 
     Class<?> interfaceClass() default void.class;
