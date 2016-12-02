@@ -1,7 +1,7 @@
-package com.lianjia.dubbo.config.springboot;
+package com.lianjia.cs.dubbo.config.springboot;
 
 import com.alibaba.dubbo.config.*;
-import com.lianjia.dubbo.config.springboot.entity.*;
+import com.lianjia.cs.dubbo.config.springboot.entity.*;
 
 /**
  * Created by chengtianliang on 2016/11/30.

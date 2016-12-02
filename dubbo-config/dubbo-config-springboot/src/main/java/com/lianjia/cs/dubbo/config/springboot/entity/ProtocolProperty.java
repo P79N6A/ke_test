@@ -1,13 +1,13 @@
-package com.lianjia.dubbo.config.springboot.entity;
+package com.lianjia.cs.dubbo.config.springboot.entity;
 
-import com.lianjia.dubbo.config.springboot.Idable;
+import com.lianjia.cs.dubbo.config.springboot.Idable;
 
 import java.util.Map;
 
 /**
  * Created by chengtianliang on 2016/11/29.
  */
-public class ProtocolProperty implements Idable{
+public class ProtocolProperty implements Idable {
 
     private String id;
 
@@ -59,7 +59,7 @@ public class ProtocolProperty implements Idable{
 
     private boolean defaultProtocol;
 
-    private Map<String,Object> params;
+    private Map<String, Object> params;
 
     public String getHost() {
         return host;
@@ -78,7 +78,7 @@ public class ProtocolProperty implements Idable{
     }
 
     public String getName() {
-        return name;
+        return name == null ? id : name;
     }
 
     public void setName(String name) {

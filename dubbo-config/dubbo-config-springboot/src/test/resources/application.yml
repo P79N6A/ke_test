@@ -1,16 +1,31 @@
 dubbo:
-  application: abc
+  scanPackage: com.lianjia
+
+  applications:
+    - id: demoApp
+      name: demoApp
+      owner: chris
+      organization: lianjia
+      architecture:
+      version: 1.0.0.0
+
   registries:
-    - abc:
-        address:
-          properties:
-            - userName: dd
-            - password: ddfg
+    - id: zookeeper
+      address:
+      protocol: zookeeper
+
   protocols:
-    - name: rest
-      host: 10.10.3.12
-      port: 1111
-    - name: dubbo
-      host: 10.10.3.12
-      port: 1111
-  scanPackage: com.lianjia.commerce
+    - id: dubbo
+      name: dubbo
+      port: 28100
+
+#  modules:
+#    - id: module
+#    -
+
+#  monitors:
+#
+#  providers:
+#
+#  consumers:
+

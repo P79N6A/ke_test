@@ -32,6 +32,7 @@
             <artifactId>dubbo-config-springboot</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+
         <!--<dependency>-->
             <!--<groupId>com.lianjia.cs</groupId>-->
             <!--<artifactId>dubbo-config-springboot</artifactId>-->

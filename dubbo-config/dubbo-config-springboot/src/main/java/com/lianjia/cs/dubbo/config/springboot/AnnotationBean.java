@@ -1,14 +1,13 @@
-package com.lianjia.dubbo.config.springboot;
+package com.lianjia.cs.dubbo.config.springboot;
 
-import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
 import com.alibaba.dubbo.config.*;
-import com.lianjia.dubbo.config.springboot.annotation.Reference;
-import com.lianjia.dubbo.config.springboot.annotation.Service;
-import com.lianjia.dubbo.config.springboot.entity.*;
-import com.lianjia.dubbo.config.springboot.extension.SpringBootExtensionFactory;
+import com.lianjia.cs.dubbo.config.springboot.annotation.Reference;
+import com.lianjia.cs.dubbo.config.springboot.annotation.Service;
+import com.lianjia.cs.dubbo.config.springboot.entity.*;
+import com.lianjia.cs.dubbo.config.springboot.extension.SpringBootExtensionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -25,8 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import static com.lianjia.dubbo.config.springboot.IdableFinder.findProperty;
 
 /**
  * Created by chengtianliang on 2016/11/29.
@@ -146,7 +143,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
                 List<RegistryConfig> registryConfigs = new ArrayList<RegistryConfig>();
                 for (String registryId : reference.registry()) {
                     if (registryId != null && registryId.length() > 0) {
-                        RegistryProperty registryProperty = findProperty(registryId, dubboProperty.getRegistries());
+                        RegistryProperty registryProperty = IdableFinder.findProperty(registryId, dubboProperty.getRegistries());
                         if (null == registryProperty) {
                             LOGGER.warn("[No Properties of {} found in Config file,please be sure that right?]", registryId);
                             continue;
@@ -159,25 +156,25 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
             }
             if (reference.consumer() != null && reference.consumer().length() > 0) {
                 List<ConsumerProperty> consumerProperties = dubboProperty.getConsumers();
-                ConsumerProperty consumerProperty = findProperty(reference.consumer(), consumerProperties);
+                ConsumerProperty consumerProperty = IdableFinder.findProperty(reference.consumer(), consumerProperties);
                 if (consumerProperty != null) {
                     referenceConfig.setConsumer(PropertyConfigMapper.getInstance().getConsumerConfig(reference.consumer()));
                 }
             }
             if (reference.monitor() != null && reference.monitor().length() > 0) {
-                MonitorProperty monitorProperty = findProperty(reference.monitor(), dubboProperty.getMonitors());
+                MonitorProperty monitorProperty = IdableFinder.findProperty(reference.monitor(), dubboProperty.getMonitors());
                 if (null != monitorProperty) {
                     referenceConfig.setMonitor(PropertyConfigMapper.getInstance().getMonitorConfig(reference.monitor()));
                 }
             }
             if (reference.application() != null && reference.application().length() > 0) {
-                ApplicationProperty applicationProperty = findProperty(reference.application(), dubboProperty.getApplications());
+                ApplicationProperty applicationProperty = IdableFinder.findProperty(reference.application(), dubboProperty.getApplications());
                 if (null != applicationProperty) {
                     referenceConfig.setApplication(PropertyConfigMapper.getInstance().getApplicationConfig(reference.application()));
                 }
             }
             if (reference.module() != null && reference.module().length() > 0) {
-                ModuleProperty moduleProperty = findProperty(reference.module(), dubboProperty.getModules());
+                ModuleProperty moduleProperty = IdableFinder.findProperty(reference.module(), dubboProperty.getModules());
                 if (null != moduleProperty) {
                     referenceConfig.setModule(PropertyConfigMapper.getInstance().getModuleConfig(reference.module()));
                 }
@@ -210,6 +207,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
             Service service = bean.getClass().getAnnotation(Service.class);
             ServiceBean<Object> serviceConfig = new ServiceBean<>(service);
             serviceConfig.setDubboProperty(dubboProperty);
+            serviceConfig.setRef(bean);
 //            serviceConfig.setApplicationContext(context);
             if (void.class.equals(service.interfaceClass())
                     && "".equals(service.interfaceName())) {
@@ -223,7 +221,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
                 List<RegistryConfig> registryConfigs = new ArrayList<>();
                 for (String registryId : service.registry()) {
                     if (registryId != null && registryId.length() > 0) {
-                        RegistryProperty registryProperty = findProperty(registryId, dubboProperty.getRegistries());
+                        RegistryProperty registryProperty = IdableFinder.findProperty(registryId, dubboProperty.getRegistries());
                         if (null == registryProperty) {
                             LOGGER.warn("[No Properties of {} found in Config file,please be sure that right?]", registryId);
                             continue;
@@ -234,7 +232,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
                 serviceConfig.setRegistries(registryConfigs);
             }
             if (service.provider() != null && service.provider().length() > 0) {
-                ProviderProperty providerProperty = findProperty(service.provider(), dubboProperty.getProviders());
+                ProviderProperty providerProperty = IdableFinder.findProperty(service.provider(), dubboProperty.getProviders());
                 if (null == providerProperty) {
                     LOGGER.warn("[No Properties of Provider:{} Found in Config file,please make sure that right!]", service.provider());
                     continue;
@@ -244,7 +242,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
                 serviceConfig.setProvider(providerConfig);
             }
             if (service.monitor() != null && service.monitor().length() > 0) {
-                MonitorProperty monitorProperty = findProperty(service.monitor(), dubboProperty.getMonitors());
+                MonitorProperty monitorProperty = IdableFinder.findProperty(service.monitor(), dubboProperty.getMonitors());
                 if (monitorProperty == null) {
                     LOGGER.warn("[No Properties of Monitor:{} Found in Config file,please make sure that right!]", service.monitor());
                     continue;
@@ -254,7 +252,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
 
 
             if (service.application() != null && service.application().length() > 0) {
-                ApplicationProperty applicationProperty = findProperty(service.application(), dubboProperty.getApplications());
+                ApplicationProperty applicationProperty = IdableFinder.findProperty(service.application(), dubboProperty.getApplications());
                 if (null == applicationProperty) {
                     LOGGER.warn("[No Properties of Application:{} Found in Config file,please make sure that right!]", service.application());
                     continue;
@@ -262,7 +260,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
                 serviceConfig.setApplication(PropertyConfigMapper.getInstance().getApplicationConfig(service.application()));
             }
             if (service.module() != null && service.module().length() > 0) {
-                ModuleProperty moduleProperty = findProperty(service.module(), dubboProperty.getModules());
+                ModuleProperty moduleProperty = IdableFinder.findProperty(service.module(), dubboProperty.getModules());
                 if (null == moduleProperty) {
                     LOGGER.warn("[No Properties of module:{} Found in Config file,please make sure that right!]", service.module());
                     continue;
@@ -274,7 +272,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
                 List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
                 for (String protocolId : service.registry()) {
                     if (protocolId != null && protocolId.length() > 0) {
-                        ProtocolProperty protocolProperty = findProperty(protocolId, dubboProperty.getProtocols());
+                        ProtocolProperty protocolProperty = IdableFinder.findProperty(protocolId, dubboProperty.getProtocols());
                         if (null == protocolProperty) {
                             LOGGER.warn("[No Properties of Protocol:{} Found in Config file,please make sure that right!]", protocolId);
                             continue;

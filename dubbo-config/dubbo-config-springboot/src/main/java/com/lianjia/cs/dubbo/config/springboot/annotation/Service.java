@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.lianjia.dubbo.config.springboot.annotation;
+package com.lianjia.cs.dubbo.config.springboot.annotation;
 
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
 /**
- * Reference
+ * Service
  * 
  * @author william.liangf
  * @export
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.TYPE})
 @Component
-public @interface Reference {
+public @interface Service {
 
     Class<?> interfaceClass() default void.class;
 
@@ -39,31 +39,35 @@ public @interface Reference {
 
     String group() default "";
 
-    String url() default "";
+    String path() default "";
 
-    String client() default "";
+    boolean export() default false;
 
-    boolean generic() default false;
+    String token() default "";
 
-    boolean injvm() default false;
+    boolean deprecated() default false;
 
-    boolean check() default false;
+    boolean dynamic() default false;
 
-    boolean init() default false;
+    String accesslog() default "";
 
-    boolean lazy() default false;
+    int executes() default 0;
 
-    boolean stubevent() default false;
+    boolean register() default false;
 
-    String reconnect() default "";
+    int weight() default 0;
 
-    boolean sticky() default false;
+    String document() default "";
 
-    String proxy() default "";
+    int delay() default 0;
+
+    String local() default "";
 
     String stub() default "";
 
     String cluster() default "";
+
+    String proxy() default "";
 
     int connections() default 0;
 
@@ -105,7 +109,9 @@ public @interface Reference {
 
     String module() default "";
 
-    String consumer() default "";
+    String provider() default "";
+
+    String[] protocol() default {};
 
     String monitor() default "";
 

@@ -1,10 +1,10 @@
-package com.lianjia.dubbo.config.springboot;
+package com.lianjia.cs.dubbo.config.springboot;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
-import com.lianjia.dubbo.config.springboot.annotation.Reference;
-import com.lianjia.dubbo.config.springboot.annotation.Service;
-import com.lianjia.dubbo.config.springboot.entity.DubboProperty;
+import com.lianjia.cs.dubbo.config.springboot.annotation.Reference;
+import com.lianjia.cs.dubbo.config.springboot.annotation.Service;
+import com.lianjia.cs.dubbo.config.springboot.entity.DubboProperty;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;

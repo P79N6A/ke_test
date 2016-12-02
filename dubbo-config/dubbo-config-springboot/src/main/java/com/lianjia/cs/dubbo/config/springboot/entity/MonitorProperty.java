@@ -1,6 +1,6 @@
-package com.lianjia.dubbo.config.springboot.entity;
+package com.lianjia.cs.dubbo.config.springboot.entity;
 
-import com.lianjia.dubbo.config.springboot.Idable;
+import com.lianjia.cs.dubbo.config.springboot.Idable;
 
 import java.util.Map;
 

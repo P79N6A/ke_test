@@ -1,17 +1,14 @@
-package com.lianjia.dubbo.config.springboot;
+package com.lianjia.cs.dubbo.config.springboot;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.config.*;
-import com.alibaba.dubbo.registry.Registry;
-import com.lianjia.dubbo.config.springboot.entity.*;
+import com.lianjia.cs.dubbo.config.springboot.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.lianjia.dubbo.config.springboot.IdableFinder.findProperty;
 
 /**
  * Created by chengtianliang on 2016/12/2.
@@ -168,7 +165,7 @@ public class PropertyConfigMapper {
 
     private void afterBuildConfigs() {
         for (ProviderConfig providerConfig : providerConfigMap.values()) {
-            ProviderProperty providerProperty = findProperty(providerConfig.getId(), dubboProperty.getProviders());
+            ProviderProperty providerProperty = IdableFinder.findProperty(providerConfig.getId(), dubboProperty.getProviders());
             String protocol = providerProperty.getProtocol();
             if (null != protocol) {
                 List<ProtocolConfig> protocolConfigs = new ArrayList<>();
@@ -202,7 +199,7 @@ public class PropertyConfigMapper {
         }
 
         for (ConsumerConfig consumerConfig : consumerConfigMap.values()) {
-            ConsumerProperty consumerProperty = findProperty(consumerConfig.getId(), dubboProperty.getConsumers());
+            ConsumerProperty consumerProperty = IdableFinder.findProperty(consumerConfig.getId(), dubboProperty.getConsumers());
             String registry = consumerProperty.getRegistry();
             if (null != registry) {
                 if ("N/A".equalsIgnoreCase(registry)) {

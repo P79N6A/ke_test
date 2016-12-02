@@ -1,4 +1,4 @@
-package com.lianjia.dubbo.config.springboot.entity;
+package com.lianjia.cs.dubbo.config.springboot.entity;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

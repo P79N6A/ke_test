@@ -1,4 +1,4 @@
-package com.lianjia.dubbo.config.springboot;
+package com.lianjia.cs.dubbo.config.springboot;
 
 /**
  * Created by chengtianliang on 2016/11/30.

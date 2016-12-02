@@ -1,30 +1,49 @@
-package com.lianjia.dubbo.config.springboot;
+/*
+ * Copyright 1999-2011 Alibaba Group.
+ *  
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.lianjia.cs.dubbo.config.springboot;
 
 import com.alibaba.dubbo.config.*;
-import com.lianjia.dubbo.config.springboot.annotation.Service;
-import com.lianjia.dubbo.config.springboot.entity.*;
-import org.springframework.beans.factory.BeanNameAware;
+import com.alibaba.dubbo.config.support.Parameter;
+import com.lianjia.cs.dubbo.config.springboot.annotation.Reference;
+import com.lianjia.cs.dubbo.config.springboot.entity.*;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by chengtianliang on 2016/11/29.
+ * ReferenceFactoryBean
+ *
+ * @author william.liangf
+ * @export
  */
-public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean, BeanNameAware {
+public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean, InitializingBean, DisposableBean {
+
     private static final long serialVersionUID = 213195494150089726L;
 
     private DubboProperty dubboProperty;
 
-    private String beanName;
-
-    public ServiceBean() {
+    public ReferenceBean() {
+        super();
     }
 
-    public ServiceBean(Service service) {
-        appendAnnotation(Service.class, service);
+    public ReferenceBean(Reference reference) {
+        appendAnnotation(Reference.class, reference);
     }
 
     public DubboProperty getDubboProperty() {
@@ -35,30 +54,45 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         this.dubboProperty = dubboProperty;
     }
 
-
-    @Override
-    public void destroy() throws Exception {
-        unexport();
+    public Object getObject() throws Exception {
+        return get();
     }
 
-    @Override
+    public Class<?> getObjectType() {
+        return getInterfaceClass();
+    }
+
+    @Parameter(excluded = true)
+    public boolean isSingleton() {
+        return true;
+    }
+
+    @SuppressWarnings({"unchecked"})
     public void afterPropertiesSet() throws Exception {
-        if (getProvider() == null) {
-            List<ProviderProperty> providerProperties = dubboProperty.getProviders();
-            if (null == providerProperties || providerProperties.size() == 0) {
-            } else if (providerProperties.size() == 1) {
-                ProviderProperty providerProperty = providerProperties.get(0);
-                ProviderConfig providerConfig = new ProviderConfig();
-                PropertyConfigCopyer.copyProviderProperty2ProviderConfig(providerProperty, providerConfig);
-                setProvider(providerConfig);
-            } else {
-                throw new IllegalStateException("Duplicate Provider Configs:");
+        if (getConsumer() == null) {
+            List<ConsumerProperty> consumerProperties = dubboProperty.getConsumers();
+            if (consumerProperties != null && consumerProperties.size() > 0) {
+                ConsumerProperty consumerProperty = null;
+                for (ConsumerProperty consumerProperty1 : consumerProperties) {
+                    if (consumerProperty1.isDefaultConsumer()) {
+                        if (consumerProperty != null) {
+                            throw new IllegalStateException("Duplicate consumer configs: " + consumerProperty + " and " + consumerProperty1);
+                        }
+                        consumerProperty = consumerProperty1;
+                    }
+                }
+                if (consumerProperty == null && consumerProperties.size() == 1) {
+                    consumerProperty = consumerProperties.get(0);
+                }
+                if (consumerProperty != null) {
+                    setConsumer(PropertyConfigMapper.getInstance().getConsumerConfig(consumerProperty.getId()));
+                }
             }
         }
         if (getApplication() == null
-                && (getProvider() == null || getProvider().getApplication() == null)) {
+                && (getConsumer() == null || getConsumer().getApplication() == null)) {
             List<ApplicationProperty> applicationProperties = dubboProperty.getApplications();
-            if (applicationProperties != null && applicationProperties.size() > 0) {
+            if (null != applicationProperties && applicationProperties.size() > 0) {
                 ApplicationProperty applicationProperty = null;
                 for (ApplicationProperty applicationProperty1 : applicationProperties) {
                     if (applicationProperty1.isDefaultApp()) {
@@ -71,14 +105,13 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 if (applicationProperty == null && applicationProperties.size() == 1) {
                     applicationProperty = applicationProperties.get(0);
                 }
-
                 if (applicationProperty != null) {
                     setApplication(PropertyConfigMapper.getInstance().getApplicationConfig(applicationProperty.getId()));
                 }
             }
         }
         if (getModule() == null
-                && (getProvider() == null || getProvider().getModule() == null)) {
+                && (getConsumer() == null || getConsumer().getModule() == null)) {
             List<ModuleProperty> moduleProperties = dubboProperty.getModules();
             if (null != moduleProperties && moduleProperties.size() > 0) {
                 ModuleProperty moduleProperty = null;
@@ -99,7 +132,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             }
         }
         if ((getRegistries() == null || getRegistries().size() == 0)
-                && (getProvider() == null || getProvider().getRegistries() == null || getProvider().getRegistries().size() == 0)
+                && (getConsumer() == null || getConsumer().getRegistries() == null || getConsumer().getRegistries().size() == 0)
                 && (getApplication() == null || getApplication().getRegistries() == null || getApplication().getRegistries().size() == 0)) {
             List<RegistryProperty> registryPropertyList = dubboProperty.getRegistries();
             if (registryPropertyList != null && registryPropertyList.size() > 0) {
@@ -113,7 +146,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             }
         }
         if (getMonitor() == null
-                && (getProvider() == null || getProvider().getMonitor() == null)
+                && (getConsumer() == null || getConsumer().getMonitor() == null)
                 && (getApplication() == null || getApplication().getMonitor() == null)) {
             List<MonitorProperty> monitorProperties = dubboProperty.getMonitors();
             if (null != monitorProperties && monitorProperties.size() > 0) {
@@ -134,49 +167,13 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 }
             }
         }
-        if ((getProtocols() == null || getProtocols().size() == 0)
-                && (getProvider() == null || getProvider().getProtocols() == null || getProvider().getProtocols().size() == 0)) {
-            List<ProtocolProperty> protocolProperties = dubboProperty.getProtocols();
-            if (protocolProperties != null && protocolProperties.size() > 0) {
-                List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
-                for (ProtocolProperty protocolProperty : protocolProperties) {
-                    if (protocolProperty.isDefaultProtocol()) {
-                        protocolConfigs.add(PropertyConfigMapper.getInstance().getProtocolConfig(protocolProperty.getId()));
-                    }
-                }
-                if (protocolConfigs.size() == 0 && protocolProperties.size() == 1) {
-                    protocolConfigs.add(PropertyConfigMapper.getInstance().getProtocolConfig(protocolProperties.get(0).getId()));
-                }
-                if (protocolConfigs.size() > 0) {
-                    setProtocols(protocolConfigs);
-                }
-            }
+        Boolean b = isInit();
+        if (b == null && getConsumer() != null) {
+            b = getConsumer().isInit();
         }
-        if (getPath() == null || getPath().length() == 0) {
-            if (beanName != null && beanName.length() > 0
-                    && getInterface() != null && getInterface().length() > 0
-                    && beanName.startsWith(getInterface())) {
-                setPath(beanName);
-            }
-        }
-        if (!isDelay()) {
-            export();
+        if (b != null && b.booleanValue()) {
+            getObject();
         }
     }
 
-
-    private boolean isDelay() {
-        Integer delay = getDelay();
-        ProviderConfig provider = getProvider();
-        if (delay == null && provider != null) {
-            delay = provider.getDelay();
-        }
-        return delay != null && delay > 0;
-
-    }
-
-    @Override
-    public void setBeanName(String name) {
-        this.beanName = name;
-    }
 }

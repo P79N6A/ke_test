@@ -1,6 +1,6 @@
-package com.lianjia.dubbo.config.springboot.entity;
+package com.lianjia.cs.dubbo.config.springboot.entity;
 
-import com.lianjia.dubbo.config.springboot.Idable;
+import com.lianjia.cs.dubbo.config.springboot.Idable;
 
 /**
  * Created by chengtianliang on 2016/11/30.
@@ -36,7 +36,7 @@ public class ApplicationProperty implements Idable {
     }
 
     public String getName() {
-        return name;
+        return name == null ? id : name;
     }
 
     public void setName(String name) {

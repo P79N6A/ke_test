@@ -1,4 +1,4 @@
-package com.lianjia.dubbo.config.springboot.extension;
+package com.lianjia.cs.dubbo.config.springboot.extension;
 
 import com.alibaba.dubbo.common.extension.ExtensionFactory;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;

@@ -1,6 +1,6 @@
 package com.lianjia.cs.dubbo.config.springboot;
 
-import com.lianjia.dubbo.config.springboot.entity.DubboProperty;
+import com.lianjia.cs.dubbo.config.springboot.entity.DubboProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
