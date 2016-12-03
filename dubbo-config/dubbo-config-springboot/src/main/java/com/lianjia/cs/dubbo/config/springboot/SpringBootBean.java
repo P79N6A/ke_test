@@ -106,9 +106,7 @@ public class SpringBootBean implements
             for (Method method : methods) {
                 Reference reference = method.getAnnotation(Reference.class);
                 if (null != reference) {
-                    if (null == dubboProperty)
-                        dubboProperty = context.getBean(DubboProperty.class);
-                    refer(bean);
+                    refer2(bean);
                 }
             }
             Field[] fields = clazz.getDeclaredFields();
@@ -116,14 +114,20 @@ public class SpringBootBean implements
                 for (Field field : fields) {
                     Reference reference = field.getAnnotation(Reference.class);
                     if (null != reference) {
-                        if (null == dubboProperty)
-                            dubboProperty = context.getBean(DubboProperty.class);
-                        refer(bean);
+                        refer2(bean);
                     }
                 }
             }
         }
         return bean;
+    }
+
+    private void refer2(Object bean) {
+        if (null == dubboProperty){
+            dubboProperty = context.getBean(DubboProperty.class);
+            PropertyConfigMapper.getInstance().setDubboProperty(dubboProperty);
+        }
+        refer(bean);
     }
 
     @Override

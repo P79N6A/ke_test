@@ -15,6 +15,7 @@ import com.alibaba.dubbo.rpc.support.RpcUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,7 +87,7 @@ public class RestUtils {
             rpcInvocation.setMethodName(methodName);
             pts = ReflectUtils.desc2classArray(methodDesc);
             args = new Object[pts.length];
-            if (json != null) {
+            if (StringUtils.isNotBlank(json)) {
                 if (json.startsWith("[") && json.endsWith("]")) {
                     JSONArray params = JSON.parseArray(json);
                     if (params.size() != args.length) {

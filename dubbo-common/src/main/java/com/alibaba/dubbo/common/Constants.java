@@ -599,7 +599,7 @@ public class Constants {
 
     public static final String REST_HTTP_COOKIE_KEY = "rest.cookie";
 
-    public static final String DEFAULT_SERVICE_VERSION = "1.0.0.0";
+    public static final String DEFAULT_SERVICE_VERSION = "0.0.0";
 
     public static final String REST_HTTP_JAVA_CLIENT = "isJavaClient";
 
