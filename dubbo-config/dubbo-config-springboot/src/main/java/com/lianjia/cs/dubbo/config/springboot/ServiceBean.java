@@ -140,13 +140,11 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             if (protocolProperties != null && protocolProperties.size() > 0) {
                 List<ProtocolConfig> protocolConfigs = new ArrayList<ProtocolConfig>();
                 for (ProtocolProperty protocolProperty : protocolProperties) {
-                    if (protocolProperty.isDefaultProtocol()) {
-                        protocolConfigs.add(PropertyConfigMapper.getInstance().getProtocolConfig(protocolProperty.getId()));
-                    }
+                    protocolConfigs.add(PropertyConfigMapper.getInstance().getProtocolConfig(protocolProperty.getId()));
                 }
-                if (protocolConfigs.size() == 0 && protocolProperties.size() == 1) {
-                    protocolConfigs.add(PropertyConfigMapper.getInstance().getProtocolConfig(protocolProperties.get(0).getId()));
-                }
+//                if (protocolConfigs.size() == 0 && protocolProperties.size() == 1) {
+//                    protocolConfigs.add(PropertyConfigMapper.getInstance().getProtocolConfig(protocolProperties.get(0).getId()));
+//                }
                 if (protocolConfigs.size() > 0) {
                     setProtocols(protocolConfigs);
                 }

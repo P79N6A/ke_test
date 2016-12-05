@@ -214,7 +214,7 @@ public class ExchangeCodecTest extends TelnetCodecTest{
         Assert.assertEquals(person, obj.getData());
         Assert.assertEquals(true, obj.isTwoWay());
         Assert.assertEquals(true, obj.isEvent());
-        Assert.assertEquals("2.0.0", obj.getVersion());
+        Assert.assertEquals("1.0.0.0", obj.getVersion());
         System.out.println(obj);
     }
     
@@ -229,7 +229,7 @@ public class ExchangeCodecTest extends TelnetCodecTest{
         Assert.assertEquals(event, obj.getData());
         Assert.assertEquals(true, obj.isTwoWay());
         Assert.assertEquals(true, obj.isEvent());
-        Assert.assertEquals("2.0.0", obj.getVersion());
+        Assert.assertEquals("1.0.0.0", obj.getVersion());
         System.out.println(obj);
     }
     
@@ -242,7 +242,7 @@ public class ExchangeCodecTest extends TelnetCodecTest{
         Assert.assertEquals(null, obj.getData());
         Assert.assertEquals(true, obj.isTwoWay());
         Assert.assertEquals(true, obj.isHeartbeat());
-        Assert.assertEquals("2.0.0", obj.getVersion());
+        Assert.assertEquals("1.0.0.0", obj.getVersion());
         System.out.println(obj);
     }
     
@@ -257,7 +257,7 @@ public class ExchangeCodecTest extends TelnetCodecTest{
         Assert.assertEquals(person, obj.getData());
         Assert.assertEquals(true, obj.isTwoWay());
         Assert.assertEquals(false, obj.isHeartbeat());
-        Assert.assertEquals("2.0.0", obj.getVersion());
+        Assert.assertEquals("1.0.0.0", obj.getVersion());
         System.out.println(obj);
     }
     
@@ -386,7 +386,7 @@ public class ExchangeCodecTest extends TelnetCodecTest{
     public void testMessageLengthGreaterThanMessageActualLength() throws Exception {
         Channel channel = getCliendSideChannel(url);
         Request request = new Request(1L);
-        request.setVersion("2.0.0");
+        request.setVersion("1.0.0.0");
         Date date = new Date();
         request.setData(date);
         ChannelBuffer encodeBuffer = ChannelBuffers.dynamicBuffer(1024);

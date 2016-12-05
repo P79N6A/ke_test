@@ -22,6 +22,8 @@ public class Starter {
 
     private static final ExtensionLoader<Container> loader = ExtensionLoader.getExtensionLoader(Container.class);
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Starter.class);
+
     private static volatile boolean running = true;
 
     public static void run(String[] args) {
@@ -33,7 +35,12 @@ public class Starter {
 
             final List<Container> containers = new ArrayList<Container>();
             for (int i = 0; i < args.length; i++) {
-                containers.add(loader.getExtension(args[i]));
+                if (args[i].startsWith("--")) continue;
+                try {
+                    containers.add(loader.getExtension(args[i]));
+                } catch (Exception e) {
+                    LOGGER.info("[Failed to load {},{}]", args[i], e.getMessage());
+                }
             }
             logger.info("Use container type(" + Arrays.toString(args) + ") to run dubbo serivce.");
 
