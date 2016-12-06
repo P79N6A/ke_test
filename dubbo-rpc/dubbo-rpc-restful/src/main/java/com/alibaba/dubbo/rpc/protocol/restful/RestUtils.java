@@ -142,6 +142,7 @@ public class RestUtils {
         long startTime = System.currentTimeMillis();
         try {
             Map<String, String> head = new HashMap<>(inv.getAttachments());
+            head.put(Constants.REST_HTTP_JAVA_CLIENT,Boolean.TRUE.toString());
             String httpUrl = buildHttpUrl(inv, url);
             String content = buildRequestJson(inv);
             Map<String, String> respHeader = new HashMap<>();
