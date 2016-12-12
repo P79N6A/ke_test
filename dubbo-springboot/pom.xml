@@ -67,12 +67,22 @@
                     <groupId>org.glassfish.grizzly</groupId>
                     <artifactId>grizzly-core</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lianjia.cs</groupId>
             <artifactId>dubbo-remoting-p2p</artifactId>
             <version>${project.parent.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.lianjia.cs</groupId>
