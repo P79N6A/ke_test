@@ -1,27 +1,21 @@
 package com.alibaba.dubbo.remoting.zookeeper.zkclient;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.remoting.zookeeper.ChildListener;
+import com.alibaba.dubbo.remoting.zookeeper.StateListener;
+import com.alibaba.dubbo.remoting.zookeeper.support.AbstractZookeeperClient;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkStateListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.I0Itec.zkclient.serialize.SerializableSerializer;
-import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
-
-import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.remoting.zookeeper.ChildListener;
-import com.alibaba.dubbo.remoting.zookeeper.StateListener;
-import com.alibaba.dubbo.remoting.zookeeper.support.AbstractZookeeperClient;
-import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
-import org.apache.zookeeper.data.Id;
-import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class ZkclientZookeeperClient extends AbstractZookeeperClient<IZkChildListener> {
 
@@ -29,16 +23,11 @@ public class ZkclientZookeeperClient extends AbstractZookeeperClient<IZkChildLis
 
     private volatile KeeperState state = KeeperState.SyncConnected;
 
-    private String username;
-
-    private String password;
 
     public ZkclientZookeeperClient(URL url) {
         super(url);
         client = new ZkClient(url.getBackupAddress());
         client.setZkSerializer(new SerializableSerializer());
-        username = url.getUsername();
-        password = url.getPassword() == null ? "" : url.getPassword();
         addAuth(client);
         client.subscribeStateChanges(new IZkStateListener() {
             public void handleStateChanged(KeeperState state) throws Exception {
@@ -62,8 +51,8 @@ public class ZkclientZookeeperClient extends AbstractZookeeperClient<IZkChildLis
     }
 
     private void addAuth(ZkClient client) {
-        if (username != null) {
-            String auth = username + ":" + password;
+        String auth = getUrl().getAuthority();
+        if (auth != null) {
             try {
                 client.addAuthInfo("digest", auth.getBytes("utf8"));
             } catch (UnsupportedEncodingException e) {
@@ -73,11 +62,11 @@ public class ZkclientZookeeperClient extends AbstractZookeeperClient<IZkChildLis
 
     public void createPersistent(String path) {
         try {
-            if (username != null) {
+            if (getAuthority() != null) {
                 List<ACL> acls = buildAcls();
-                if (!client.exists(path)){
+                if (!client.exists(path)) {
                     client.createPersistent(path, true, acls);
-                    client.setAcl(path,acls);
+                    client.setAcl(path, acls);
                 }
             } else {
                 client.createPersistent(path, true);
@@ -89,15 +78,6 @@ public class ZkclientZookeeperClient extends AbstractZookeeperClient<IZkChildLis
         }
     }
 
-    private List<ACL> buildAcls() throws NoSuchAlgorithmException {
-        List<ACL> acls = new ArrayList<>();
-        String auth = username + ":" + password;
-
-        Id aclId = new Id("digest", DigestAuthenticationProvider.generateDigest(auth));
-        ACL acl = new ACL(ZooDefs.Perms.ALL, aclId);
-        acls.add(acl);
-        return acls;
-    }
 
 //    public void createPersistent(String path, List<ACL> acls, boolean createParents) {
 //        try {
@@ -119,9 +99,9 @@ public class ZkclientZookeeperClient extends AbstractZookeeperClient<IZkChildLis
     public void createEphemeral(String path) {
         try {
 
-            if (username != null) {
+            if (getAuthority() != null) {
                 List<ACL> acls = buildAcls();
-                if (!client.exists(path)){
+                if (!client.exists(path)) {
                     client.createEphemeral(path, true, acls);
 //                    client.setAcl(path,acls);
                 }
