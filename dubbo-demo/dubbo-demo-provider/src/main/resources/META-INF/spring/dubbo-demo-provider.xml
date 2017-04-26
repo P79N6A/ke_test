@@ -21,11 +21,12 @@
 	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 	
 	<bean id="demoService" class="com.alibaba.dubbo.demo.provider.DemoServiceImpl" />
+	<dubbo:registry protocol="zookeeper"  address="zk01.matrix.zeus.lianjia.com:2181,zk02.matrix.zeus.lianjia.com:2181,zk03.matrix.zeus.lianjia.com:2181" group="jichu" username="jichu" password="McBuai6Ken" />
 	
 	<dubbo:service interface="com.alibaba.dubbo.demo.DemoService" ref="demoService" />
 
 	<dubbo:protocol name="dubbo" port="20880"  />
 
-	<dubbo:protocol name="rest" port="20881" />
+
 	
 </beans>

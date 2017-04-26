@@ -20,6 +20,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
+	<dubbo:registry protocol="zookeeper" address="zk01.matrix.zeus.lianjia.com:2181,zk02.matrix.zeus.lianjia.com:2181,zk03.matrix.zeus.lianjia.com:2181" group="jichu" username="jichu" password="McBuai6Ken" />
+
 	<dubbo:reference id="demoService" interface="com.alibaba.dubbo.demo.DemoService" />
 
 </beans>

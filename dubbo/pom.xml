@@ -210,6 +210,11 @@
 					<artifactId>zkclient</artifactId>
 				</exclusion>
 				<exclusion>
+					<!-- https://mvnrepository.com/artifact/com.101tec/zkclient -->
+						<groupId>com.101tec</groupId>
+						<artifactId>zkclient</artifactId>
+				</exclusion>
+				<exclusion>
 					<groupId>org.apache.curator</groupId>
 					<artifactId>curator-framework</artifactId>
 				</exclusion>
