@@ -29,6 +29,6 @@
 
 	<dubbo:protocol name="dubbo" port="20880"  />
 
-
+	<dubbo:monitor protocol="registry" />
 	
 </beans>

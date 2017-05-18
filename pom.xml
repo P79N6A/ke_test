@@ -18,7 +18,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <groupId>com.lianjia.cs</groupId>
 	<artifactId>dubbo-parent</artifactId>
-	<version>1.0.1.0-SNAPSHOT</version>
+	<version>1.0.1.1</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<description>The parent project of dubbo</description>
@@ -91,7 +91,7 @@
 		<httpclient_version>4.1.2</httpclient_version>
 		<hessian_lite_version>3.2.1-fixed-2</hessian_lite_version>
 		<xstream_version>1.4.1</xstream_version>
-		<fastjson_version>1.1.39</fastjson_version>
+		<fastjson_version>1.2.32</fastjson_version>
 		<bsf_version>3.1</bsf_version>
 		<sorcerer_version>0.8</sorcerer_version>
 		<zookeeper_version>3.4.6</zookeeper_version>
@@ -521,11 +521,11 @@
 		</plugins>
 	</build>
 	<distributionManagement>
-		<!--<repository>-->
-			<!--<id>releases</id>-->
-			<!--<name>Releases</name>-->
-			<!--<url>http://maven.lianjia.com/content/repositories/Lianjia-Search-Releases/</url>-->
-		<!--</repository>-->
+		<repository>
+			<id>releases</id>
+			<name>Releases</name>
+			<url>http://maven.lianjia.com/content/repositories/Lianjia-Search-Releases/</url>
+		</repository>
 		<snapshotRepository>
 			<id>snapshots</id>
 			<name>Snapshots</name>
