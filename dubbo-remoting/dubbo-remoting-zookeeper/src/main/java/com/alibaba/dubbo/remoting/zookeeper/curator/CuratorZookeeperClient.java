@@ -57,8 +57,13 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
 
     public void createPersistent(String path) {
         try {
+            String authority = getAuthority();
             if (client.checkExists().forPath(path) == null) {
-                client.create().withACL(buildAcls()).forPath(path);
+                if (authority != null) {
+                    client.create().withMode(CreateMode.PERSISTENT).withACL(buildAcls()).forPath(path);
+                } else {
+                    client.create().forPath(path);
+                }
             }
 
         } catch (NodeExistsException e) {
@@ -68,9 +73,15 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
     }
 
     public void createEphemeral(String path) {
+        String authority = getAuthority();
         try {
             if (client.checkExists().forPath(path) == null) {
-                client.create().withMode(CreateMode.EPHEMERAL).withACL(buildAcls()).forPath(path);
+                if (authority != null) {
+                    client.create().withMode(CreateMode.EPHEMERAL).withACL(buildAcls()).forPath(path);
+                } else {
+                    client.create().withMode(CreateMode.EPHEMERAL).forPath(path);
+
+                }
             }
 
         } catch (NodeExistsException e) {
