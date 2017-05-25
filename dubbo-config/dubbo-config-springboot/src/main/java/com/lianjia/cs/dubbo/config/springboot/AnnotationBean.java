@@ -8,6 +8,7 @@ import com.lianjia.cs.dubbo.config.springboot.annotation.Reference;
 import com.lianjia.cs.dubbo.config.springboot.annotation.Service;
 import com.lianjia.cs.dubbo.config.springboot.entity.*;
 import com.lianjia.cs.dubbo.config.springboot.extension.SpringBootExtensionFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -77,7 +78,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
         Map<String, Object> services = context.getBeansWithAnnotation(Service.class);
         for (Map.Entry<String, Object> entry : services.entrySet()) {
             Object bean = entry.getValue();
-            Service service = bean.getClass().getAnnotation(Service.class);
+            Service service = AopUtils.getTargetClass(bean).getAnnotation(Service.class);
             ServiceBean<Object> serviceConfig = new ServiceBean<>(service);
             serviceConfig.setDubboProperty(dubboProperty);
             serviceConfig.setRef(bean);
