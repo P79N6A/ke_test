@@ -35,7 +35,7 @@ public class PropertyConfigCopyer {
     }
 
     public static void copyProviderProperty2ProviderConfig(ProviderProperty providerProperty, ProviderConfig providerConfig) {
-        providerConfig.setId(providerConfig.getId());
+        providerConfig.setId(providerProperty.getId());
         providerConfig.setHost(providerProperty.getHost());
         providerConfig.setThreadpool(providerProperty.getThreadpool());
         providerConfig.setPayload(providerProperty.getPayload());

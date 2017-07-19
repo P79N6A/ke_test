@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>com.lianjia.cs</groupId>
 		<artifactId>dubbo-parent</artifactId>
-		<version>1.0.1.6</version>
+		<version>1.0.1.7-SNAPSHOT</version>
 	</parent>
 	<artifactId>dubbo</artifactId>
 	<packaging>jar</packaging>
@@ -44,6 +44,12 @@
 			<groupId>com.lianjia.cs</groupId>
 			<artifactId>dubbo-config-spring</artifactId>
 			<version>${project.parent.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.lianjia.cs</groupId>
@@ -273,6 +279,17 @@
 			<artifactId>dubbo-boot</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.lianjia.cs</groupId>
+			<artifactId>dubbo-initializer</artifactId>
+			<version>${project.parent.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -360,6 +377,7 @@
 									<include>com.lianjia.cs:dubbo-container-logback</include>
 									<include>com.lianjia.cs:dubbo-rpc-restful</include>
 									<include>com.lianjia.cs:dubbo-boot</include>
+									<include>com.lianjia.cs:dubbo-initializer</include>
 								</includes>
 							</artifactSet>
 							<transformers>
@@ -486,6 +504,10 @@
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/dubbo/internal/com.alibaba.dubbo.common.logger.LoggerAdapter</resource>
+								</transformer>
+								<transformer
+										implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.factories</resource>
 								</transformer>
 							</transformers>
 						</configuration>

@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>com.lianjia.cs</groupId>
 		<artifactId>dubbo-parent</artifactId>
-		<version>1.0.1.6</version>
+		<version>1.0.1.7-SNAPSHOT</version>
 	</parent>
 	<artifactId>dubbo-rpc</artifactId>
 	<packaging>pom</packaging>
