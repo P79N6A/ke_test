@@ -36,8 +36,8 @@ public class DemoAction {
 //                System.out.println("[ Before...." + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " );
             	String hello = demoService.sayHello("world" + i);
                 System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + hello);
-                User user = demoService.login("chengtianliang","123456");
-                System.out.println(user);
+//                User user = demoService.login("chengtianliang","123456");
+//                System.out.println(user);
             } catch (Exception e) {
                 System.out.println(">>>>>>>>>>>>>>>>>>>");
                 e.printStackTrace();

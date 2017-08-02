@@ -22,12 +22,12 @@
 	
 	<bean id="demoService" class="com.alibaba.dubbo.demo.provider.DemoServiceImpl" />
 	<dubbo:registry protocol="zookeeper"
-					address="zk01.matrix.zeus.lianjia.com:2181,zk02.matrix.zeus.lianjia.com:2181,zk03.matrix.zeus.lianjia.com:2181"
-					group="jichu" username="jichu" password="McBuai6Ken" client="curator" />
+					address="172.30.13.76:2800"
+					 client="curator" />
 
 	<dubbo:service interface="com.alibaba.dubbo.demo.DemoService" ref="demoService" />
 
-	<dubbo:protocol name="dubbo" port="20880"  />
+	<dubbo:protocol name="dubbo" port="20880" accepts="1000"   />
 
 	<dubbo:monitor protocol="registry" />
 	

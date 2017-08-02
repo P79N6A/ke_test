@@ -758,6 +758,16 @@
 				<xsd:documentation><![CDATA[ The IO thread pool size. ]]></xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
+		<xsd:attribute name="iobossthreads" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[ The Boss IO thread pool size. ]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="ioworkerthreads" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[ The Worker thread pool size. ]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
 		<xsd:attribute name="queues" type="xsd:string" use="optional">
 			<xsd:annotation>
 				<xsd:documentation><![CDATA[ The thread pool queue size. ]]></xsd:documentation>

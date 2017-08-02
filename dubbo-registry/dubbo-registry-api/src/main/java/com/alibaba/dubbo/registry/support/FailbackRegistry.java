@@ -66,7 +66,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
                 try {
                     retry();
                 } catch (Throwable t) { // 防御性容错
-                    logger.error("Unexpected error occur at failed retry, cause: " + t.getMessage(), t);
+                    logger.error("Unexpected error occur at failed retry, cause: " + t.getMessage());
                 }
             }
         }, retryPeriod, retryPeriod, TimeUnit.MILLISECONDS);
@@ -142,7 +142,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
                 }
                 throw new IllegalStateException("Failed to register " + url + " to registry " + getUrl().getAddress() + ", cause: " + t.getMessage(), t);
             } else {
-                logger.error("Failed to register " + url + ", waiting for retry, cause: " + t.getMessage(), t);
+                logger.error("Failed to register " + url + ", waiting for retry, cause: " + t.getMessage());
             }
 
             // 将失败的注册请求记录到失败列表，定时重试
@@ -170,9 +170,9 @@ public abstract class FailbackRegistry extends AbstractRegistry {
                 if(skipFailback) {
                     t = t.getCause();
                 }
-                throw new IllegalStateException("Failed to unregister " + url + " to registry " + getUrl().getAddress() + ", cause: " + t.getMessage(), t);
+                throw new IllegalStateException("Failed to unregister " + url + " to registry " + getUrl().getAddress() + ", cause: " + t.getMessage());
             } else {
-                logger.error("Failed to uregister " + url + ", waiting for retry, cause: " + t.getMessage(), t);
+                logger.error("Failed to uregister " + url + ", waiting for retry, cause: " + t.getMessage());
             }
 
             // 将失败的取消注册请求记录到失败列表，定时重试

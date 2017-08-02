@@ -17,6 +17,8 @@ package com.alibaba.dubbo.demo.provider;
 
 import com.lianjia.cs.dubbo.boot.Main;
 
+//import com.alibaba.dubbo.container.Main;
+
 public class DemoProvider {
 
 	public static void main(String[] args) {

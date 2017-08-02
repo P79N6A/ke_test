@@ -124,6 +124,12 @@ public class ProtocolConfig extends AbstractConfig {
     // 是否为缺省
     private Boolean isDefault;
 
+    //boss线程数
+    private Integer iobossthreads;
+
+    //worker线程
+    private Integer ioworkerthreads;
+
     public ProtocolConfig() {
     }
 
@@ -421,12 +427,30 @@ public class ProtocolConfig extends AbstractConfig {
         this.isDefault = isDefault;
     }
 
+    public Integer getIobossthreads() {
+        return iobossthreads;
+    }
+
+    public void setIobossthreads(Integer iobossthreads) {
+        this.iobossthreads = iobossthreads;
+    }
+
+    public Integer getIoworkerthreads() {
+        return ioworkerthreads;
+    }
+
+    public void setIoworkerthreads(Integer ioworkerthreads) {
+        this.ioworkerthreads = ioworkerthreads;
+    }
+
     public void destory() {
         if (name != null) {
             ExtensionLoader.getExtensionLoader(Protocol.class).getExtension(name).destroy();
             ;
         }
     }
+
+
 
     public static void destroyAll() {
         AbstractRegistryFactory.destroyAll();

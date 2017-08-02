@@ -59,6 +59,12 @@ public class ProtocolProperty implements Idable {
 
     private boolean defaultProtocol;
 
+    //boss线程数
+    private Integer iobossthreads;
+
+    //worker线程
+    private Integer ioworkerthreads;
+
     private Map<String, Object> params;
 
     public String getHost() {
@@ -267,6 +273,22 @@ public class ProtocolProperty implements Idable {
 
     public void setDefaultProtocol(boolean defaultProtocol) {
         this.defaultProtocol = defaultProtocol;
+    }
+
+    public Integer getIobossthreads() {
+        return iobossthreads;
+    }
+
+    public void setIobossthreads(Integer iobossthreads) {
+        this.iobossthreads = iobossthreads;
+    }
+
+    public Integer getIoworkerthreads() {
+        return ioworkerthreads;
+    }
+
+    public void setIoworkerthreads(Integer ioworkerthreads) {
+        this.ioworkerthreads = ioworkerthreads;
     }
 
     @Override

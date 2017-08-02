@@ -22,10 +22,6 @@ public class CuratorZookeeperClient extends AbstractZookeeperClient<CuratorWatch
 
     private final CuratorFramework client;
 
-    private String usename;
-
-    private String password;
-
     public CuratorZookeeperClient(URL url) {
         super(url);
         try {

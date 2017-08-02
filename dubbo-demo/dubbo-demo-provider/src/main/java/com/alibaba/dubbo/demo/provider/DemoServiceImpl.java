@@ -15,13 +15,14 @@
  */
 package com.alibaba.dubbo.demo.provider;
 
+import com.alibaba.dubbo.demo.DemoService;
+import com.alibaba.dubbo.demo.Status;
+import com.alibaba.dubbo.demo.User;
+import com.alibaba.dubbo.rpc.RpcContext;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import com.alibaba.dubbo.demo.DemoService;
-import com.alibaba.dubbo.demo.User;
-import com.alibaba.dubbo.rpc.RpcContext;
 
 public class DemoServiceImpl implements DemoService {
 
@@ -35,10 +36,9 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
-    public User login(String userName, String password) {
-        User user = new User();
+    public User login(User user) {
         user.setPassword("123333");
-        user.setUserName(userName+" dddd");
+        user.setUserName(user.getUserName() + " dddd");
         user.setSex("男fff");
         return user;
     }
@@ -49,8 +49,17 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
-    public void saveUser(User user, boolean bb) {
+    public User saveUser(User user, boolean bb) {
+        return user;
+    }
 
+    @Override
+    public User findUser(Status status) {
+        User user = new User();
+        user.setPassword("123333");
+        user.setUserName(user.getUserName() + " dddd");
+        user.setSex("男fff");
+        return user;
     }
 
 }

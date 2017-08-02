@@ -142,6 +142,8 @@ public class PropertyConfigCopyer {
         protocolConfig.setTelnet(protocolProperty.getTelnet());
         protocolConfig.setRegister(protocolProperty.getRegister());
         protocolConfig.setContextpath(protocolProperty.getContextpath());
+        protocolConfig.setIobossthreads(protocolProperty.getIobossthreads());
+        protocolConfig.setIoworkerthreads(protocolProperty.getIoworkerthreads());
     }
 
     public static void copyConsumeProperty2ConsumeConfig(ConsumerProperty consumerProperty, ConsumerConfig consumerConfig) {

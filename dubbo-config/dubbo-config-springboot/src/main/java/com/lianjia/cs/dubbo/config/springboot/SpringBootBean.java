@@ -12,10 +12,12 @@ import com.lianjia.cs.dubbo.config.springboot.entity.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
@@ -38,6 +40,7 @@ import java.util.concurrent.ConcurrentMap;
  * Created by chengtianliang on 2016/11/29.
  */
 @Configuration
+@EnableConfigurationProperties(DubboProperty.class)
 public class SpringBootBean implements
         BeanDefinitionRegistryPostProcessor, EnvironmentAware, BeanPostProcessor, ApplicationContextAware, DisposableBean {
 
@@ -45,6 +48,7 @@ public class SpringBootBean implements
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringBootBean.class);
 
+    @Autowired
     private DubboProperty dubboProperty;
 
     private final ConcurrentMap<String, ReferenceBean<?>> referenceConfigs = new ConcurrentHashMap<String, ReferenceBean<?>>();
@@ -61,11 +65,6 @@ public class SpringBootBean implements
     }
 
     private ApplicationContext context;
-
-    @Bean
-    public static DubboProperty dubboProperty() {
-        return new DubboProperty();
-    }
 
 
     @Override

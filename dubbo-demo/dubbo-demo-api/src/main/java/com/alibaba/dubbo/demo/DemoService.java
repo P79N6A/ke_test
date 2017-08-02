@@ -21,10 +21,11 @@ public interface DemoService {
 
 	String sayHello(String name);
 
-	User login(String userName,String password);
+	User login(User user);
 
 	List<User> findUsers();
 
-	void saveUser(User user,boolean bb);
+	User saveUser(User user,boolean bb);
 
+	User findUser(Status status);
 }
