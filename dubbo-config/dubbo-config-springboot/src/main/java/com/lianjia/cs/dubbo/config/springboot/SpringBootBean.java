@@ -203,7 +203,7 @@ public class SpringBootBean implements
         String key = reference.group() + "/" + interfaceName + ":" + reference.version();
         ReferenceBean<?> referenceConfig = referenceConfigs.get(key);
         if (referenceConfig == null) {
-            referenceConfig = new ReferenceBean<Object>(reference);
+            referenceConfig = new ReferenceBean<Object>(reference,environment);
             referenceConfig.setDubboProperty(dubboProperty);
             if (void.class.equals(reference.interfaceClass())
                     && "".equals(reference.interfaceName())

@@ -1,12 +1,12 @@
 /*
  * Copyright 1999-2011 Alibaba Group.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -99,6 +99,10 @@ public abstract class AbstractConfig implements Serializable {
         return value;
     }
 
+    protected String resolveValuePlaceHolder(String valuePlaceHolderValue) {
+        return valuePlaceHolderValue;
+    }
+
     protected void appendAnnotation(Class<?> annotationClass, Object annotation) {
         Method[] methods = annotationClass.getMethods();
         for (Method method : methods) {
@@ -124,6 +128,9 @@ public abstract class AbstractConfig implements Serializable {
                             value = CollectionUtils.toStringMap((String[]) value);
                         }
                         try {
+                            if (parameterType == String.class) {
+                                value = resolveValuePlaceHolder((String) value);
+                            }
                             Method setterMethod = getClass().getMethod(setter, new Class<?>[]{parameterType});
                             setterMethod.invoke(this, new Object[]{value});
                         } catch (NoSuchMethodException e) {

@@ -8,13 +8,16 @@ import com.lianjia.cs.dubbo.config.springboot.annotation.Reference;
 import com.lianjia.cs.dubbo.config.springboot.annotation.Service;
 import com.lianjia.cs.dubbo.config.springboot.entity.*;
 import com.lianjia.cs.dubbo.config.springboot.extension.SpringBootExtensionFactory;
+import com.lianjia.cs.dubbo.config.springboot.utils.PropertyPlaceValueSupport;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -30,13 +33,18 @@ import java.util.concurrent.ConcurrentMap;
  * Created by chengtianliang on 2016/11/29.
  */
 @Configuration
-public class AnnotationBean extends AbstractConfig implements ApplicationContextAware, DisposableBean, InitializingBean {
+public class AnnotationBean extends AbstractConfig implements ApplicationContextAware, DisposableBean, InitializingBean, EnvironmentAware {
 
     private ApplicationContext context;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationBean.class);
 
+    private Environment environment;
+
     private DubboProperty dubboProperty;
+
+    private PropertyPlaceValueSupport propertyPlaceValueSupport = new PropertyPlaceValueSupport();
+
 
     private final Set<ServiceBean<?>> serviceConfigs = new ConcurrentHashSet<>();
 
@@ -68,7 +76,6 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
     }
 
 
-
     private void export() {
         String[] serviceBeanNames = context.getBeanNamesForAnnotation(Service.class);
         if (serviceBeanNames == null || serviceBeanNames.length == 0) {
@@ -79,7 +86,7 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
         for (Map.Entry<String, Object> entry : services.entrySet()) {
             Object bean = entry.getValue();
             Service service = AopUtils.getTargetClass(bean).getAnnotation(Service.class);
-            ServiceBean<Object> serviceConfig = new ServiceBean<>(service);
+            ServiceBean<Object> serviceConfig = new ServiceBean<>(service, environment);
             serviceConfig.setDubboProperty(dubboProperty);
             serviceConfig.setRef(bean);
 //            serviceConfig.setApplicationContext(context);
@@ -169,4 +176,13 @@ public class AnnotationBean extends AbstractConfig implements ApplicationContext
         }
     }
 
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Override
+    protected String resolveValuePlaceHolder(String valuePlaceHolderValue) {
+        return propertyPlaceValueSupport.resolvePlaceValue(valuePlaceHolderValue, environment);
+    }
 }

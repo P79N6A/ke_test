@@ -1,12 +1,12 @@
 /*
  * Copyright 1999-2011 Alibaba Group.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,9 +19,11 @@ import com.alibaba.dubbo.config.*;
 import com.alibaba.dubbo.config.support.Parameter;
 import com.lianjia.cs.dubbo.config.springboot.annotation.Reference;
 import com.lianjia.cs.dubbo.config.springboot.entity.*;
+import com.lianjia.cs.dubbo.config.springboot.utils.PropertyPlaceValueSupport;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.env.PropertyResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +40,16 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
 
     private DubboProperty dubboProperty;
 
+    private PropertyResolver propertyResolver;
+
+    private PropertyPlaceValueSupport propertyPlaceValueSupport = new PropertyPlaceValueSupport();
+
     public ReferenceBean() {
         super();
     }
 
-    public ReferenceBean(Reference reference) {
+    public ReferenceBean(Reference reference, PropertyResolver propertyResolver) {
+        this.propertyResolver = propertyResolver;
         appendAnnotation(Reference.class, reference);
     }
 
@@ -176,4 +183,8 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
         }
     }
 
+    @Override
+    protected String resolveValuePlaceHolder(String valuePlaceHolderValue) {
+        return propertyPlaceValueSupport.resolvePlaceValue(valuePlaceHolderValue, propertyResolver);
+    }
 }

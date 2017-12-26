@@ -6,6 +6,7 @@ import com.lianjia.cs.dubbo.config.springboot.entity.*;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.env.PropertyResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +21,13 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
 
     private String beanName;
 
+    private PropertyResolver propertyResolver;
+
     public ServiceBean() {
     }
 
-    public ServiceBean(Service service) {
+    public ServiceBean(Service service, PropertyResolver propertyResolver) {
+        this.propertyResolver = propertyResolver;
         appendAnnotation(Service.class, service);
     }
 
@@ -176,5 +180,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     @Override
     public void setBeanName(String name) {
         this.beanName = name;
+    }
+
+    @Override
+    protected String resolveValuePlaceHolder(String valuePlaceHolderValue) {
+        return super.resolveValuePlaceHolder(valuePlaceHolderValue);
     }
 }
