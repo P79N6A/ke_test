@@ -3,6 +3,7 @@ package com.lianjia.cs.dubbo.config.springboot;
 import com.alibaba.dubbo.config.*;
 import com.lianjia.cs.dubbo.config.springboot.annotation.Service;
 import com.lianjia.cs.dubbo.config.springboot.entity.*;
+import com.lianjia.cs.dubbo.config.springboot.utils.PropertyPlaceValueSupport;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -22,6 +23,8 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     private String beanName;
 
     private PropertyResolver propertyResolver;
+
+    private PropertyPlaceValueSupport propertyPlaceValueSupport = new PropertyPlaceValueSupport();
 
     public ServiceBean() {
     }
@@ -184,6 +187,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
 
     @Override
     protected String resolveValuePlaceHolder(String valuePlaceHolderValue) {
-        return super.resolveValuePlaceHolder(valuePlaceHolderValue);
+        return propertyPlaceValueSupport.resolvePlaceValue(valuePlaceHolderValue, propertyResolver);
+
     }
 }

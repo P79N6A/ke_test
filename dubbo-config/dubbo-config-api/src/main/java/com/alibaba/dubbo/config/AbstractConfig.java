@@ -135,6 +135,7 @@ public abstract class AbstractConfig implements Serializable {
                             setterMethod.invoke(this, new Object[]{value});
                         } catch (NoSuchMethodException e) {
                             // ignore
+//                            logger.info("Error caught", e);
                         }
                     }
                 } catch (Throwable e) {
