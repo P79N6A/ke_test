@@ -22,12 +22,12 @@
 	
 	<bean id="demoService" class="com.alibaba.dubbo.demo.provider.DemoServiceImpl" />
 	<dubbo:registry protocol="zookeeper"
-					address="172.30.13.76:2800"
+					address="127.0.0.1:2181"
 					 client="curator" />
 
-	<dubbo:service interface="com.alibaba.dubbo.demo.DemoService" ref="demoService" />
+	<dubbo:service interface="com.alibaba.dubbo.demo.DemoService" ref="demoService" loadbalance="gray"/>
 
-	<dubbo:protocol name="dubbo" port="20880" accepts="1000"   />
+	<dubbo:protocol name="dubbo" port="20881" accepts="1000"   />
 
 	<dubbo:monitor protocol="registry" />
 	

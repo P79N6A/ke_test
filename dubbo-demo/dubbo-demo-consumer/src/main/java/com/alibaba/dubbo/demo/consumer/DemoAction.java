@@ -43,6 +43,7 @@ public class DemoAction {
                 e.printStackTrace();
             }
             Thread.sleep(200);
+            break;
         }
 	}
 

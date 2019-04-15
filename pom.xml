@@ -54,7 +54,8 @@
         <module>dubbo-springboot</module>
         <module>dubbo-boot</module>
 		<module>dubbo-initializer</module>
-	</modules>
+        <module>dubbo-gray</module>
+    </modules>
 	<profiles>
 		<profile>
 			<id>test</id>
