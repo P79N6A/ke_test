@@ -1,2 +1,3 @@
-consumerParamFilter=com.lianjia.dubbo.rpc.filter.ConsumerParamFilter
-providerParamFilter=com.lianjia.dubbo.rpc.filter.ProviderParamFilter
+####consumerParamFilter=com.lianjia.dubbo.rpc.filter.ConsumerParamFilter
+####providerParamFilter=com.lianjia.dubbo.rpc.filter.ProviderParamFilter
+businessParamFilter=com.lianjia.dubbo.rpc.filter.BusinessParamFilter
