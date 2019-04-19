@@ -10,12 +10,15 @@ import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import com.lianjia.dubbo.rpc.com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.rpc.com.lianjia.dubbo.gray.rule.domain.GrayRule;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @EnableApolloConfig
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class DubboGrayApolloConfig {
     
     public static final String dubboGrayKey = "dubboGrayJson";

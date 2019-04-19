@@ -32,25 +32,17 @@ public class DemoAction {
     }
 
 	public void start() throws Exception {
-//        int i = 0;
-//        for (; ; i ++) {
-//            try {
-////                System.out.println("[ Before...." + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " );
-//            	String hello = demoService.sayHello("world" + i);
-//                System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] " + hello);
-////                User user = demoService.login("chengtianliang","123456");
-////                System.out.println(user);
-//            } catch (Exception e) {
-//                System.out.println(">>>>>>>>>>>>>>>>>>>");
-//                e.printStackTrace();
-//            }
-//            Thread.sleep(200);
-//            break;
-//        }
 
         RpcContext.getContext().setAttachment(Constants.FILTER_PARAM_UCID,"123456");
-        String hello = demoService.sayHello("world");
-        System.out.println("dfdfdfdfdfd" + hello);
+
+        for (int i = 0; i < 10 ; i++) {
+            try {
+            	String hello = demoService.sayHello("world" + i);
+                System.out.println("dfdfdfdfdfdfdfdfdfdfddfdfd" + hello);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

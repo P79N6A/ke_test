@@ -9,7 +9,7 @@ import com.alibaba.dubbo.rpc.*;
  */
 @Activate(group = {com.alibaba.dubbo.common.Constants.CONSUMER,
                     com.alibaba.dubbo.common.Constants.PROVIDER},
-        order = -18888)
+        order = -10000)
 public class BusinessParamFilter implements Filter {
 
     @Override

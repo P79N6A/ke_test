@@ -19,43 +19,6 @@ import java.util.*;
 public class GrayLoadBalance extends AbstractLoadBalance {
 
 
-    static {
-        GrayRule grayRule = new GrayRule();
-        grayRule.setOpen(true);
-        grayRule.setServerIp("10.33.76.22");
-        grayRule.setServerPort(20881);
-        Set<String> ucIdSet = new HashSet<>();
-        ucIdSet.add("123456");
-        grayRule.setGrayUcIdSet(ucIdSet);
-        GrayRulesCache.getInstance().updateGrayRules(grayRule);
-    }
-
-//    /**
-//     * 灰度开关
-//     */
-//    private static boolean isOpen = true;
-//
-//    /**
-//     * 灰度机器Ip
-//     */
-//    private static String grayServerIp = "10.33.76.22";
-//
-//    /**
-//     * 灰度机器端口
-//     */
-//    private static int grayServerPort = 20881;
-//
-//
-//    /**
-//     * 灰度白名单用户
-//     */
-//    private static Set<String> grayUcIdSet = new HashSet<>();
-//
-//    static {
-//        grayUcIdSet.add("123456");
-//    }
-
-
     @Override
     protected <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
 
@@ -67,7 +30,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         if (GrayRulesCache.getInstance().getGrayRuleHashMap().size() > 0)
             return doSelectGray(invokers, url, invocation);
 
-        return this.doSelect(invokers, url, invocation);
+        return this.doRandomLoadBalanceSelect(invokers, url, invocation);
     }
 
     /**
@@ -113,7 +76,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
                 return _invoker;
             }
         }
-        return this.doSelectGray(excludeGrayInvokerList, url, invocation);
+        return this.doRandomLoadBalanceSelect(excludeGrayInvokerList, url, invocation);
     }
 
     private boolean checkGrayParam(GrayRule grayRule) {
@@ -124,4 +87,40 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         if (grayRule.getGrayUcIdSet() == null && grayRule.getGrayUcIdSet().size() == 0) return false;
         return true;
     }
+
+    public static final String NAME = "random";
+
+    private final Random random = new Random();
+
+    private <T> Invoker<T> doRandomLoadBalanceSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
+        int length = invokers.size(); // 总个数
+        int totalWeight = 0; // 总权重
+        boolean sameWeight = true; // 权重是否都一样
+        for (int i = 0; i < length; i++) {
+            int weight = getWeight(invokers.get(i), invocation);
+            totalWeight += weight; // 累计总权重
+            if (sameWeight && i > 0
+                    && weight != getWeight(invokers.get(i - 1), invocation)) {
+                sameWeight = false; // 计算所有权重是否一样
+            }
+        }
+        if (totalWeight > 0 && ! sameWeight) {
+            // 如果权重不相同且权重大于0则按总权重数随机
+            int offset = random.nextInt(totalWeight);
+            // 并确定随机值落在哪个片断上
+            for (int i = 0; i < length; i++) {
+                offset -= getWeight(invokers.get(i), invocation);
+                if (offset < 0) {
+                    return invokers.get(i);
+                }
+            }
+        }
+        // 如果权重相同或权重为0则均等随机
+        return invokers.get(random.nextInt(length));
+    }
+
+
+
+
+
 }
