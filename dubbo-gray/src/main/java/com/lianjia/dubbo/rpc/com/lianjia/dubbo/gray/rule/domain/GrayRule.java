@@ -1,5 +1,7 @@
 package com.lianjia.dubbo.rpc.com.lianjia.dubbo.gray.rule.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Set;
 
 /**
@@ -71,6 +73,7 @@ public class GrayRule {
         this.grayUcIdSet = grayUcIdSet;
     }
 
+    @JSONField(serialize = false)
     public String getKey() {
 
         return getServerIp() + "_" + getServerPort();

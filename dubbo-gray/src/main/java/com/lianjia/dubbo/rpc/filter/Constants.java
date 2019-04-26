@@ -15,11 +15,7 @@
  */
 package com.lianjia.dubbo.rpc.filter;
 
-/**
- * Constants
- *
- * @author william.liangf
- */
+
 public class Constants {
 
     public static final String FILTER_PARAM_UCID = "ucId";

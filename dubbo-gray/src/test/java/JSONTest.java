@@ -16,11 +16,13 @@ public class JSONTest {
         List<GrayRule> grayRuleList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             GrayRule grayRule = new GrayRule();
+            grayRule.setApplication("application_" + i);
             grayRule.setOpen(true);
             grayRule.setServerIp("10.33.76.22");
             grayRule.setServerPort(20881);
             Set<String> ucIdSet = new HashSet<>();
             ucIdSet.add("123456");
+            ucIdSet.add("123");
             grayRule.setGrayUcIdSet(ucIdSet);
             grayRuleList.add(grayRule);
 
