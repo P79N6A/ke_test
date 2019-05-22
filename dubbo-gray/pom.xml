@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dubbo-parent</artifactId>
         <groupId>com.lianjia.cs</groupId>
-        <version>1.0.0-gray</version>
+        <version>1.0.0-gray-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +14,7 @@
         <dependency>
             <groupId>com.lianjia.cs</groupId>
             <artifactId>dubbo-cluster</artifactId>
-            <version>1.0.0-gray</version>
+            <version>1.0.0-gray-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.ctrip.framework.apollo</groupId>
