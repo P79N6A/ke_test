@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>com.lianjia.cs</groupId>
 		<artifactId>dubbo-parent</artifactId>
-		<version>2.1.2</version>
+		<version>1.0.0-gray</version>
 	</parent>
 	<artifactId>dubbo</artifactId>
 	<packaging>jar</packaging>
@@ -290,6 +290,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>com.lianjia.cs</groupId>
+			<artifactId>dubbo-gray</artifactId>
+			<version>${project.parent.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -378,6 +389,7 @@
 									<include>com.lianjia.cs:dubbo-rpc-restful</include>
 									<include>com.lianjia.cs:dubbo-boot</include>
 									<include>com.lianjia.cs:dubbo-initializer</include>
+									<include>com.lianjia.cs:dubbo-gray</include>
 								</includes>
 							</artifactSet>
 							<transformers>

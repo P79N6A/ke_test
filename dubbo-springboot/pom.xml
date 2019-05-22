@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dubbo-parent</artifactId>
         <groupId>com.lianjia.cs</groupId>
-        <version>2.1.2</version>
+        <version>1.0.0-gray</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -384,6 +384,7 @@
                                     <include>com.lianjia.cs:dubbo-container-logback</include>
                                     <include>com.lianjia.cs:dubbo-rpc-restful</include>
                                     <include>com.lianjia.cs:dubbo-initializer</include>
+                                    <include>com.lianjia.cs:dubbo-gray</include>
                                 </includes>
                             </artifactSet>
                             <transformers>
