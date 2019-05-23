@@ -15,13 +15,9 @@
  */
 package com.alibaba.dubbo.demo.consumer;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.alibaba.dubbo.demo.DemoService;
-import com.alibaba.dubbo.demo.User;
 import com.alibaba.dubbo.rpc.RpcContext;
-import com.lianjia.dubbo.rpc.filter.Constants;
+import com.lianjia.dubbo.gray.filter.Constants;
 
 public class DemoAction {
     

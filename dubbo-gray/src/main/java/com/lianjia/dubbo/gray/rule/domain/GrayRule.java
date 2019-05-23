@@ -1,4 +1,4 @@
-package com.lianjia.dubbo.rpc.com.lianjia.dubbo.gray.rule.domain;
+package com.lianjia.dubbo.gray.rule.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
 

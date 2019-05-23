@@ -1,8 +1,7 @@
-package com.lianjia.dubbo.rpc.cluster.loadbalance;
+package com.lianjia.dubbo.gray.cluster.loadbalance;
 
 
 import com.alibaba.dubbo.common.URL;
-import com.alibaba.dubbo.common.json.JSONObject;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
@@ -11,9 +10,9 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import com.alibaba.fastjson.JSON;
-import com.lianjia.dubbo.rpc.com.lianjia.dubbo.gray.rule.GrayRulesCache;
-import com.lianjia.dubbo.rpc.com.lianjia.dubbo.gray.rule.domain.GrayRule;
-import com.lianjia.dubbo.rpc.filter.Constants;
+import com.lianjia.dubbo.gray.rule.GrayRulesCache;
+import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import com.lianjia.dubbo.gray.filter.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

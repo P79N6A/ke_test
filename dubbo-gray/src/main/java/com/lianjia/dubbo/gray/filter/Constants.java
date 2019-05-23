@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.lianjia.dubbo.rpc.filter;
+package com.lianjia.dubbo.gray.filter;
 
 
 public class Constants {

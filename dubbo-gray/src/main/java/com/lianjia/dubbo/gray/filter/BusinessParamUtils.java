@@ -1,4 +1,4 @@
-package com.lianjia.dubbo.rpc.filter;
+package com.lianjia.dubbo.gray.filter;
 
 /**
  * @author liupinghe

@@ -1,6 +1,5 @@
 import com.alibaba.fastjson.JSONArray;
-import com.lianjia.dubbo.rpc.com.lianjia.dubbo.gray.rule.GrayRulesCache;
-import com.lianjia.dubbo.rpc.com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
 import java.util.ArrayList;
 import java.util.HashSet;
