@@ -1,1 +1,1 @@
-gray=com.lianjia.dubbo.rpc.cluster.loadbalance.GrayLoadBalance
+gray=com.lianjia.dubbo.gray.cluster.loadbalance
