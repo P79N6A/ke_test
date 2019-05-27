@@ -54,5 +54,6 @@ public class BusinessParamUtils {
 
     public static void clear() {
         ucIdCache.remove();
+        cityCodeCache.remove();
     }
 }
