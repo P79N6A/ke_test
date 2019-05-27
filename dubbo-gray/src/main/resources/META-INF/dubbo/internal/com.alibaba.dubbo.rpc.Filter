@@ -1,1 +1,1 @@
-businessParamFilter=com.lianjia.dubbo.rpc.filter.BusinessParamFilter
+businessParamFilter=com.lianjia.dubbo.gray.filter.BusinessParamFilter

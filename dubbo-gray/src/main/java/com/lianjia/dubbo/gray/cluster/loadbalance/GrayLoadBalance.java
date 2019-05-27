@@ -30,11 +30,11 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 //        if (checkGrayParam(isOpen, grayServerIp, grayServerPort, grayUcIdSet)) {
 //            return doSelectGray(invokers, url, invocation);
 //        }
-        logger.info("缓存配置信息:{}", GrayRulesCache.getInstance().getGrayRuleHashMap());
+        logger.info("gray rules info:{}", GrayRulesCache.getInstance().getGrayRuleHashMap());
         if (GrayRulesCache.getInstance().getGrayRuleHashMap().size() > 0)
             return doSelectGray(invokers, url, invocation);
 
-        logger.info("路由策略：随机策略");
+        logger.info("loadbablance：random");
         return this.doRandomLoadBalanceSelect(invokers, url, invocation);
     }
 
@@ -49,7 +49,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
      */
     private <T> Invoker<T> doSelectGray(List<Invoker<T>> invokers, URL url, Invocation invocation) {
 
-        logger.info("路由策略：灰度策略");
+        logger.info("loadbablance：gray");
 
         List<Invoker<T>> excludeGrayInvokerList = new ArrayList<>();
         // 灰度机器invoker列表
@@ -63,7 +63,6 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             String key = serverIp + "_" + serverPort;
 
             GrayRule grayRule = GrayRulesCache.getInstance().getGrayRuleHashMap().get(key);
-            logger.info("GrayRule配置值：{}", JSON.toJSONString(grayRule));
 
             if (checkGrayParam(grayRule)) {
                 // 灰度机器

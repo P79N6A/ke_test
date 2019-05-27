@@ -14,9 +14,9 @@ public class BusinessParamFilter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        //设置ucid
+        //set ucid
         setBusinessParam(GrayConstants.FILTER_PARAM_UCID);
-        //设置 cityCode
+        //set cityCode
         setBusinessParam(GrayConstants.FILTER_PARAM_CITYCODE);
 
         return invoker.invoke(invocation);
