@@ -37,7 +37,7 @@ public class DubboGrayApolloConfig {
         return dubboGrayJson;
     }
 
-    @Value("${dubboGrayJson}")
+    @Value("${dubboGrayJson:}")
     public void setDubboGrayJson(String dubboGrayJson) {
         this.dubboGrayJson = dubboGrayJson;
         // init update

@@ -12,7 +12,7 @@ import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import com.alibaba.fastjson.JSON;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
-import com.lianjia.dubbo.gray.filter.Constants;
+import com.lianjia.dubbo.gray.filter.GrayConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +80,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         }
 
         if (_invoker != null) {
-            String ucId = RpcContext.getContext().getAttachment(Constants.FILTER_PARAM_UCID);
+            String ucId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
             logger.info("ucId:{},ucIdSet:{}", ucId, _grayRule.getGrayUcIdSet());
             // 灰度流量
             if (StringUtils.isNotEmpty(ucId) && _grayRule.getGrayUcIdSet().contains(ucId)) {

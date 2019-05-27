@@ -16,7 +16,14 @@
 package com.lianjia.dubbo.gray.filter;
 
 
-public class Constants {
+public class GrayConstants {
 
-    public static final String FILTER_PARAM_UCID = "ucId";
+    //ketrace参数前缀
+    public static final String FILTER_PARAM_PREFIX = "ketracespid";
+
+    //经纪人登录UCID
+    public static final String FILTER_PARAM_UCID = FILTER_PARAM_PREFIX + "ucid";
+
+    //所在城市编码
+    public static final String FILTER_PARAM_CITYCODE = FILTER_PARAM_PREFIX + "citycode";;
 }

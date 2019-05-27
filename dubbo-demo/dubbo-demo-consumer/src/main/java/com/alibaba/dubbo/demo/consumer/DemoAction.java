@@ -17,7 +17,7 @@ package com.alibaba.dubbo.demo.consumer;
 
 import com.alibaba.dubbo.demo.DemoService;
 import com.alibaba.dubbo.rpc.RpcContext;
-import com.lianjia.dubbo.gray.filter.Constants;
+import com.lianjia.dubbo.gray.filter.GrayConstants;
 
 public class DemoAction {
     
@@ -29,7 +29,7 @@ public class DemoAction {
 
 	public void start() throws Exception {
 
-        RpcContext.getContext().setAttachment(Constants.FILTER_PARAM_UCID,"123456");
+        RpcContext.getContext().setAttachment(GrayConstants.FILTER_PARAM_UCID,"123456");
 
         for (int i = 0; i < 10 ; i++) {
             try {
