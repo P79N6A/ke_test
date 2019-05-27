@@ -53,7 +53,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         List<Invoker<T>> excludeGrayInvokerList = new ArrayList<>();
         // 灰度机器invoker列表
-        List<Invoker> _invokers = new ArrayList<>();
+        List<Invoker<T>> _invokers = new ArrayList<>();
         GrayRule _grayRule = null;
 
         for (Invoker invoker : invokers) {
