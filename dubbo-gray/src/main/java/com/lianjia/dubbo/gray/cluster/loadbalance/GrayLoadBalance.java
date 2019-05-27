@@ -14,9 +14,7 @@ import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author liupinghe
@@ -55,7 +53,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         List<Invoker<T>> excludeGrayInvokerList = new ArrayList<>();
         // 灰度机器invoker列表
-        Invoker _invoker = null;
+        List<Invoker> _invokers = new ArrayList<>();
         GrayRule _grayRule = null;
 
         for (Invoker invoker : invokers) {
@@ -71,7 +69,8 @@ public class GrayLoadBalance extends AbstractLoadBalance {
                 // 灰度机器
                 if (grayRule.isOpen() && grayRule.getServerIp().equals(serverIp)
                         && grayRule.getServerPort() == serverPort) {
-                    _invoker = invoker;
+
+                    _invokers.add(invoker);
                     _grayRule = grayRule;
                     continue;
                 }
@@ -79,12 +78,16 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             excludeGrayInvokerList.add(invoker);
         }
 
-        if (_invoker != null) {
+        if (_invokers.size() > 0) {
             String ucId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
+
             logger.info("ucId:{},ucIdSet:{}", ucId, _grayRule.getGrayUcIdSet());
             // 灰度流量
             if (StringUtils.isNotEmpty(ucId) && _grayRule.getGrayUcIdSet().contains(ucId)) {
-                return _invoker;
+                if(_invokers.size() == 1) {
+                    return _invokers.get(0);
+                }
+                return this.doRandomLoadBalanceSelect(_invokers, url, invocation);
             }
         }
         return this.doRandomLoadBalanceSelect(excludeGrayInvokerList, url, invocation);
