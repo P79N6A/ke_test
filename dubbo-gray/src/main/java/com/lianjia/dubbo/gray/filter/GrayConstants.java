@@ -28,5 +28,5 @@ public class GrayConstants {
     public static final String FILTER_PARAM_CITYCODE = FILTER_PARAM_PREFIX + "citycode";
 
     //当前作业城市编码
-    public static final String FILTER_PARAM_CUR_WORK_CITYCODE = FILTER_PARAM_PREFIX + "curworkcitycode";;
+    public static final String FILTER_PARAM_CUR_WORK_CITYCODE = FILTER_PARAM_PREFIX + "curworkcitycode";
 }

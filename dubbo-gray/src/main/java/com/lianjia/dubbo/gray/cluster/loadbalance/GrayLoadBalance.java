@@ -79,10 +79,10 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         }
 
         if (_invokers.size() > 0) {
-            if (_invokers.size() == 1) {
-                return _invokers.get(0);
-            }
             if (isGrayReq(_grayRule)) {
+                if (_invokers.size() == 1) {
+                    return _invokers.get(0);
+                }
                 return this.doRandomLoadBalanceSelect(_invokers, url, invocation);
             }
         }
