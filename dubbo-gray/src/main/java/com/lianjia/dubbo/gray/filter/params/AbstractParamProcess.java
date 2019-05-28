@@ -1,6 +1,5 @@
 package com.lianjia.dubbo.gray.filter.params;
 
-import com.alibaba.fastjson.JSON;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
@@ -27,14 +26,12 @@ public abstract class AbstractParamProcess implements IParamProcess {
      */
     protected String getFilterParamValue(String value) {
         //FIXME：解析格式问题,比较单一
-        String result = value;
-        while (result.contains(GrayConstants.BRACKET_LEFT)) {
-            com.alibaba.fastjson.JSONArray array = JSON.parseArray(result);
-            if (array != null && array.size() > 0) {
-                result = array.get(0).toString();
-            }
+        if (value != null || GrayConstants.EMPTY_STR.equals(value)) {
+            return GrayConstants.EMPTY_STR;
         }
-        return result;
+        return value.replace(GrayConstants.BRACKET_LEFT, GrayConstants.EMPTY_STR)
+                .replaceAll(GrayConstants.BRACKET_RIGHT, GrayConstants.EMPTY_STR)
+                .replaceAll(GrayConstants.DOUBLE_QUOTES, GrayConstants.EMPTY_STR)
+                .replaceAll(GrayConstants.SINGLE_QUOTES, GrayConstants.EMPTY_STR);
     }
-
 }
