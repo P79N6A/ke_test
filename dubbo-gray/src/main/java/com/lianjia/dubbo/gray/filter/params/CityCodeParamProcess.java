@@ -17,12 +17,13 @@ public class CityCodeParamProcess extends AbstractParamProcess {
 
     private static final ThreadLocal<String> cityCodeCache = new ThreadLocal<String>();
 
-    private CityCodeParamProcess(){
+    private CityCodeParamProcess() {
 
     }
 
     private static CityCodeParamProcess cityCodeParamProcess = new CityCodeParamProcess();
-    public static CityCodeParamProcess getInstance(){
+
+    public static CityCodeParamProcess getInstance() {
         return cityCodeParamProcess;
     }
 
@@ -45,7 +46,7 @@ public class CityCodeParamProcess extends AbstractParamProcess {
     public boolean checkIsGrayFlow(String cityCode, GrayRule _grayRule) {
         log.info("cityCode:{},cityCodeSet:{}", cityCode, _grayRule.getGrayCityCodeSet());
 
-        if (StringUtils.isNotEmpty(cityCode) && _grayRule.getGrayCityCodeSet().contains(cityCode)) {
+        if (StringUtils.isNotEmpty(cityCode) && _grayRule.getGrayCityCodeSet() != null && _grayRule.getGrayCityCodeSet().contains(cityCode)) {
             return true;
         }
         return false;

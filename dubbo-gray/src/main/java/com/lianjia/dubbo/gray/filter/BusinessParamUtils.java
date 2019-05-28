@@ -1,10 +1,7 @@
 package com.lianjia.dubbo.gray.filter;
 
-import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.lianjia.dubbo.gray.filter.params.IParamProcess;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessFactory;
-
-import java.util.List;
 
 
 /**
@@ -47,12 +44,11 @@ public class BusinessParamUtils {
      * 提供 外部埋点 逻辑处理完之后，调用clear 清空本次请求的缓存信息
      */
     public static void clear() {
-        List<IParamProcess> list = ParamProcessFactory.getAllParamProcess();
-        if (CollectionUtils.isEmpty(list)) {
+        if (ParamProcessFactory.getParamProcessMap() == null) {
             return;
         }
-        for (IParamProcess paramProcess : list) {
-            paramProcess.clear();
+        for (String key : ParamProcessFactory.getParamProcessMap().keySet()) {
+            ParamProcessFactory.getParamProcessByKey(key).clear();
         }
     }
 

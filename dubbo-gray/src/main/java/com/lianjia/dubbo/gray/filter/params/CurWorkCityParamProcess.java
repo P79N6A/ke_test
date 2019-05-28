@@ -22,7 +22,8 @@ public class CurWorkCityParamProcess extends AbstractParamProcess {
     }
 
     private static CurWorkCityParamProcess curWorkCityParamProcess = new CurWorkCityParamProcess();
-    public static CurWorkCityParamProcess getInstance(){
+
+    public static CurWorkCityParamProcess getInstance() {
         return curWorkCityParamProcess;
     }
 
@@ -32,7 +33,7 @@ public class CurWorkCityParamProcess extends AbstractParamProcess {
     }
 
     @Override
-    public void setValue(String curWorkCityCode){
+    public void setValue(String curWorkCityCode) {
         curWorkCityCodeCache.set(curWorkCityCode);
     }
 
@@ -44,7 +45,7 @@ public class CurWorkCityParamProcess extends AbstractParamProcess {
     @Override
     public boolean checkIsGrayFlow(String curWorkCityCode, GrayRule _grayRule) {
         log.info("curWorkCityCode:{},curWorkCityCodeSet:{}", curWorkCityCode, _grayRule.getGrayCurWorkCityCodeSet());
-        if (StringUtils.isNotEmpty(curWorkCityCode) && _grayRule.getGrayCurWorkCityCodeSet().contains(curWorkCityCode)) {
+        if (StringUtils.isNotEmpty(curWorkCityCode) && _grayRule.getGrayCurWorkCityCodeSet() != null && _grayRule.getGrayCurWorkCityCodeSet().contains(curWorkCityCode)) {
             return true;
         }
         return false;

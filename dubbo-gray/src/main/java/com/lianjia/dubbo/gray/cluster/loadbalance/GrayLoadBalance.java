@@ -110,7 +110,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         }
 
         // 灰度流量 cityCode
-        if (ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).isGrayFlow(
+        if (ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE).isGrayFlow(
                 RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE), _grayRule)) {
             return true;
         }
