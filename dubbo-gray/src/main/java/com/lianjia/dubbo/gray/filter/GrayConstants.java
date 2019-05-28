@@ -29,4 +29,11 @@ public class GrayConstants {
 
     //当前作业城市编码
     public static final String FILTER_PARAM_CUR_WORK_CITYCODE = FILTER_PARAM_PREFIX + "curworkcitycode";
+
+    //左边中括号
+    public static final String  BRACKET_LEFT = "[";
+
+    //右边中括号
+    public static final String  BRACKET_RIGHT = "]";
+
 }

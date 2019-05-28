@@ -27,8 +27,6 @@ public class ParamProcessFactory {
 
     //创建示例
     public static ParamProcess getParamProcessByKey(String key) {
-
-        //TODO：获取示例对象，是否可以为单例？
         switch (key) {
             case GrayConstants.FILTER_PARAM_UCID:
                 return UcIdParamProcess.getInstance();

@@ -3,9 +3,6 @@ package com.lianjia.dubbo.gray.filter;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author liupinghe
  */
@@ -37,13 +34,5 @@ public class BusinessParamFilter implements Filter {
             RpcContext.getContext().setAttachment(businessParamKey,
                     BusinessParamUtils.getBusinessParamByKey(businessParamKey));
         }
-    }
-
-    public static void main(String[] args) {
-        String str = "['[\"120000\"]']";
-        Map map = new HashMap<>();
-        map.put("1", str);
-        String b = (String) map.get("1");
-        System.out.println(b);
     }
 }

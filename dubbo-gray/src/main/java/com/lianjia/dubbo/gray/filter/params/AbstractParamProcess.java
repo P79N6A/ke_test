@@ -1,5 +1,8 @@
 package com.lianjia.dubbo.gray.filter.params;
 
+import com.alibaba.fastjson.JSON;
+import com.lianjia.dubbo.gray.filter.GrayConstants;
+
 /**
  * @Description: 类信息描述
  * @Author: qinxiaoyun001@lianjia.com
@@ -16,8 +19,15 @@ public abstract class AbstractParamProcess implements ParamProcess {
     }
 
     private String parseValue(String value){
-        //TODO：解析格式问题
-        return null;
+        //FIXME：解析格式问题,比较单一
+        String result = value;
+        while(result.contains(GrayConstants.BRACKET_LEFT)){
+            com.alibaba.fastjson.JSONArray array = JSON.parseArray(result);
+            if (array != null && array.size() > 0){
+                result = array.get(0).toString();
+            }
+        }
+        return result;
     }
 
 }
