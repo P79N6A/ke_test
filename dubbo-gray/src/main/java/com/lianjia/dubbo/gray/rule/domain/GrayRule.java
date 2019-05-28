@@ -33,6 +33,16 @@ public class GrayRule {
      */
     private Set<String> grayUcIdSet;
 
+    /**
+     * 当前城市
+     */
+    private Set<String> grayCityCodeSet;
+
+    /**
+     * 当前作业城市
+     */
+    private Set<String> grayCurWorkCityCodeSet;
+
     public boolean isOpen() {
         return isOpen;
     }
@@ -71,6 +81,22 @@ public class GrayRule {
 
     public void setGrayUcIdSet(Set<String> grayUcIdSet) {
         this.grayUcIdSet = grayUcIdSet;
+    }
+
+    public Set<String> getGrayCityCodeSet() {
+        return grayCityCodeSet;
+    }
+
+    public void setGrayCityCodeSet(Set<String> grayCityCodeSet) {
+        this.grayCityCodeSet = grayCityCodeSet;
+    }
+
+    public Set<String> getGrayCurWorkCityCodeSet() {
+        return grayCurWorkCityCodeSet;
+    }
+
+    public void setGrayCurWorkCityCodeSet(Set<String> grayCurWorkCityCodeSet) {
+        this.grayCurWorkCityCodeSet = grayCurWorkCityCodeSet;
     }
 
     @JSONField(serialize = false)

@@ -9,12 +9,13 @@ import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
-import com.alibaba.fastjson.JSON;
+import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
-import com.lianjia.dubbo.gray.filter.GrayConstants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author liupinghe
@@ -64,7 +65,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
             GrayRule grayRule = GrayRulesCache.getInstance().getGrayRuleHashMap().get(key);
 
-            if (checkGrayParam(grayRule)) {
+            if (checkNullOfGrayParam(grayRule)) {
                 // 灰度机器
                 if (grayRule.isOpen() && grayRule.getServerIp().equals(serverIp)
                         && grayRule.getServerPort() == serverPort) {
@@ -78,27 +79,51 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         }
 
         if (_invokers.size() > 0) {
-            String ucId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
-
-            logger.info("ucId:{},ucIdSet:{}", ucId, _grayRule.getGrayUcIdSet());
-            // 灰度流量
-            if (StringUtils.isNotEmpty(ucId) && _grayRule.getGrayUcIdSet().contains(ucId)) {
-                if(_invokers.size() == 1) {
-                    return _invokers.get(0);
-                }
+            if (_invokers.size() == 1) {
+                return _invokers.get(0);
+            }
+            if (isGrayReq(_grayRule)) {
                 return this.doRandomLoadBalanceSelect(_invokers, url, invocation);
             }
         }
         return this.doRandomLoadBalanceSelect(excludeGrayInvokerList, url, invocation);
     }
 
-    private boolean checkGrayParam(GrayRule grayRule) {
+    private boolean checkNullOfGrayParam(GrayRule grayRule) {
         if (grayRule == null) return false;
         if (!grayRule.isOpen()) return false;
         if (StringUtils.isEmpty(grayRule.getServerIp())) return false;
         if (grayRule.getServerPort() <= 0) return false;
+
         if (grayRule.getGrayUcIdSet() == null && grayRule.getGrayUcIdSet().size() == 0) return false;
+        if (grayRule.getGrayCityCodeSet() == null && grayRule.getGrayCityCodeSet().size() == 0) return false;
+        if (grayRule.getGrayCurWorkCityCodeSet() == null && grayRule.getGrayCurWorkCityCodeSet().size() == 0)return false;
         return true;
+    }
+
+    private boolean isGrayReq(GrayRule _grayRule){
+        // 灰度流量 ucId
+        String ucId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
+        logger.info("ucId:{},ucIdSet:{}", ucId, _grayRule.getGrayUcIdSet());
+        if (StringUtils.isNotEmpty(ucId) && _grayRule.getGrayUcIdSet().contains(ucId)) {
+            return true;
+        }
+
+        // 灰度流量 cityCode
+        String cityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE);
+        logger.info("cityCode:{},cityCodeSet:{}", cityCode, _grayRule.getGrayCityCodeSet());
+        if (StringUtils.isNotEmpty(cityCode) && _grayRule.getGrayCityCodeSet().contains(cityCode)) {
+            return true;
+        }
+
+        // 灰度流量 curWorkCityCode
+        String curWorkCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
+        logger.info("curWorkCityCode:{},curWorkCityCodeSet:{}", cityCode, _grayRule.getGrayCurWorkCityCodeSet());
+        if (StringUtils.isNotEmpty(curWorkCityCode) && _grayRule.getGrayCurWorkCityCodeSet().contains(curWorkCityCode)) {
+            return true;
+        }
+
+        return false;
     }
 
     public static final String NAME = "random";
