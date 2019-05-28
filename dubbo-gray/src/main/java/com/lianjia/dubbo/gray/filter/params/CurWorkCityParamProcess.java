@@ -17,6 +17,10 @@ public class CurWorkCityParamProcess extends AbstractParamProcess {
 
     private static final ThreadLocal<String> curWorkCityCodeCache = new ThreadLocal<>();
 
+    private CurWorkCityParamProcess() {
+
+    }
+
     private static CurWorkCityParamProcess curWorkCityParamProcess = new CurWorkCityParamProcess();
     public static CurWorkCityParamProcess getInstance(){
         return curWorkCityParamProcess;

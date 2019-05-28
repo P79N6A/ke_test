@@ -17,6 +17,10 @@ public class UcIdParamProcess extends AbstractParamProcess {
 
     private static final ThreadLocal<String> ucIdCache = new ThreadLocal<String>();
 
+    private UcIdParamProcess() {
+
+    }
+
     private static UcIdParamProcess ucIdParamProcess = new UcIdParamProcess();
     public static UcIdParamProcess getInstance(){
         return ucIdParamProcess;

@@ -17,6 +17,10 @@ public class CityCodeParamProcess extends AbstractParamProcess {
 
     private static final ThreadLocal<String> cityCodeCache = new ThreadLocal<String>();
 
+    private CityCodeParamProcess(){
+
+    }
+
     private static CityCodeParamProcess cityCodeParamProcess = new CityCodeParamProcess();
     public static CityCodeParamProcess getInstance(){
         return cityCodeParamProcess;

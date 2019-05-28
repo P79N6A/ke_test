@@ -9,7 +9,7 @@ import com.lianjia.dubbo.gray.filter.GrayConstants;
  * @Date: 2019/5/28 11:17 AM
  * @Version: 1.0
  */
-public abstract class AbstractParamProcess implements ParamProcess {
+public abstract class AbstractParamProcess implements IParamProcess {
 
     protected abstract void setRealValue(String value);
 

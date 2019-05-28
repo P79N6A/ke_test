@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class ParamProcessFactory {
 
-    public static Map<String,ParamProcess> paramProcessMap = new HashMap<>();
+    public static Map<String,IParamProcess> paramProcessMap = new HashMap<>();
 
     static {
         paramProcessMap.put(GrayConstants.FILTER_PARAM_UCID,UcIdParamProcess.getInstance());
@@ -20,8 +20,8 @@ public class ParamProcessFactory {
         paramProcessMap.put(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE,CurWorkCityParamProcess.getInstance());
     }
 
-    public static List<ParamProcess> getAllParamProcess(){
-        List<ParamProcess> result = new LinkedList<>();
+    public static List<IParamProcess> getAllParamProcess(){
+        List<IParamProcess> result = new LinkedList<>();
         for (String key : paramProcessMap.keySet()){
             result.add(paramProcessMap.get(key));
         }
@@ -29,7 +29,7 @@ public class ParamProcessFactory {
     }
 
     //创建示例
-    public static ParamProcess getParamProcessByKey(String key) {
+    public static IParamProcess getParamProcessByKey(String key) {
         return paramProcessMap.get(key);
     }
 }

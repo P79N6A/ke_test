@@ -1,7 +1,7 @@
 package com.lianjia.dubbo.gray.filter;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
-import com.lianjia.dubbo.gray.filter.params.ParamProcess;
+import com.lianjia.dubbo.gray.filter.params.IParamProcess;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessFactory;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class BusinessParamUtils {
     }
 
     public static String getBusinessParamByKey(String key) {
-        ParamProcess paramProcess = ParamProcessFactory.getParamProcessByKey(key);
+        IParamProcess paramProcess = ParamProcessFactory.getParamProcessByKey(key);
         if (null != paramProcess) {
             return paramProcess.getValue();
         }
@@ -32,7 +32,7 @@ public class BusinessParamUtils {
     }
 
     public static void setBusinessParamByKey(String key, String value) {
-        ParamProcess paramProcess = ParamProcessFactory.getParamProcessByKey(key);
+        IParamProcess paramProcess = ParamProcessFactory.getParamProcessByKey(key);
         if (null != paramProcess) {
             paramProcess.setValue(value);
         }
@@ -40,11 +40,11 @@ public class BusinessParamUtils {
 
 
     public static void clear() {
-        List<ParamProcess> list = ParamProcessFactory.getAllParamProcess();
+        List<IParamProcess> list = ParamProcessFactory.getAllParamProcess();
         if (CollectionUtils.isEmpty(list)){
             return;
         }
-        for (ParamProcess paramProcess : list){
+        for (IParamProcess paramProcess : list){
             paramProcess.clear();
         }
     }
