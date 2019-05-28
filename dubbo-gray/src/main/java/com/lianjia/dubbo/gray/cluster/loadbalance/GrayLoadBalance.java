@@ -10,6 +10,7 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
+import com.lianjia.dubbo.gray.filter.params.ParamProcessFactory;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
@@ -101,25 +102,22 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         return true;
     }
 
-    private boolean isGrayReq(GrayRule _grayRule){
+    private boolean isGrayReq(GrayRule _grayRule) {
         // 灰度流量 ucId
-        String ucId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
-        logger.info("ucId:{},ucIdSet:{}", ucId, _grayRule.getGrayUcIdSet());
-        if (StringUtils.isNotEmpty(ucId) && _grayRule.getGrayUcIdSet().contains(ucId)) {
+        if (ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).isGrayFlow(
+                RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID), _grayRule)) {
             return true;
         }
 
         // 灰度流量 cityCode
-        String cityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE);
-        logger.info("cityCode:{},cityCodeSet:{}", cityCode, _grayRule.getGrayCityCodeSet());
-        if (StringUtils.isNotEmpty(cityCode) && _grayRule.getGrayCityCodeSet().contains(cityCode)) {
+        if (ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).isGrayFlow(
+                RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE), _grayRule)) {
             return true;
         }
 
         // 灰度流量 curWorkCityCode
-        String curWorkCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
-        logger.info("curWorkCityCode:{},curWorkCityCodeSet:{}", cityCode, _grayRule.getGrayCurWorkCityCodeSet());
-        if (StringUtils.isNotEmpty(curWorkCityCode) && _grayRule.getGrayCurWorkCityCodeSet().contains(curWorkCityCode)) {
+        if (ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE).isGrayFlow(
+                RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE),_grayRule)){
             return true;
         }
 
