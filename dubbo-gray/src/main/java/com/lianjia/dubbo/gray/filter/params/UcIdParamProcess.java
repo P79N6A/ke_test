@@ -32,7 +32,7 @@ public class UcIdParamProcess extends AbstractParamProcess {
     }
 
     @Override
-    public void setRealValue(String ucId) {
+    public void setValue(String ucId) {
         ucIdCache.set(ucId);
     }
 
@@ -42,7 +42,7 @@ public class UcIdParamProcess extends AbstractParamProcess {
     }
 
     @Override
-    public boolean isGrayFlow(String ucId,GrayRule _grayRule) {
+    public boolean checkIsGrayFlow(String ucId,GrayRule _grayRule) {
         log.info("ucId:{},ucIdSet:{}", ucId, _grayRule.getGrayUcIdSet());
         if (StringUtils.isNotEmpty(ucId) && _grayRule.getGrayUcIdSet().contains(ucId)) {
             return true;

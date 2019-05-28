@@ -32,10 +32,9 @@ public class CurWorkCityParamProcess extends AbstractParamProcess {
     }
 
     @Override
-    public void setRealValue(String curWorkCityCode){
+    public void setValue(String curWorkCityCode){
         curWorkCityCodeCache.set(curWorkCityCode);
     }
-
 
     @Override
     public void clear() {
@@ -43,7 +42,7 @@ public class CurWorkCityParamProcess extends AbstractParamProcess {
     }
 
     @Override
-    public boolean isGrayFlow(String curWorkCityCode, GrayRule _grayRule) {
+    public boolean checkIsGrayFlow(String curWorkCityCode, GrayRule _grayRule) {
         log.info("curWorkCityCode:{},curWorkCityCodeSet:{}", curWorkCityCode, _grayRule.getGrayCurWorkCityCodeSet());
         if (StringUtils.isNotEmpty(curWorkCityCode) && _grayRule.getGrayCurWorkCityCodeSet().contains(curWorkCityCode)) {
             return true;
