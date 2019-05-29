@@ -2,6 +2,7 @@ package com.lianjia.dubbo.gray.cluster.loadbalance;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.ctrip.framework.apollo.Config;
@@ -51,15 +52,15 @@ public class DubboGrayApolloConfig implements InitializingBean {
             dubboGrayJson = defaultConfig.getProperty(dubboGrayKey, "");
             logger.info("dubboGrayJson{}", dubboGrayJson);
             updateGrayRulesCache(dubboGrayJson);
-
         }
     }
 
     private void updateGrayRulesCache(String dubboGray) {
         if (StringUtils.isNotEmpty(dubboGray)) {
             List<GrayRule> grayRuleList = JSONArray.parseArray(dubboGray, GrayRule.class);
-            for (GrayRule grayRule : grayRuleList) {
-                GrayRulesCache.getInstance().getGrayRuleHashMap().put(grayRule.getKey(), grayRule);
+
+            if (CollectionUtils.isNotEmpty(grayRuleList)){
+                GrayRulesCache.getInstance().updateGrayRules(grayRuleList);
             }
         }
     }

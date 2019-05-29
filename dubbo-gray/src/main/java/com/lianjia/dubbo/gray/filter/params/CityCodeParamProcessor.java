@@ -15,10 +15,7 @@ public class CityCodeParamProcessor extends AbstractParamProcessor {
 
     public static final Logger log = LoggerFactory.getLogger(CityCodeParamProcessor.class);
 
-    private static final ThreadLocal<String> cityCodeCache = new ThreadLocal<String>();
-
     private CityCodeParamProcessor() {
-
     }
 
     private static CityCodeParamProcessor cityCodeParamProcess = new CityCodeParamProcessor();
@@ -27,20 +24,6 @@ public class CityCodeParamProcessor extends AbstractParamProcessor {
         return cityCodeParamProcess;
     }
 
-    @Override
-    public String getValue() {
-        return cityCodeCache.get();
-    }
-
-    @Override
-    public void setValue(String cityCode) {
-        cityCodeCache.set(cityCode);
-    }
-
-    @Override
-    public void clear() {
-        cityCodeCache.remove();
-    }
 
     @Override
     public boolean checkIsGrayFlow(String cityCode, GrayRule _grayRule) {

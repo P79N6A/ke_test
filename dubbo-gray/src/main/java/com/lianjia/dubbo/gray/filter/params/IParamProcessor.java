@@ -10,11 +10,5 @@ import com.lianjia.dubbo.gray.rule.domain.GrayRule;
  */
 public interface IParamProcessor {
 
-    String getValue();
-
-    void setValue(String value);
-
-    void clear();
-
     boolean isGrayFlow(String value, GrayRule _grayRule);
 }

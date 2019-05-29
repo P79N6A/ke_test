@@ -20,10 +20,6 @@ public class ParamProcessorFactory {
         paramProcessMap.put(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE,CurWorkCityParamProcessor.getInstance());
     }
 
-    public static Map<String,IParamProcessor> getParamProcessMap(){
-        return paramProcessMap;
-    }
-
     //创建示例
     public static IParamProcessor getParamProcessByKey(String key) {
         return paramProcessMap.get(key);

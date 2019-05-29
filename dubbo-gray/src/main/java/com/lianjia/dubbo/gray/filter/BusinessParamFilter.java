@@ -28,11 +28,8 @@ public class BusinessParamFilter implements Filter {
         String businessParamValue = RpcContext.getContext().getAttachment(businessParamKey);
         if (StringUtils.isNotEmpty(businessParamValue)) {
             // 从RpcContext里获取 流量标识（例如：ucId） 并保存
-            BusinessParamUtils.setBusinessParamByKey(businessParamKey, businessParamValue);
         } else {
             // 交互前重新设置 流量标识（例如ucid）, 避免信息丢失
-            RpcContext.getContext().setAttachment(businessParamKey,
-                    BusinessParamUtils.getBusinessParamByKey(businessParamKey));
         }
     }
 }
