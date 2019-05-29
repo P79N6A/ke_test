@@ -11,6 +11,7 @@ import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -21,7 +22,7 @@ import java.util.List;
 @Component
 @EnableApolloConfig
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class DubboGrayApolloConfig {
+public class DubboGrayApolloConfig implements InitializingBean {
 
     public static final Logger logger = LoggerFactory.getLogger(DubboGrayApolloConfig.class);
 
@@ -40,9 +41,13 @@ public class DubboGrayApolloConfig {
     @Value("${dubboGrayJson:}")
     public void setDubboGrayJson(String dubboGrayJson) {
         this.dubboGrayJson = dubboGrayJson;
-        // init update
-        updateGrayRulesCache(dubboGrayJson);
     }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        updateGrayRulesCache(this.dubboGrayJson);
+    }
+
 
     @ApolloConfigChangeListener
     private void someOnChange(ConfigChangeEvent changeEvent) {
