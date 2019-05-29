@@ -16,6 +16,8 @@ public class UcIdParamProcessor extends AbstractParamProcessor {
 
     public static final Logger log = LoggerFactory.getLogger(UcIdParamProcessor.class);
 
+    private static final ThreadLocal<String> ucIdCache = new ThreadLocal<String>();
+
     private UcIdParamProcessor() {
     }
 
@@ -23,6 +25,21 @@ public class UcIdParamProcessor extends AbstractParamProcessor {
 
     public static UcIdParamProcessor getInstance() {
         return ucIdParamProcess;
+    }
+
+    @Override
+    public String getValue() {
+        return ucIdCache.get();
+    }
+
+    @Override
+    public void setValue(String ucId) {
+        ucIdCache.set(ucId);
+    }
+
+    @Override
+    public void clear() {
+        ucIdCache.remove();
     }
 
     @Override

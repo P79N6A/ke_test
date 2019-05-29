@@ -2,7 +2,8 @@ package com.lianjia.dubbo.gray.filter.params;
 
 import com.lianjia.dubbo.gray.filter.GrayConstants;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description: 类信息描述
@@ -12,12 +13,16 @@ import java.util.*;
  */
 public class ParamProcessorFactory {
 
-    private static Map<String,IParamProcessor> paramProcessMap = new HashMap<>();
+    private static Map<String, IParamProcessor> paramProcessMap = new HashMap<>();
 
     static {
-        paramProcessMap.put(GrayConstants.FILTER_PARAM_UCID,UcIdParamProcessor.getInstance());
-        paramProcessMap.put(GrayConstants.FILTER_PARAM_CITYCODE,CityCodeParamProcessor.getInstance());
-        paramProcessMap.put(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE,CurWorkCityParamProcessor.getInstance());
+        paramProcessMap.put(GrayConstants.FILTER_PARAM_UCID, UcIdParamProcessor.getInstance());
+        paramProcessMap.put(GrayConstants.FILTER_PARAM_CITYCODE, CityCodeParamProcessor.getInstance());
+        paramProcessMap.put(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE, CurWorkCityParamProcessor.getInstance());
+    }
+
+    public static Map<String, IParamProcessor> getParamProcessMap() {
+        return paramProcessMap;
     }
 
     //创建示例

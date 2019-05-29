@@ -3,6 +3,7 @@ package com.lianjia.dubbo.gray.filter;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
+import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 
 
 /**
@@ -39,6 +40,15 @@ public class BusinessParamUtils {
      */
     public static void setCurWorkCityCode(String curWorkCityCode) {
         RpcContext.getContext().setAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE, curWorkCityCode);
+    }
+
+    public static void clear(){
+        if (ParamProcessorFactory.getParamProcessMap() == null) {
+            return;
+        }
+        for (String key : ParamProcessorFactory.getParamProcessMap().keySet()){
+            ParamProcessorFactory.getParamProcessByKey(key).clear();
+        }
     }
 
 }

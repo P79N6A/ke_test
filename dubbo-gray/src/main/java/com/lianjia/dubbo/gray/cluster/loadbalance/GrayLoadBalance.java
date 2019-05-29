@@ -11,6 +11,7 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
+import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
@@ -109,25 +110,38 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         // 灰度流量 ucId
         //如果为空，代表此类型不走灰度
+        IParamProcessor ucIdProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID);
+        String grayUcId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
+        if (StringUtils.isEmpty(grayUcId)) {
+            grayUcId = ucIdProcessror.getValue();
+        }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayUcIdSet())) {
-            if (!ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).isGrayFlow(
-                    RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID), _grayRule)){
+            if (!ucIdProcessror.isGrayFlow(grayUcId, _grayRule)) {
                 return false;
             }
         }
 
+
         // 灰度流量 cityCode
-        if (CollectionUtils.isNotEmpty(_grayRule.getGrayCityCodeSet())){
-            if (!ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE).isGrayFlow(
-                    RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE), _grayRule)){
+        IParamProcessor cityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE);
+        String grayCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE);
+        if (StringUtils.isEmpty(grayCityCode)){
+            grayCityCode = cityCodeProcessror.getValue();
+        }
+        if (CollectionUtils.isNotEmpty(_grayRule.getGrayCityCodeSet())) {
+            if (!cityCodeProcessror.isGrayFlow(grayCityCode, _grayRule)) {
                 return false;
             }
         }
 
         // 灰度流量 curWorkCityCode
-        if (CollectionUtils.isNotEmpty(_grayRule.getGrayCurWorkCityCodeSet())){
-            if (!ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE).isGrayFlow(
-                    RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE), _grayRule)){
+        IParamProcessor curCityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
+        String curWorkCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
+        if (StringUtils.isEmpty(curWorkCityCode)){
+            curWorkCityCode = curCityCodeProcessror.getValue();
+        }
+        if (CollectionUtils.isNotEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
+            if (!curCityCodeProcessror.isGrayFlow(curWorkCityCode, _grayRule)) {
                 return false;
             }
         }
@@ -135,7 +149,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         //对如果限流规则都为空
         if (CollectionUtils.isEmpty(_grayRule.getGrayUcIdSet()) &&
                 CollectionUtils.isEmpty(_grayRule.getGrayCityCodeSet()) &&
-                CollectionUtils.isEmpty(_grayRule.getGrayCurWorkCityCodeSet())){
+                CollectionUtils.isEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
             return false;
         }
 

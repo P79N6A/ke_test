@@ -15,6 +15,8 @@ public class CurWorkCityParamProcessor extends AbstractParamProcessor {
 
     public static final Logger log = LoggerFactory.getLogger(CurWorkCityParamProcessor.class);
 
+    private static final ThreadLocal<String> curWorkCityCodeCache = new ThreadLocal<>();
+
     private CurWorkCityParamProcessor() {
     }
 
@@ -24,6 +26,20 @@ public class CurWorkCityParamProcessor extends AbstractParamProcessor {
         return curWorkCityParamProcess;
     }
 
+    @Override
+    public String getValue() {
+        return curWorkCityCodeCache.get();
+    }
+
+    @Override
+    public void setValue(String curWorkCityCode) {
+        curWorkCityCodeCache.set(curWorkCityCode);
+    }
+
+    @Override
+    public void clear() {
+        curWorkCityCodeCache.remove();
+    }
 
     @Override
     public boolean checkIsGrayFlow(String curWorkCityCode, GrayRule _grayRule) {
