@@ -96,9 +96,9 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         if (StringUtils.isEmpty(grayRule.getServerIp())) return false;
         if (grayRule.getServerPort() <= 0) return false;
 
-        if (grayRule.getGrayUcIdSet() == null && grayRule.getGrayUcIdSet().size() == 0) return false;
-        if (grayRule.getGrayCityCodeSet() == null && grayRule.getGrayCityCodeSet().size() == 0) return false;
-        if (grayRule.getGrayCurWorkCityCodeSet() == null && grayRule.getGrayCurWorkCityCodeSet().size() == 0)return false;
+        if (grayRule.getGrayUcIdSet() == null || grayRule.getGrayUcIdSet().size() == 0) return false;
+        if (grayRule.getGrayCityCodeSet() == null || grayRule.getGrayCityCodeSet().size() == 0) return false;
+        if (grayRule.getGrayCurWorkCityCodeSet() == null || grayRule.getGrayCurWorkCityCodeSet().size() == 0)return false;
         return true;
     }
 
