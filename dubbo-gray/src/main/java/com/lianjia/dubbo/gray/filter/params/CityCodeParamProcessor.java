@@ -11,19 +11,19 @@ import com.lianjia.dubbo.gray.rule.domain.GrayRule;
  * @Date: 2019/5/28 11:22 AM
  * @Version: 1.0
  */
-public class CityCodeParamProcess extends AbstractParamProcess {
+public class CityCodeParamProcessor extends AbstractParamProcessor {
 
-    public static final Logger log = LoggerFactory.getLogger(CityCodeParamProcess.class);
+    public static final Logger log = LoggerFactory.getLogger(CityCodeParamProcessor.class);
 
     private static final ThreadLocal<String> cityCodeCache = new ThreadLocal<String>();
 
-    private CityCodeParamProcess() {
+    private CityCodeParamProcessor() {
 
     }
 
-    private static CityCodeParamProcess cityCodeParamProcess = new CityCodeParamProcess();
+    private static CityCodeParamProcessor cityCodeParamProcess = new CityCodeParamProcessor();
 
-    public static CityCodeParamProcess getInstance() {
+    public static CityCodeParamProcessor getInstance() {
         return cityCodeParamProcess;
     }
 
@@ -45,10 +45,9 @@ public class CityCodeParamProcess extends AbstractParamProcess {
     @Override
     public boolean checkIsGrayFlow(String cityCode, GrayRule _grayRule) {
         log.info("cityCode:{},cityCodeSet:{}", cityCode, _grayRule.getGrayCityCodeSet());
-
-        if (StringUtils.isNotEmpty(cityCode) && _grayRule.getGrayCityCodeSet() != null && _grayRule.getGrayCityCodeSet().contains(cityCode)) {
-            return true;
+        if (StringUtils.isEmpty(cityCode)) {
+            return false;
         }
-        return false;
+        return _grayRule.getGrayCityCodeSet().contains(cityCode);
     }
 }

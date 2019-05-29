@@ -4,13 +4,14 @@ package com.lianjia.dubbo.gray.cluster.loadbalance;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
-import com.lianjia.dubbo.gray.filter.params.ParamProcessFactory;
+import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
@@ -51,8 +52,6 @@ public class GrayLoadBalance extends AbstractLoadBalance {
      */
     private <T> Invoker<T> doSelectGray(List<Invoker<T>> invokers, URL url, Invocation invocation) {
 
-        logger.info("loadbablance：gray");
-
         List<Invoker<T>> excludeGrayInvokerList = new ArrayList<>();
         // 灰度机器invoker列表
         List<Invoker<T>> _invokers = new ArrayList<>();
@@ -84,45 +83,65 @@ public class GrayLoadBalance extends AbstractLoadBalance {
                 if (_invokers.size() == 1) {
                     return _invokers.get(0);
                 }
+                logger.info("loadbablance：gray");
                 return this.doRandomLoadBalanceSelect(_invokers, url, invocation);
             }
         }
+        logger.info("loadbablance：random");
         return this.doRandomLoadBalanceSelect(excludeGrayInvokerList, url, invocation);
     }
 
+    /**
+     * 只校验灰度机器相关
+     *
+     * @param grayRule
+     * @return
+     */
     private boolean checkNullOfGrayParam(GrayRule grayRule) {
         if (grayRule == null) return false;
         if (!grayRule.isOpen()) return false;
         if (StringUtils.isEmpty(grayRule.getServerIp())) return false;
         if (grayRule.getServerPort() <= 0) return false;
-
-        if (grayRule.getGrayUcIdSet() == null || grayRule.getGrayUcIdSet().size() == 0) return false;
-        if (grayRule.getGrayCityCodeSet() == null || grayRule.getGrayCityCodeSet().size() == 0) return false;
-        if (grayRule.getGrayCurWorkCityCodeSet() == null || grayRule.getGrayCurWorkCityCodeSet().size() == 0)return false;
         return true;
     }
 
     private boolean isGrayReq(GrayRule _grayRule) {
+
         // 灰度流量 ucId
-        if (ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).isGrayFlow(
-                RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID), _grayRule)) {
-            return true;
+        //如果为空，代表此类型不走灰度
+        if (CollectionUtils.isNotEmpty(_grayRule.getGrayUcIdSet())) {
+            if (!ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).isGrayFlow(
+                    RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID), _grayRule)){
+                return false;
+            }
         }
 
         // 灰度流量 cityCode
-        if (ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE).isGrayFlow(
-                RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE), _grayRule)) {
-            return true;
+        if (CollectionUtils.isNotEmpty(_grayRule.getGrayCityCodeSet())){
+            if (!ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE).isGrayFlow(
+                    RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE), _grayRule)){
+                return false;
+            }
         }
 
         // 灰度流量 curWorkCityCode
-        if (ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE).isGrayFlow(
-                RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE),_grayRule)){
-            return true;
+        if (CollectionUtils.isNotEmpty(_grayRule.getGrayCurWorkCityCodeSet())){
+            if (!ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE).isGrayFlow(
+                    RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE), _grayRule)){
+                return false;
+            }
         }
 
-        return false;
+        //对如果限流规则都为空
+        if (CollectionUtils.isEmpty(_grayRule.getGrayUcIdSet()) &&
+                CollectionUtils.isEmpty(_grayRule.getGrayCityCodeSet()) &&
+                CollectionUtils.isEmpty(_grayRule.getGrayCurWorkCityCodeSet())){
+            return false;
+        }
+
+        return true;
     }
+
 
     public static final String NAME = "random";
 

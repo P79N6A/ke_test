@@ -31,21 +31,16 @@ public class DubboGrayApolloConfig implements InitializingBean {
     @ApolloConfig
     private Config defaultConfig;
 
+    @Value("${dubboGrayJson:}")
     private String dubboGrayJson;
-
 
     public String getDubboGrayJson() {
         return dubboGrayJson;
     }
 
-    @Value("${dubboGrayJson:}")
-    public void setDubboGrayJson(String dubboGrayJson) {
-        this.dubboGrayJson = dubboGrayJson;
-    }
-
     @Override
     public void afterPropertiesSet() throws Exception {
-        updateGrayRulesCache(this.dubboGrayJson);
+        updateGrayRulesCache(getDubboGrayJson());
     }
 
 
@@ -61,7 +56,6 @@ public class DubboGrayApolloConfig implements InitializingBean {
     }
 
     private void updateGrayRulesCache(String dubboGray) {
-
         if (StringUtils.isNotEmpty(dubboGray)) {
             List<GrayRule> grayRuleList = JSONArray.parseArray(dubboGray, GrayRule.class);
             for (GrayRule grayRule : grayRuleList) {

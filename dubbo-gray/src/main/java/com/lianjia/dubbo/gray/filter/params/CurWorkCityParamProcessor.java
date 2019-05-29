@@ -11,19 +11,19 @@ import com.lianjia.dubbo.gray.rule.domain.GrayRule;
  * @Date: 2019/5/28 11:22 AM
  * @Version: 1.0
  */
-public class CurWorkCityParamProcess extends AbstractParamProcess {
+public class CurWorkCityParamProcessor extends AbstractParamProcessor {
 
-    public static final Logger log = LoggerFactory.getLogger(CurWorkCityParamProcess.class);
+    public static final Logger log = LoggerFactory.getLogger(CurWorkCityParamProcessor.class);
 
     private static final ThreadLocal<String> curWorkCityCodeCache = new ThreadLocal<>();
 
-    private CurWorkCityParamProcess() {
+    private CurWorkCityParamProcessor() {
 
     }
 
-    private static CurWorkCityParamProcess curWorkCityParamProcess = new CurWorkCityParamProcess();
+    private static CurWorkCityParamProcessor curWorkCityParamProcess = new CurWorkCityParamProcessor();
 
-    public static CurWorkCityParamProcess getInstance() {
+    public static CurWorkCityParamProcessor getInstance() {
         return curWorkCityParamProcess;
     }
 
@@ -45,9 +45,10 @@ public class CurWorkCityParamProcess extends AbstractParamProcess {
     @Override
     public boolean checkIsGrayFlow(String curWorkCityCode, GrayRule _grayRule) {
         log.info("curWorkCityCode:{},curWorkCityCodeSet:{}", curWorkCityCode, _grayRule.getGrayCurWorkCityCodeSet());
-        if (StringUtils.isNotEmpty(curWorkCityCode) && _grayRule.getGrayCurWorkCityCodeSet() != null && _grayRule.getGrayCurWorkCityCodeSet().contains(curWorkCityCode)) {
-            return true;
+
+        if (StringUtils.isEmpty(curWorkCityCode)) {
+            return false;
         }
-        return false;
+        return _grayRule.getGrayCurWorkCityCodeSet().contains(curWorkCityCode);
     }
 }

@@ -9,7 +9,7 @@ import com.lianjia.dubbo.gray.rule.domain.GrayRule;
  * @Date: 2019/5/28 11:17 AM
  * @Version: 1.0
  */
-public abstract class AbstractParamProcess implements IParamProcess {
+public abstract class AbstractParamProcessor implements IParamProcessor {
 
     protected abstract boolean checkIsGrayFlow(String value, GrayRule _grayRule);
 
@@ -26,7 +26,7 @@ public abstract class AbstractParamProcess implements IParamProcess {
      */
     protected String getFilterParamValue(String value) {
         //FIXME：解析格式问题,比较单一
-        if (value != null || GrayConstants.EMPTY_STR.equals(value)) {
+        if (value == null || GrayConstants.EMPTY_STR.equals(value)) {
             return GrayConstants.EMPTY_STR;
         }
         return value.replace(GrayConstants.BRACKET_LEFT, GrayConstants.EMPTY_STR)

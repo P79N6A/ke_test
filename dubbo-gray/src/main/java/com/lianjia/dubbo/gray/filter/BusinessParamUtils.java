@@ -1,7 +1,7 @@
 package com.lianjia.dubbo.gray.filter;
 
-import com.lianjia.dubbo.gray.filter.params.IParamProcess;
-import com.lianjia.dubbo.gray.filter.params.ParamProcessFactory;
+import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
+import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
 
 
 /**
@@ -18,7 +18,7 @@ public class BusinessParamUtils {
      * @param ucId
      */
     public static void setUcId(String ucId) {
-        ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).setValue(ucId);
+        ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).setValue(ucId);
     }
 
     /**
@@ -27,7 +27,7 @@ public class BusinessParamUtils {
      * @param cityCode
      */
     public static void setCityCode(String cityCode) {
-        ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE).setValue(cityCode);
+        ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE).setValue(cityCode);
     }
 
     /**
@@ -37,18 +37,18 @@ public class BusinessParamUtils {
      * @param curWorkCityCode
      */
     public static void setCurWorkCityCode(String curWorkCityCode) {
-        ParamProcessFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE).setValue(curWorkCityCode);
+        ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE).setValue(curWorkCityCode);
     }
 
     /**
      * 提供 外部埋点 逻辑处理完之后，调用clear 清空本次请求的缓存信息
      */
     public static void clear() {
-        if (ParamProcessFactory.getParamProcessMap() == null) {
+        if (ParamProcessorFactory.getParamProcessMap() == null) {
             return;
         }
-        for (String key : ParamProcessFactory.getParamProcessMap().keySet()) {
-            ParamProcessFactory.getParamProcessByKey(key).clear();
+        for (String key : ParamProcessorFactory.getParamProcessMap().keySet()) {
+            ParamProcessorFactory.getParamProcessByKey(key).clear();
         }
     }
 
@@ -59,7 +59,7 @@ public class BusinessParamUtils {
      * @return
      */
     public static String getBusinessParamByKey(String key) {
-        IParamProcess paramProcess = ParamProcessFactory.getParamProcessByKey(key);
+        IParamProcessor paramProcess = ParamProcessorFactory.getParamProcessByKey(key);
         if (null != paramProcess) {
             return paramProcess.getValue();
         }
@@ -73,7 +73,7 @@ public class BusinessParamUtils {
      * @return
      */
     public static void setBusinessParamByKey(String key, String value) {
-        IParamProcess paramProcess = ParamProcessFactory.getParamProcessByKey(key);
+        IParamProcessor paramProcess = ParamProcessorFactory.getParamProcessByKey(key);
         if (null != paramProcess) {
             paramProcess.setValue(value);
         }

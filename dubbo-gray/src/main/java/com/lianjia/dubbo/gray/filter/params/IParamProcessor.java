@@ -8,7 +8,7 @@ import com.lianjia.dubbo.gray.rule.domain.GrayRule;
  * @Date: 2019/5/28 11:17 AM
  * @Version: 1.0
  */
-public interface IParamProcess {
+public interface IParamProcessor {
 
     String getValue();
 
