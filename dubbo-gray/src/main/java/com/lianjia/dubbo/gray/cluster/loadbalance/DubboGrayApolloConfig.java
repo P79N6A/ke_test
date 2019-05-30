@@ -39,6 +39,7 @@ public class DubboGrayApolloConfig implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         String temp = apolloConfig.getProperty(DUBBO_GRAY_KEY, "");
+        logger.info("dubboGrayJson{}", temp);
         updateGrayRulesCache(temp);
     }
 
@@ -48,7 +49,6 @@ public class DubboGrayApolloConfig implements InitializingBean {
         //update injected value of batch if it is changed in Apollo
         if (changeEvent.isChanged(DUBBO_GRAY_KEY)) {
             String dubboGrayJson = getDubboGrayJson();
-            logger.info("dubboGrayJson{}", dubboGrayJson);
             updateGrayRulesCache(dubboGrayJson);
         }
     }
