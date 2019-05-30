@@ -42,7 +42,7 @@ public class GrayRulesCache {
 
     public static GrayRule getGrayRuleByServerAndPort(String server, String port) {
         if (grayRuleHashMap != null && grayRuleHashMap.size() > 0) {
-            grayRuleHashMap.get(generateKey(server, port));
+            return grayRuleHashMap.get(generateKey(server, port));
         }
         return null;
     }
