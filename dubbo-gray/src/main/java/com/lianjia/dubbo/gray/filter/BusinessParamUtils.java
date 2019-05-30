@@ -1,9 +1,9 @@
 package com.lianjia.dubbo.gray.filter;
 
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
-import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 
 
 /**
@@ -43,11 +43,11 @@ public class BusinessParamUtils {
     }
 
     public static void clear(){
-        if (ParamProcessorFactory.getParamProcessMap() == null) {
+        if (CollectionUtils.isEmpty(ParamProcessorFactory.getAllParamProcess())) {
             return;
         }
-        for (String key : ParamProcessorFactory.getParamProcessMap().keySet()){
-            ParamProcessorFactory.getParamProcessByKey(key).clear();
+        for (IParamProcessor processor : ParamProcessorFactory.getAllParamProcess()){
+            processor.clear();
         }
     }
 
