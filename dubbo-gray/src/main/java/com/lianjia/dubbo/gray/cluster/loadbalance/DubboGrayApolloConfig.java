@@ -10,46 +10,44 @@ import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfig;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
+import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+@Configuration
 @EnableApolloConfig
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class DubboGrayApolloConfig implements InitializingBean {
 
     public static final Logger logger = LoggerFactory.getLogger(DubboGrayApolloConfig.class);
 
-    public static final String dubboGrayKey = "dubboGrayJson";
+    public static final String DUBBO_GRAY_KEY = "dubboGrayJson";
 
     @ApolloConfig
-    private Config defaultConfig;
-
-    @Value("${dubboGrayJson:}")
-    private String dubboGrayJson;
+    private Config apolloConfig;
 
     public String getDubboGrayJson() {
-        return dubboGrayJson;
+        return apolloConfig.getProperty(DUBBO_GRAY_KEY, GrayConstants.EMPTY_STR);
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        updateGrayRulesCache(getDubboGrayJson());
+        String temp = apolloConfig.getProperty(DUBBO_GRAY_KEY, "");
+        updateGrayRulesCache(temp);
     }
 
 
     @ApolloConfigChangeListener
     private void someOnChange(ConfigChangeEvent changeEvent) {
         //update injected value of batch if it is changed in Apollo
-        if (changeEvent.isChanged(dubboGrayKey)) {
-            dubboGrayJson = defaultConfig.getProperty(dubboGrayKey, "");
+        if (changeEvent.isChanged(DUBBO_GRAY_KEY)) {
+            String dubboGrayJson = getDubboGrayJson();
             logger.info("dubboGrayJson{}", dubboGrayJson);
             updateGrayRulesCache(dubboGrayJson);
         }
@@ -58,8 +56,7 @@ public class DubboGrayApolloConfig implements InitializingBean {
     private void updateGrayRulesCache(String dubboGray) {
         if (StringUtils.isNotEmpty(dubboGray)) {
             List<GrayRule> grayRuleList = JSONArray.parseArray(dubboGray, GrayRule.class);
-
-            if (CollectionUtils.isNotEmpty(grayRuleList)){
+            if (CollectionUtils.isNotEmpty(grayRuleList)) {
                 GrayRulesCache.getInstance().updateGrayRules(grayRuleList);
             }
         }
