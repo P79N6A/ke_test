@@ -2,7 +2,6 @@ package com.lianjia.dubbo.gray.filter.params;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 

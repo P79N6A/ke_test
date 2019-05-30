@@ -1,5 +1,6 @@
 package com.lianjia.dubbo.gray.filter;
 
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.*;
 import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
@@ -42,11 +43,11 @@ public class BusinessParamFilter implements Filter {
      * 提供 外部埋点 逻辑处理完之后，调用clear 清空本次请求的缓存信息
      */
     public static void clear() {
-        if (ParamProcessorFactory.getParamProcessMap() == null) {
+        if (CollectionUtils.isEmpty(ParamProcessorFactory.getAllParamProcess())) {
             return;
         }
-        for (String key : ParamProcessorFactory.getParamProcessMap().keySet()) {
-            ParamProcessorFactory.getParamProcessByKey(key).clear();
+        for (IParamProcessor processor : ParamProcessorFactory.getAllParamProcess()) {
+            processor.clear();
         }
     }
 }
