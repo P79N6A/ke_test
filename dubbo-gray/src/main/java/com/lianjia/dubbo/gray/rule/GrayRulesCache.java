@@ -17,7 +17,7 @@ public class GrayRulesCache {
     /**
      * 灰度规则Map
      */
-    private static Map<String, GrayRule> grayRuleHashMap = new ConcurrentHashMap<>();
+    private static volatile Map<String, GrayRule> grayRuleHashMap = new ConcurrentHashMap<>();
 
     private GrayRulesCache() {
     }
