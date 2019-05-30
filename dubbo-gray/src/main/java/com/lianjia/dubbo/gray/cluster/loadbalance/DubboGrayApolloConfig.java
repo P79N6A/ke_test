@@ -6,9 +6,9 @@ import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.ctrip.framework.apollo.Config;
+import com.ctrip.framework.apollo.ConfigChangeListener;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfig;
-import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
@@ -38,19 +38,22 @@ public class DubboGrayApolloConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        //load config info to  GrayRulesCache
         String temp = apolloConfig.getProperty(DUBBO_GRAY_KEY, "");
         logger.info("dubboGrayJson{}", temp);
         updateGrayRulesCache(temp);
-    }
 
-
-    @ApolloConfigChangeListener
-    private void someOnChange(ConfigChangeEvent changeEvent) {
-        //update injected value of batch if it is changed in Apollo
-        if (changeEvent.isChanged(DUBBO_GRAY_KEY)) {
-            String dubboGrayJson = getDubboGrayJson();
-            updateGrayRulesCache(dubboGrayJson);
-        }
+        //add change event
+        apolloConfig.addChangeListener(new ConfigChangeListener() {
+            @Override
+            public void onChange(ConfigChangeEvent changeEvent) {
+                //update injected value of batch if it is changed in Apollo
+                if (changeEvent.isChanged(DUBBO_GRAY_KEY)) {
+                    String dubboGrayJson = getDubboGrayJson();
+                    updateGrayRulesCache(dubboGrayJson);
+                }
+            }
+        });
     }
 
     private void updateGrayRulesCache(String dubboGray) {
