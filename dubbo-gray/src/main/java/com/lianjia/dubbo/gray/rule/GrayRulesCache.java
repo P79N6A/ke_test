@@ -1,5 +1,6 @@
 package com.lianjia.dubbo.gray.rule;
 
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.fastjson.JSON;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
@@ -23,6 +24,9 @@ public class GrayRulesCache {
     }
 
     public static void updateGrayRules(List<GrayRule> grayRuleList) {
+        if (CollectionUtils.isEmpty(grayRuleList)){
+            return;
+        }
         Map map = new HashMap(grayRuleList.size());
         for (GrayRule grayRule : grayRuleList) {
             map.put(generateKey(grayRule.getServerIp(), String.valueOf(grayRule.getServerPort())), grayRule);
