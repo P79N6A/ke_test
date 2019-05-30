@@ -32,12 +32,8 @@ public class GrayRulesCache {
         }
     }
 
-    public static boolean isNotEmpty() {
-        return grayRuleHashMap != null && grayRuleHashMap.size() > 0;
-    }
-
-    public Map<String, GrayRule> getGrayRuleHashMap() {
-        return grayRuleHashMap;
+    public static boolean isEmpty() {
+        return grayRuleHashMap == null || grayRuleHashMap.size() == 0;
     }
 
     public static GrayRule getGrayRuleByServerAndPort(String server, String port) {

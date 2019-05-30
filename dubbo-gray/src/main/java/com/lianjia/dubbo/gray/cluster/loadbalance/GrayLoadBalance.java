@@ -35,7 +35,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 //            return doSelectGray(invokers, url, invocation);
 //        }
         logger.info("gray rules info:{}", GrayRulesCache.getStrOfContent());
-        if (GrayRulesCache.isNotEmpty())
+        if (!GrayRulesCache.isEmpty())
             return doSelectGray(invokers, url, invocation);
 
         logger.info("loadbablance：random");
