@@ -34,8 +34,8 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 //        if (checkGrayParam(isOpen, grayServerIp, grayServerPort, grayUcIdSet)) {
 //            return doSelectGray(invokers, url, invocation);
 //        }
-        logger.info("gray rules info:{}", GrayRulesCache.getInstance().getGrayRuleHashMap());
-        if (GrayRulesCache.getInstance().getGrayRuleHashMap().size() > 0)
+        logger.info("gray rules info:{}", GrayRulesCache.getStrOfContent());
+        if (GrayRulesCache.isNotEmpty())
             return doSelectGray(invokers, url, invocation);
 
         logger.info("loadbablance：random");
@@ -59,18 +59,12 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         GrayRule _grayRule = null;
 
         for (Invoker invoker : invokers) {
-            String serverIp = invoker.getUrl().getIp();
-            int serverPort = invoker.getUrl().getPort();
-
-            String key = serverIp + "_" + serverPort;
-
-            GrayRule grayRule = GrayRulesCache.getInstance().getGrayRuleHashMap().get(key);
-
+            GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort(
+                    invoker.getUrl().getIp(),String.valueOf(invoker.getUrl().getPort()));
             if (checkNullOfGrayParam(grayRule)) {
                 // 灰度机器
-                if (grayRule.isOpen() && grayRule.getServerIp().equals(serverIp)
-                        && grayRule.getServerPort() == serverPort) {
-
+                if (grayRule.isOpen() && grayRule.getServerIp().equals(invoker.getUrl().getIp())
+                        && grayRule.getServerPort() == invoker.getUrl().getPort()) {
                     _invokers.add(invoker);
                     _grayRule = grayRule;
                     continue;

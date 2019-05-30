@@ -41,4 +41,6 @@ public class GrayConstants {
     public static final String DOUBLE_QUOTES = "\"";
 
     public static final String SINGLE_QUOTES = "'";
+
+    public static final String UNDER_LINE = "_";
 }

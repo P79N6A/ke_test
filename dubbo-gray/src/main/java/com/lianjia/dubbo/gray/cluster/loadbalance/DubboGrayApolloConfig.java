@@ -34,7 +34,7 @@ public class DubboGrayApolloConfig implements InitializingBean {
 
     public String getDubboGrayJson() {
         String temp = apolloConfig.getProperty(DUBBO_GRAY_KEY, GrayConstants.EMPTY_STR);
-        logger.info("dubboGrayJson{}", temp);
+        logger.info("dubboGrayJson:{}", temp);
         return temp;
     }
 
@@ -59,7 +59,7 @@ public class DubboGrayApolloConfig implements InitializingBean {
         if (StringUtils.isNotEmpty(dubboGray)) {
             List<GrayRule> grayRuleList = JSONArray.parseArray(dubboGray, GrayRule.class);
             if (CollectionUtils.isNotEmpty(grayRuleList)) {
-                GrayRulesCache.getInstance().updateGrayRules(grayRuleList);
+                GrayRulesCache.updateGrayRules(grayRuleList);
             }
         }
     }
