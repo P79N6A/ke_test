@@ -34,11 +34,11 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 //        if (checkGrayParam(isOpen, grayServerIp, grayServerPort, grayUcIdSet)) {
 //            return doSelectGray(invokers, url, invocation);
 //        }
-        logger.info("gray rules info:{}", GrayRulesCache.getStrOfContent());
+        logger.debug("gray rules info:{}", GrayRulesCache.getStrOfContent());
         if (!GrayRulesCache.isEmpty())
             return doSelectGray(invokers, url, invocation);
 
-        logger.info("loadbablance：random");
+        logger.debug("loadbablance：random");
         return this.doRandomLoadBalanceSelect(invokers, url, invocation);
     }
 
@@ -83,7 +83,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
                 return this.doRandomLoadBalanceSelect(_invokers, url, invocation);
             }
         }
-        logger.info("loadbablance：random");
+        logger.debug("loadbablance：random");
         return this.doRandomLoadBalanceSelect(excludeGrayInvokerList, url, invocation);
     }
 
