@@ -67,6 +67,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
                         && grayRule.getServerPort() == invoker.getUrl().getPort()) {
                     _invokers.add(invoker);
                     _grayRule = grayRule;
+                    logger.info("have gray machine");
                     continue;
                 }
             }
@@ -75,10 +76,10 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         if (_invokers.size() > 0) {
             if (isGrayReq(_grayRule)) {
+                logger.info("loadbablance：gray");
                 if (_invokers.size() == 1) {
                     return _invokers.get(0);
                 }
-                logger.info("loadbablance：gray");
                 return this.doRandomLoadBalanceSelect(_invokers, url, invocation);
             }
         }
