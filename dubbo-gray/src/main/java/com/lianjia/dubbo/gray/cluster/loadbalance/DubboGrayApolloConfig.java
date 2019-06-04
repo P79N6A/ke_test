@@ -57,7 +57,12 @@ public class DubboGrayApolloConfig implements InitializingBean {
 
     private void updateGrayRulesCache(String dubboGray) {
         if (StringUtils.isNotEmpty(dubboGray)) {
-            List<GrayRule> grayRuleList = JSONArray.parseArray(dubboGray, GrayRule.class);
+            List<GrayRule> grayRuleList = null;
+            try {
+                grayRuleList = JSONArray.parseArray(dubboGray, GrayRule.class);
+            } catch (Exception e) {
+                logger.error("gray config is error:{}", e);
+            }
             if (CollectionUtils.isNotEmpty(grayRuleList)) {
                 GrayRulesCache.updateGrayRules(grayRuleList);
             }
