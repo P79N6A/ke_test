@@ -17,14 +17,18 @@ public class BusinessParamFilter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        //set ucid
-        setBusinessParam(GrayConstants.FILTER_PARAM_UCID);
-        //set cityCode
-        setBusinessParam(GrayConstants.FILTER_PARAM_CITYCODE);
-        //set curWorkCityCode
-        setBusinessParam(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
+        try{
+            //set ucid
+            setBusinessParam(GrayConstants.FILTER_PARAM_UCID);
+            //set cityCode
+            setBusinessParam(GrayConstants.FILTER_PARAM_CITYCODE);
+            //set curWorkCityCode
+            setBusinessParam(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
 
-        return invoker.invoke(invocation);
+            return invoker.invoke(invocation);
+        } finally {
+            BusinessParamUtils.clear();
+        }
     }
 
     private void setBusinessParam(String businessParamKey) {
@@ -37,7 +41,6 @@ public class BusinessParamFilter implements Filter {
             } else {
                 // 交互前重新设置 流量标识（例如ucid）, 避免信息丢失，consumer端逻辑
                 RpcContext.getContext().setAttachment(businessParamKey, processor.getValue());
-                processor.clear();
             }
         }
     }
