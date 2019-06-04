@@ -43,7 +43,7 @@ public class CurWorkCityParamProcessor extends AbstractParamProcessor {
 
     @Override
     public boolean checkIsGrayFlow(String curWorkCityCode, GrayRule _grayRule) {
-        log.info("curWorkCityCode:{},curWorkCityCodeSet:{}", curWorkCityCode, _grayRule.getGrayCurWorkCityCodeSet());
+        log.debug("curWorkCityCode:{},curWorkCityCodeSet:{}", curWorkCityCode, _grayRule.getGrayCurWorkCityCodeSet());
 
         if (StringUtils.isEmpty(curWorkCityCode)) {
             return false;

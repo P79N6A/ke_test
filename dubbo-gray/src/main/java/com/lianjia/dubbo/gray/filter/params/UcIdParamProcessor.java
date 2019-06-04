@@ -44,7 +44,7 @@ public class UcIdParamProcessor extends AbstractParamProcessor {
     @Override
     public boolean checkIsGrayFlow(String ucId, GrayRule _grayRule) {
 
-        log.info("ucId:{},ucIdSet:{}", ucId, _grayRule.getGrayUcIdSet());
+        log.debug("ucId:{},ucIdSet:{}", ucId, _grayRule.getGrayUcIdSet());
         if (StringUtils.isEmpty(ucId)) {
             return false;
         }

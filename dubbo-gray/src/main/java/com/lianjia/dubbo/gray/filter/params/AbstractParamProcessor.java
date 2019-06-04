@@ -1,5 +1,7 @@
 package com.lianjia.dubbo.gray.filter.params;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
@@ -11,11 +13,19 @@ import com.lianjia.dubbo.gray.rule.domain.GrayRule;
  */
 public abstract class AbstractParamProcessor implements IParamProcessor {
 
+    public static final Logger logger = LoggerFactory.getLogger(AbstractParamProcessor.class);
+
     protected abstract boolean checkIsGrayFlow(String value, GrayRule _grayRule);
 
     @Override
     public boolean isGrayFlow(String value, GrayRule _grayRule) {
-        return checkIsGrayFlow(getFilterParamValue(value), _grayRule);
+        String valueParsed = null;
+        try {
+            valueParsed = getFilterParamValue(value);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return checkIsGrayFlow(valueParsed, _grayRule);
     }
 
     /**

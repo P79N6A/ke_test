@@ -31,25 +31,16 @@ public class BusinessParamFilter implements Filter {
     private void setBusinessParam(String businessParamKey) {
         String valueFromContext = RpcContext.getContext().getAttachment(businessParamKey);
         IParamProcessor processor = ParamProcessorFactory.getParamProcessByKey(businessParamKey);
-        if (StringUtils.isNotEmpty(valueFromContext)) {
-            // 从RpcContext里获取 流量标识（例如：ucId） 并保存 provider端逻辑
-            processor.setValue(valueFromContext);
-        } else {
-            // 交互前重新设置 流量标识（例如ucid）, 避免信息丢失，consumer端逻辑
-            RpcContext.getContext().setAttachment(businessParamKey, processor.getValue());
-            processor.clear();
+        if (null != processor){
+            if (StringUtils.isNotEmpty(valueFromContext)) {
+                // 从RpcContext里获取 流量标识（例如：ucId） 并保存 provider端逻辑
+                processor.setValue(valueFromContext);
+            } else {
+                // 交互前重新设置 流量标识（例如ucid）, 避免信息丢失，consumer端逻辑
+                RpcContext.getContext().setAttachment(businessParamKey, processor.getValue());
+                processor.clear();
+            }
         }
     }
 
-    /**
-     * 提供 外部埋点 逻辑处理完之后，调用clear 清空本次请求的缓存信息
-     */
-    public static void clear() {
-        if (CollectionUtils.isEmpty(ParamProcessorFactory.getAllParamProcess())) {
-            return;
-        }
-        for (IParamProcessor processor : ParamProcessorFactory.getAllParamProcess()) {
-            processor.clear();
-        }
-    }
 }
