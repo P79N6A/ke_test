@@ -147,6 +147,12 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             return false;
         }
 
+        //对流量百分比灰度
+        IParamProcessor grayFlowPercentProcessor = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_GRAY_FLOW_PERCENT);
+        if (!grayFlowPercentProcessor.isGrayFlow(grayUcId, _grayRule)) {
+            return false;
+        }
+
         return true;
     }
 

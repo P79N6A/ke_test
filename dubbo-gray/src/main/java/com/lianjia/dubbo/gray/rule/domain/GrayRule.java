@@ -43,6 +43,11 @@ public class GrayRule {
      */
     private Set<String> grayCurWorkCityCodeSet;
 
+    /**
+     * 灰度流量百分比
+     */
+    private int grayFlowPercent;
+
     public boolean isOpen() {
         return isOpen;
     }
@@ -97,6 +102,14 @@ public class GrayRule {
 
     public void setGrayCurWorkCityCodeSet(Set<String> grayCurWorkCityCodeSet) {
         this.grayCurWorkCityCodeSet = grayCurWorkCityCodeSet;
+    }
+
+    public int getGrayFlowPercent() {
+        return grayFlowPercent;
+    }
+
+    public void setGrayFlowPercent(int grayFlowPercent) {
+        this.grayFlowPercent = grayFlowPercent;
     }
 
     @JSONField(serialize = false)

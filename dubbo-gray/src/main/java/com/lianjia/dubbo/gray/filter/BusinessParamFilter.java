@@ -23,6 +23,8 @@ public class BusinessParamFilter implements Filter {
         setBusinessParam(GrayConstants.FILTER_PARAM_CITYCODE);
         //set curWorkCityCode
         setBusinessParam(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
+        //set curWorkCityCode
+        setBusinessParam(GrayConstants.FILTER_PARAM_GRAY_FLOW_PERCENT);
 
         return invoker.invoke(invocation);
     }
