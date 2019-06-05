@@ -111,11 +111,10 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             grayUcId = ucIdProcessror.getValue();
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayUcIdSet())) {
-            if (!ucIdProcessror.isGrayFlow(grayUcId, _grayRule)) {
-                return false;
+            if (ucIdProcessror.isGrayFlow(grayUcId, _grayRule)) {
+                return true;
             }
         }
-
 
         // 灰度流量 cityCode
         IParamProcessor cityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE);
@@ -125,7 +124,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCityCodeSet())) {
             if (!cityCodeProcessror.isGrayFlow(grayCityCode, _grayRule)) {
-                return false;
+                return true;
             }
         }
 
@@ -137,18 +136,11 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
             if (!curCityCodeProcessror.isGrayFlow(curWorkCityCode, _grayRule)) {
-                return false;
+                return true;
             }
         }
 
-        //对如果限流规则都为空
-        if (CollectionUtils.isEmpty(_grayRule.getGrayUcIdSet()) &&
-                CollectionUtils.isEmpty(_grayRule.getGrayCityCodeSet()) &&
-                CollectionUtils.isEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
 
