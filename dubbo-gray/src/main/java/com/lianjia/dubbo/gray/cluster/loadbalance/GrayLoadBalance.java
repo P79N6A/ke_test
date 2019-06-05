@@ -34,11 +34,11 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 //        if (checkGrayParam(isOpen, grayServerIp, grayServerPort, grayUcIdSet)) {
 //            return doSelectGray(invokers, url, invocation);
 //        }
-        logger.info("gray rules info:{}", GrayRulesCache.getStrOfContent());
+        logger.debug("gray rules info:{}", GrayRulesCache.getStrOfContent());
         if (!GrayRulesCache.isEmpty())
             return doSelectGray(invokers, url, invocation);
 
-        logger.info("loadbablance：random");
+        logger.debug("loadbablance：random");
         return this.doRandomLoadBalanceSelect(invokers, url, invocation);
     }
 
@@ -67,6 +67,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
                         && grayRule.getServerPort() == invoker.getUrl().getPort()) {
                     _invokers.add(invoker);
                     _grayRule = grayRule;
+                    logger.info("have gray machine");
                     continue;
                 }
             }
@@ -75,14 +76,14 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         if (_invokers.size() > 0) {
             if (isGrayReq(_grayRule)) {
+                logger.info("loadbablance：gray");
                 if (_invokers.size() == 1) {
                     return _invokers.get(0);
                 }
-                logger.info("loadbablance：gray");
                 return this.doRandomLoadBalanceSelect(_invokers, url, invocation);
             }
         }
-        logger.info("loadbablance：random");
+        logger.debug("loadbablance：random");
         return this.doRandomLoadBalanceSelect(excludeGrayInvokerList, url, invocation);
     }
 
@@ -110,11 +111,10 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             grayUcId = ucIdProcessror.getValue();
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayUcIdSet())) {
-            if (!ucIdProcessror.isGrayFlow(grayUcId, _grayRule)) {
-                return false;
+            if (ucIdProcessror.isGrayFlow(grayUcId, _grayRule)) {
+                return true;
             }
         }
-
 
         // 灰度流量 cityCode
         IParamProcessor cityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE);
@@ -123,8 +123,8 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             grayCityCode = cityCodeProcessror.getValue();
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCityCodeSet())) {
-            if (!cityCodeProcessror.isGrayFlow(grayCityCode, _grayRule)) {
-                return false;
+            if (cityCodeProcessror.isGrayFlow(grayCityCode, _grayRule)) {
+                return true;
             }
         }
 
@@ -135,8 +135,8 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             curWorkCityCode = curCityCodeProcessror.getValue();
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
-            if (!curCityCodeProcessror.isGrayFlow(curWorkCityCode, _grayRule)) {
-                return false;
+            if (curCityCodeProcessror.isGrayFlow(curWorkCityCode, _grayRule)) {
+                return true;
             }
         }
 
@@ -149,11 +149,11 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         //对流量百分比灰度
         IParamProcessor grayFlowPercentProcessor = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_GRAY_FLOW_PERCENT);
-        if (!grayFlowPercentProcessor.isGrayFlow(grayUcId, _grayRule)) {
-            return false;
+        if (grayFlowPercentProcessor.isGrayFlow(grayUcId, _grayRule)) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
 

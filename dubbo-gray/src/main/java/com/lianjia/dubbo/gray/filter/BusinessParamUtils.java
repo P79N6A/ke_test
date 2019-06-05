@@ -42,6 +42,10 @@ public class BusinessParamUtils {
         RpcContext.getContext().setAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE, curWorkCityCode);
     }
 
+
+    /**
+     * 提供 外部埋点 逻辑处理完之后，调用clear 清空本次请求的缓存信息
+     */
     public static void clear(){
         if (CollectionUtils.isEmpty(ParamProcessorFactory.getAllParamProcess())) {
             return;
