@@ -124,7 +124,11 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCityCodeSet())) {
             if (cityCodeProcessror.isGrayFlow(grayCityCode, _grayRule)) {
-                return true;
+                //对流量百分比灰度
+                IParamProcessor grayFlowPercentProcessor = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_GRAY_FLOW_PERCENT);
+                if (grayFlowPercentProcessor.isGrayFlow(grayUcId, _grayRule)) {
+                    return true;
+                }
             }
         }
 
@@ -136,21 +140,12 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
             if (curCityCodeProcessror.isGrayFlow(curWorkCityCode, _grayRule)) {
-                return true;
+                //对流量百分比灰度
+                IParamProcessor grayFlowPercentProcessor = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_GRAY_FLOW_PERCENT);
+                if (grayFlowPercentProcessor.isGrayFlow(grayUcId, _grayRule)) {
+                    return true;
+                }
             }
-        }
-
-        //对如果限流规则都为空
-        if (CollectionUtils.isEmpty(_grayRule.getGrayUcIdSet()) &&
-                CollectionUtils.isEmpty(_grayRule.getGrayCityCodeSet()) &&
-                CollectionUtils.isEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
-            return false;
-        }
-
-        //对流量百分比灰度
-        IParamProcessor grayFlowPercentProcessor = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_GRAY_FLOW_PERCENT);
-        if (grayFlowPercentProcessor.isGrayFlow(grayUcId, _grayRule)) {
-            return true;
         }
 
         return false;
