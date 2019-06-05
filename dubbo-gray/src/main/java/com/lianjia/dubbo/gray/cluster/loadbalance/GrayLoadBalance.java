@@ -123,7 +123,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             grayCityCode = cityCodeProcessror.getValue();
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCityCodeSet())) {
-            if (!cityCodeProcessror.isGrayFlow(grayCityCode, _grayRule)) {
+            if (cityCodeProcessror.isGrayFlow(grayCityCode, _grayRule)) {
                 return true;
             }
         }
@@ -135,7 +135,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             curWorkCityCode = curCityCodeProcessror.getValue();
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
-            if (!curCityCodeProcessror.isGrayFlow(curWorkCityCode, _grayRule)) {
+            if (curCityCodeProcessror.isGrayFlow(curWorkCityCode, _grayRule)) {
                 return true;
             }
         }
