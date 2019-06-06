@@ -20,7 +20,7 @@ public class BusinessParamUtils {
      * @param ucId
      */
     public static void setUcId(String ucId) {
-        RpcContext.getContext().setAttachment(GrayConstants.FILTER_PARAM_UCID, ucId);
+        ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).setValue(ucId);
     }
 
     /**
@@ -29,7 +29,7 @@ public class BusinessParamUtils {
      * @param cityCode
      */
     public static void setCityCode(String cityCode) {
-        RpcContext.getContext().setAttachment(GrayConstants.FILTER_PARAM_CITYCODE, cityCode);
+        ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE).setValue(cityCode);
     }
 
     /**
@@ -39,7 +39,7 @@ public class BusinessParamUtils {
      * @param curWorkCityCode
      */
     public static void setCurWorkCityCode(String curWorkCityCode) {
-        RpcContext.getContext().setAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE, curWorkCityCode);
+        ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE).setValue(curWorkCityCode);
     }
 
 
