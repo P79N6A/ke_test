@@ -30,7 +30,7 @@ public class GrayConstants {
     //当前作业城市编码
     public static final String FILTER_PARAM_CUR_WORK_CITYCODE = FILTER_PARAM_PREFIX + "curworkcitycode";
 
-    //当前作业城市编码
+    //当前作业城市 百分比
     public static final String FILTER_PARAM_GRAY_FLOW_PERCENT = FILTER_PARAM_PREFIX + "grayflowpercent";
 
     //左边中括号
