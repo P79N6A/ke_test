@@ -11,11 +11,9 @@ import com.lianjia.dubbo.gray.rule.domain.GrayRule;
  * @Date: 2019/5/28 11:22 AM
  * @Version: 1.0
  */
-public class CurWorkCityParamProcessor extends AbstractParamProcessor {
+public class CurWorkCityParamProcessor extends AbstractParamCachableProcessor {
 
     public static final Logger log = LoggerFactory.getLogger(CurWorkCityParamProcessor.class);
-
-    private static final ThreadLocal<String> curWorkCityCodeCache = new ThreadLocal<>();
 
     private CurWorkCityParamProcessor() {
     }
@@ -24,21 +22,6 @@ public class CurWorkCityParamProcessor extends AbstractParamProcessor {
 
     public static CurWorkCityParamProcessor getInstance() {
         return curWorkCityParamProcess;
-    }
-
-    @Override
-    public String getValue() {
-        return curWorkCityCodeCache.get();
-    }
-
-    @Override
-    public void setValue(String curWorkCityCode) {
-        curWorkCityCodeCache.set(curWorkCityCode);
-    }
-
-    @Override
-    public void clear() {
-        curWorkCityCodeCache.remove();
     }
 
     @Override

@@ -11,11 +11,9 @@ import com.lianjia.dubbo.gray.rule.domain.GrayRule;
  * @Date: 2019/5/28 11:21 AM
  * @Version: 1.0
  */
-public class UcIdParamProcessor extends AbstractParamProcessor {
+public class UcIdParamProcessor extends AbstractParamCachableProcessor {
 
     public static final Logger log = LoggerFactory.getLogger(UcIdParamProcessor.class);
-
-    private static final ThreadLocal<String> ucIdCache = new ThreadLocal<String>();
 
     private UcIdParamProcessor() {
     }
@@ -26,20 +24,6 @@ public class UcIdParamProcessor extends AbstractParamProcessor {
         return ucIdParamProcess;
     }
 
-    @Override
-    public String getValue() {
-        return ucIdCache.get();
-    }
-
-    @Override
-    public void setValue(String ucId) {
-        ucIdCache.set(ucId);
-    }
-
-    @Override
-    public void clear() {
-        ucIdCache.remove();
-    }
 
     @Override
     public boolean checkIsGrayFlow(String ucId, GrayRule _grayRule) {
