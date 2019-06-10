@@ -15,6 +15,7 @@ import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import org.apache.skywalking.apm.toolkit.trace.TraceContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         for (Invoker invoker : invokers) {
             GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort(
-                    invoker.getUrl().getIp(),String.valueOf(invoker.getUrl().getPort()));
+                    invoker.getUrl().getIp(), String.valueOf(invoker.getUrl().getPort()));
             if (checkNullOfGrayParam(grayRule)) {
                 // 灰度机器
                 if (grayRule.isOpen() && grayRule.getServerIp().equals(invoker.getUrl().getIp())
@@ -106,6 +107,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         // 灰度流量 ucId
         //如果为空，代表此类型不走灰度
         IParamProcessor ucIdProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID);
+        logger.info("get ucid from ketrace :", TraceContext.getTargetValue(GrayConstants.FILTER_PARAM_UCID));
         String grayUcId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
         if (StringUtils.isEmpty(grayUcId)) {
             grayUcId = ucIdProcessror.getValue();
@@ -119,7 +121,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         // 灰度流量 cityCode
         IParamProcessor cityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE);
         String grayCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE);
-        if (StringUtils.isEmpty(grayCityCode)){
+        if (StringUtils.isEmpty(grayCityCode)) {
             grayCityCode = cityCodeProcessror.getValue();
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCityCodeSet())) {
@@ -135,7 +137,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         // 灰度流量 curWorkCityCode
         IParamProcessor curCityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
         String curWorkCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
-        if (StringUtils.isEmpty(curWorkCityCode)){
+        if (StringUtils.isEmpty(curWorkCityCode)) {
             curWorkCityCode = curCityCodeProcessror.getValue();
         }
         if (CollectionUtils.isNotEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
