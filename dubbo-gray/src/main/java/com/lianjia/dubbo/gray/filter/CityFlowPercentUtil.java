@@ -15,7 +15,7 @@ public class CityFlowPercentUtil {
     /**
      *  MAX_LIMIT决定了圈定用户的精度，murmurHash保证了数据的散列性，只有在数据量足够的情况下保证数据的均匀性;
      */
-    private static int MAX_LIMIT = 10001;
+    private static final int MAX_LIMIT = 10001;
 
     public static boolean grayFlowMapping(String ucId, int limit) {
         HashFunction hf = Hashing.murmur3_32();
