@@ -4,6 +4,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.RpcContext;
+import com.lianjia.dubbo.gray.filter.CityFlowPercentUtil;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
@@ -47,11 +48,12 @@ public class CurWorkCityParamProcessor extends AbstractParamCachableProcessor {
 
         int limit = _grayRule.getGrayCurWorkCityCodeMap().get(curWorkCityCode);
         //未开启百分比
-        if (limit <= 0 ){
+        if (limit <= 0) {
             return true;
         }
 
-        return _grayRule.getGrayCurWorkCityCodeMap().containsKey(curWorkCityCode);
+        return CityFlowPercentUtil.grayFlowMapping(
+                ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).getGrayValue(), limit);
     }
 
     @Override
