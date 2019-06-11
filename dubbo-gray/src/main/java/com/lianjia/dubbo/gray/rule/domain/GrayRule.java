@@ -37,12 +37,12 @@ public class GrayRule {
     /**
      * 当前城市
      */
-    private Map<String,Integer> grayCityCodeMap;
+    private Map<String, Integer> grayCityCodeMap;
 
     /**
      * 当前作业城市
      */
-    private Map<String,Integer> grayCurWorkCityCodeMap;
+    private Map<String, Integer> grayCurWorkCityCodeMap;
 
     public boolean isOpen() {
         return isOpen;
