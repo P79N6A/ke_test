@@ -2,7 +2,10 @@ package com.lianjia.dubbo.gray.filter.params;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
+import com.alibaba.dubbo.rpc.RpcContext;
+import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
 /**
@@ -33,6 +36,19 @@ public class UcIdParamProcessor extends AbstractParamCachableProcessor {
             return false;
         }
 
+        if (CollectionUtils.isEmpty(_grayRule.getGrayUcIdSet())){
+            return false;
+        }
+
         return _grayRule.getGrayUcIdSet().contains(ucId);
+    }
+
+    @Override
+    public String getGrayValue() {
+        String grayUcId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
+        if (StringUtils.isEmpty(grayUcId)) {
+            grayUcId = this.getValue();
+        }
+        return grayUcId;
     }
 }

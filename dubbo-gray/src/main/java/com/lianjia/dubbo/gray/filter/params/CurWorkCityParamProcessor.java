@@ -3,6 +3,8 @@ package com.lianjia.dubbo.gray.filter.params;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
+import com.alibaba.dubbo.rpc.RpcContext;
+import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
 /**
@@ -26,11 +28,38 @@ public class CurWorkCityParamProcessor extends AbstractParamCachableProcessor {
 
     @Override
     public boolean checkIsGrayFlow(String curWorkCityCode, GrayRule _grayRule) {
-        log.debug("curWorkCityCode:{},curWorkCityCodeSet:{}", curWorkCityCode, _grayRule.getGrayCurWorkCityCodeSet());
+        log.debug("curWorkCityCode:{},curWorkCityCodeMap:{}", curWorkCityCode, _grayRule.getGrayCurWorkCityCodeMap());
 
         if (StringUtils.isEmpty(curWorkCityCode)) {
             return false;
         }
-        return _grayRule.getGrayCurWorkCityCodeSet().contains(curWorkCityCode);
+
+        //当前作业城市配置为空
+        if (_grayRule == null || _grayRule.getGrayCurWorkCityCodeMap() == null
+                || _grayRule.getGrayCurWorkCityCodeMap().size() == 0) {
+            return false;
+        }
+
+        //不包含当前城市
+        if (!_grayRule.getGrayCurWorkCityCodeMap().containsKey(curWorkCityCode)) {
+            return false;
+        }
+
+        int limit = _grayRule.getGrayCurWorkCityCodeMap().get(curWorkCityCode);
+        //未开启百分比
+        if (limit <= 0 ){
+            return true;
+        }
+
+        return _grayRule.getGrayCurWorkCityCodeMap().containsKey(curWorkCityCode);
+    }
+
+    @Override
+    public String getGrayValue() {
+        String curWorkCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
+        if (StringUtils.isEmpty(curWorkCityCode)) {
+            curWorkCityCode = this.getValue();
+        }
+        return curWorkCityCode;
     }
 }

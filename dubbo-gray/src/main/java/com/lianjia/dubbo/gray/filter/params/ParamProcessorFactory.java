@@ -22,7 +22,6 @@ public class ParamProcessorFactory {
         paramProcessMap.put(GrayConstants.FILTER_PARAM_UCID, UcIdParamProcessor.getInstance());
         paramProcessMap.put(GrayConstants.FILTER_PARAM_CITYCODE, CityCodeParamProcessor.getInstance());
         paramProcessMap.put(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE, CurWorkCityParamProcessor.getInstance());
-        paramProcessMap.put(GrayConstants.FILTER_PARAM_GRAY_FLOW_PERCENT, FlowPercentParamProcessor.getInstance());
     }
 
     public static List<IParamProcessor> getAllParamProcess() {

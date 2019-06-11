@@ -3,6 +3,9 @@ package com.lianjia.dubbo.gray.filter.params;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
+import com.alibaba.dubbo.rpc.RpcContext;
+import com.lianjia.dubbo.gray.filter.CityFlowPercentUtil;
+import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
 /**
@@ -26,10 +29,38 @@ public class CityCodeParamProcessor extends AbstractParamCachableProcessor {
 
     @Override
     public boolean checkIsGrayFlow(String cityCode, GrayRule _grayRule) {
-        log.debug("cityCode:{},cityCodeSet:{}", cityCode, _grayRule.getGrayCityCodeSet());
+        log.debug("cityCode:{},cityCodeMap:{}", cityCode, _grayRule.getGrayCityCodeMap());
         if (StringUtils.isEmpty(cityCode)) {
             return false;
         }
-        return _grayRule.getGrayCityCodeSet().contains(cityCode);
+
+        if (_grayRule == null || _grayRule.getGrayCityCodeMap() == null
+                || _grayRule.getGrayCityCodeMap().size() == 0){
+            return false;
+        }
+
+        //不包含当前城市，直接返回false
+        if (!_grayRule.getGrayCityCodeMap().containsKey(cityCode)){
+            return false;
+        }
+
+        Integer limit = _grayRule.getGrayCityCodeMap().get(cityCode);
+        //未开启百分比
+        if (limit <= 0) {
+            return true;
+        }
+
+        return CityFlowPercentUtil.grayFlowMapping(
+                ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).getGrayValue(), limit);
+
+    }
+
+    @Override
+    public String getGrayValue() {
+        String grayCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE);
+        if (StringUtils.isEmpty(grayCityCode)) {
+            grayCityCode = this.getValue();
+        }
+        return grayCityCode;
     }
 }

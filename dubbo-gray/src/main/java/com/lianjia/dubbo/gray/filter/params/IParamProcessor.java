@@ -12,6 +12,8 @@ public interface IParamProcessor {
 
     String getValue();
 
+    String getGrayValue();
+
     void setValue(String value);
 
     void clear();

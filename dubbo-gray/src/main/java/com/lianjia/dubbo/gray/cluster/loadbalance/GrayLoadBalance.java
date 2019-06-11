@@ -4,11 +4,9 @@ package com.lianjia.dubbo.gray.cluster.loadbalance;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import com.lianjia.dubbo.gray.filter.GrayConstants;
 import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
@@ -103,51 +101,28 @@ public class GrayLoadBalance extends AbstractLoadBalance {
     }
 
     private boolean isGrayReq(GrayRule _grayRule) {
+        if (null == _grayRule) {
+            return false;
+        }
+        //ketrace ucid
+        logger.info("get ucid from ketrace :", TraceContext.getTargetValue(GrayConstants.FILTER_PARAM_UCID));
 
         // 灰度流量 ucId
-        //如果为空，代表此类型不走灰度
         IParamProcessor ucIdProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID);
-        logger.info("get ucid from ketrace :", TraceContext.getTargetValue(GrayConstants.FILTER_PARAM_UCID));
-        String grayUcId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
-        if (StringUtils.isEmpty(grayUcId)) {
-            grayUcId = ucIdProcessror.getValue();
-        }
-        if (CollectionUtils.isNotEmpty(_grayRule.getGrayUcIdSet())) {
-            if (ucIdProcessror.isGrayFlow(grayUcId, _grayRule)) {
-                return true;
-            }
+        if (ucIdProcessror.isGrayFlow(ucIdProcessror.getGrayValue(), _grayRule)) {
+            return true;
         }
 
         // 灰度流量 cityCode
         IParamProcessor cityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE);
-        String grayCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE);
-        if (StringUtils.isEmpty(grayCityCode)) {
-            grayCityCode = cityCodeProcessror.getValue();
-        }
-        if (CollectionUtils.isNotEmpty(_grayRule.getGrayCityCodeSet())) {
-            if (cityCodeProcessror.isGrayFlow(grayCityCode, _grayRule)) {
-                //对流量百分比灰度
-                IParamProcessor grayFlowPercentProcessor = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_GRAY_FLOW_PERCENT);
-                if (grayFlowPercentProcessor.isGrayFlow(grayUcId, _grayRule)) {
-                    return true;
-                }
-            }
+        if (cityCodeProcessror.isGrayFlow(cityCodeProcessror.getGrayValue(), _grayRule)) {
+            return true;
         }
 
         // 灰度流量 curWorkCityCode
         IParamProcessor curCityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
-        String curWorkCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
-        if (StringUtils.isEmpty(curWorkCityCode)) {
-            curWorkCityCode = curCityCodeProcessror.getValue();
-        }
-        if (CollectionUtils.isNotEmpty(_grayRule.getGrayCurWorkCityCodeSet())) {
-            if (curCityCodeProcessror.isGrayFlow(curWorkCityCode, _grayRule)) {
-                //对流量百分比灰度
-                IParamProcessor grayFlowPercentProcessor = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_GRAY_FLOW_PERCENT);
-                if (grayFlowPercentProcessor.isGrayFlow(grayUcId, _grayRule)) {
-                    return true;
-                }
-            }
+        if (curCityCodeProcessror.isGrayFlow(curCityCodeProcessror.getGrayValue(), _grayRule)) {
+            return true;
         }
 
         return false;

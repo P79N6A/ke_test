@@ -2,6 +2,7 @@ package com.lianjia.dubbo.gray.rule.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -36,17 +37,12 @@ public class GrayRule {
     /**
      * 当前城市
      */
-    private Set<String> grayCityCodeSet;
+    private Map<String,Integer> grayCityCodeMap;
 
     /**
      * 当前作业城市
      */
-    private Set<String> grayCurWorkCityCodeSet;
-
-    /**
-     * 灰度流量百分比
-     */
-    private int grayFlowPercent;
+    private Map<String,Integer> grayCurWorkCityCodeMap;
 
     public boolean isOpen() {
         return isOpen;
@@ -88,29 +84,24 @@ public class GrayRule {
         this.grayUcIdSet = grayUcIdSet;
     }
 
-    public Set<String> getGrayCityCodeSet() {
-        return grayCityCodeSet;
+    public Map<String, Integer> getGrayCityCodeMap() {
+        return grayCityCodeMap;
     }
 
-    public void setGrayCityCodeSet(Set<String> grayCityCodeSet) {
-        this.grayCityCodeSet = grayCityCodeSet;
+    public GrayRule setGrayCityCodeMap(Map<String, Integer> grayCityCodeMap) {
+        this.grayCityCodeMap = grayCityCodeMap;
+        return this;
     }
 
-    public Set<String> getGrayCurWorkCityCodeSet() {
-        return grayCurWorkCityCodeSet;
+    public Map<String, Integer> getGrayCurWorkCityCodeMap() {
+        return grayCurWorkCityCodeMap;
     }
 
-    public void setGrayCurWorkCityCodeSet(Set<String> grayCurWorkCityCodeSet) {
-        this.grayCurWorkCityCodeSet = grayCurWorkCityCodeSet;
+    public GrayRule setGrayCurWorkCityCodeMap(Map<String, Integer> grayCurWorkCityCodeMap) {
+        this.grayCurWorkCityCodeMap = grayCurWorkCityCodeMap;
+        return this;
     }
 
-    public int getGrayFlowPercent() {
-        return grayFlowPercent;
-    }
-
-    public void setGrayFlowPercent(int grayFlowPercent) {
-        this.grayFlowPercent = grayFlowPercent;
-    }
 
     @JSONField(serialize = false)
     public String getKey() {
