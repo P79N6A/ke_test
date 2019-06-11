@@ -18,7 +18,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <groupId>com.lianjia.cs</groupId>
 	<artifactId>dubbo-parent</artifactId>
-	<version>1.0.0-gray-SNAPSHOT</version>
+	<version>1.0.1-gray-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<description>The parent project of dubbo</description>
@@ -139,7 +139,7 @@
         <java_source_version>1.7</java_source_version>
         <java_target_version>1.7</java_target_version>
         <file_encoding>UTF-8</file_encoding>
-        
+
 	</properties>
 	<dependencyManagement>
 		<dependencies>
