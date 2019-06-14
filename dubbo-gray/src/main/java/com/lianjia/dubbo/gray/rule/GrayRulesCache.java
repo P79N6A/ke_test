@@ -2,7 +2,8 @@ package com.lianjia.dubbo.gray.rule;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.fastjson.JSON;
-import com.lianjia.dubbo.gray.filter.GrayConstants;
+import com.lianjia.dubbo.gray.common.GrayConstants;
+import com.lianjia.dubbo.gray.common.MapUtil;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 
 import java.util.HashMap;
@@ -18,33 +19,66 @@ public class GrayRulesCache {
     /**
      * 灰度规则Map
      */
-    private static volatile Map<String, GrayRule> grayRuleHashMap = new ConcurrentHashMap<>();
+    private static volatile Map<String, Map<String, GrayRule>> grayRuleHashMap = new ConcurrentHashMap<>();
 
     private GrayRulesCache() {
     }
 
     public static void updateGrayRules(List<GrayRule> grayRuleList) {
-        if (CollectionUtils.isEmpty(grayRuleList)){
+        if (CollectionUtils.isEmpty(grayRuleList)) {
             return;
         }
-        Map map = new HashMap(grayRuleList.size());
+
+        Map _grayRuleHashMap = new HashMap(grayRuleList.size());
         for (GrayRule grayRule : grayRuleList) {
-            map.put(generateKey(grayRule.getServerIp(), String.valueOf(grayRule.getServerPort())), grayRule);
+
+            //haven't gray machine
+            if (CollectionUtils.isEmpty(grayRule.getServerIpSet())) {
+                continue;
+            }
+
+            Map _appRulesMap = new HashMap();
+
+            //contains appLication key
+            if (_grayRuleHashMap.containsKey(grayRule.getApplication())) {
+                _appRulesMap = grayRuleHashMap.get(grayRule.getApplication());
+                if (_appRulesMap == null) {
+                    _appRulesMap = new HashMap();
+                }
+            }
+
+            for (String serverIp : grayRule.getServerIpSet()) {
+                _appRulesMap.put(generateKey(serverIp, String.valueOf(grayRule.getServerPort())), grayRule);
+            }
+
+            _grayRuleHashMap.put(grayRule.getApplication(), _appRulesMap);
         }
-        if (map != null && map.size() > 0) {
-            grayRuleHashMap = map;
+
+        if (!MapUtil.isEmpty(_grayRuleHashMap)) {
+            grayRuleHashMap = _grayRuleHashMap;
         }
     }
 
     public static boolean isEmpty() {
-        return grayRuleHashMap == null || grayRuleHashMap.size() == 0;
+        return MapUtil.isEmpty(grayRuleHashMap);
     }
 
-    public static GrayRule getGrayRuleByServerAndPort(String server, String port) {
-        if (grayRuleHashMap != null && grayRuleHashMap.size() > 0) {
-            return grayRuleHashMap.get(generateKey(server, port));
+    public static GrayRule getGrayRuleByServerAndPort(String applicationName, String server, String port) {
+        if (isEmpty()) {
+            return null;
         }
-        return null;
+
+        Map<String, GrayRule> appRulesMap = getAppGrayRules(applicationName);
+        if (MapUtil.isEmpty(appRulesMap)) {
+            return null;
+        }
+
+        return appRulesMap.get(generateKey(server, port));
+
+    }
+
+    public static Map<String, GrayRule> getAppGrayRules(String applicationName) {
+        return grayRuleHashMap.get(applicationName);
     }
 
     private static String generateKey(String serverIp, String serverPort) {

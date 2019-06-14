@@ -4,11 +4,12 @@ package com.lianjia.dubbo.gray.cluster.loadbalance;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
-import com.lianjia.dubbo.gray.filter.GrayConstants;
+import com.lianjia.dubbo.gray.common.GrayConstants;
 import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
@@ -59,16 +60,13 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         for (Invoker invoker : invokers) {
             GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort(
-                    invoker.getUrl().getIp(), String.valueOf(invoker.getUrl().getPort()));
+                    url.getParameter(GrayConstants.PARAM_APPLICATION), invoker.getUrl().getIp(), String.valueOf(invoker.getUrl().getPort()));
             if (checkNullOfGrayParam(grayRule)) {
                 // 灰度机器
-                if (grayRule.isOpen() && grayRule.getServerIp().equals(invoker.getUrl().getIp())
-                        && grayRule.getServerPort() == invoker.getUrl().getPort()) {
-                    _invokers.add(invoker);
-                    _grayRule = grayRule;
-                    logger.info("have gray machine");
-                    continue;
-                }
+                _invokers.add(invoker);
+                _grayRule = grayRule;
+                logger.info("have gray machine");
+                continue;
             }
             excludeGrayInvokerList.add(invoker);
         }
@@ -95,7 +93,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
     private boolean checkNullOfGrayParam(GrayRule grayRule) {
         if (grayRule == null) return false;
         if (!grayRule.isOpen()) return false;
-        if (StringUtils.isEmpty(grayRule.getServerIp())) return false;
+        if (CollectionUtils.isEmpty(grayRule.getServerIpSet())) return false;
         if (grayRule.getServerPort() <= 0) return false;
         return true;
     }

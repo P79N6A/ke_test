@@ -1,6 +1,6 @@
 package com.lianjia.dubbo.gray.filter.params;
 
-import com.lianjia.dubbo.gray.filter.GrayConstants;
+import com.lianjia.dubbo.gray.common.GrayConstants;
 
 import java.util.Collections;
 import java.util.LinkedList;

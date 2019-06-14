@@ -1,7 +1,7 @@
 package com.lianjia.dubbo.gray.filter;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
-import com.alibaba.dubbo.rpc.RpcContext;
+import com.lianjia.dubbo.gray.common.GrayConstants;
 import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
 

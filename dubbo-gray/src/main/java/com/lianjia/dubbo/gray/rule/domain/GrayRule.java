@@ -16,9 +16,9 @@ public class GrayRule {
     private String application;
 
     /**
-     * 灰度机器IP
+     * 灰度机器IP组
      */
-    private String serverIp;
+    private Set<String> serverIpSet;
 
     /**
      * 灰度应用端口
@@ -60,12 +60,13 @@ public class GrayRule {
         this.application = application;
     }
 
-    public String getServerIp() {
-        return serverIp;
+    public Set<String> getServerIpSet() {
+        return serverIpSet;
     }
 
-    public void setServerIp(String serverIp) {
-        this.serverIp = serverIp;
+    public GrayRule setServerIpSet(Set<String> serverIpSet) {
+        this.serverIpSet = serverIpSet;
+        return this;
     }
 
     public int getServerPort() {
@@ -102,10 +103,4 @@ public class GrayRule {
         return this;
     }
 
-
-    @JSONField(serialize = false)
-    public String getKey() {
-
-        return getServerIp() + "_" + getServerPort();
-    }
 }

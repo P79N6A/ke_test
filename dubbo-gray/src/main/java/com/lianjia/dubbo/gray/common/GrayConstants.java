@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.lianjia.dubbo.gray.filter;
+package com.lianjia.dubbo.gray.common;
 
 
 public class GrayConstants {
@@ -43,4 +43,6 @@ public class GrayConstants {
     public static final String SINGLE_QUOTES = "'";
 
     public static final String UNDER_LINE = "_";
+
+    public static final String PARAM_APPLICATION = "application";
 }

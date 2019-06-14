@@ -17,7 +17,7 @@ package com.alibaba.dubbo.demo.consumer;
 
 import com.alibaba.dubbo.demo.DemoService;
 import com.alibaba.dubbo.rpc.RpcContext;
-import com.lianjia.dubbo.gray.filter.GrayConstants;
+import com.lianjia.dubbo.gray.common.GrayConstants;
 
 public class DemoAction {
     
