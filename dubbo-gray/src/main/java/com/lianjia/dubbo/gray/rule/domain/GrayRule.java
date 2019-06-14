@@ -18,7 +18,7 @@ public class GrayRule {
     /**
      * 灰度机器IP组
      */
-    private Set<String> serverIpSet;
+    private Set<String> grayServerIpSet;
 
     /**
      * 灰度应用端口
@@ -60,12 +60,12 @@ public class GrayRule {
         this.application = application;
     }
 
-    public Set<String> getServerIpSet() {
-        return serverIpSet;
+    public Set<String> getGrayServerIpSet() {
+        return grayServerIpSet;
     }
 
-    public GrayRule setServerIpSet(Set<String> serverIpSet) {
-        this.serverIpSet = serverIpSet;
+    public GrayRule setGrayServerIpSet(Set<String> grayServerIpSet) {
+        this.grayServerIpSet = grayServerIpSet;
         return this;
     }
 

@@ -17,7 +17,9 @@ public class JSONTest {
             GrayRule grayRule = new GrayRule();
             grayRule.setApplication("application_" + i);
             grayRule.setOpen(true);
-            grayRule.setServerIp("10.33.76.22");
+            Set set = new HashSet<String>(){};
+            set.add("10.33.76.22");
+            grayRule.setGrayServerIpSet(set);
             grayRule.setServerPort(20881);
             Set<String> ucIdSet = new HashSet<>();
             ucIdSet.add("123456");

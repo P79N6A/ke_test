@@ -93,7 +93,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
     private boolean checkNullOfGrayParam(GrayRule grayRule) {
         if (grayRule == null) return false;
         if (!grayRule.isOpen()) return false;
-        if (CollectionUtils.isEmpty(grayRule.getServerIpSet())) return false;
+        if (CollectionUtils.isEmpty(grayRule.getGrayServerIpSet())) return false;
         if (grayRule.getServerPort() <= 0) return false;
         return true;
     }

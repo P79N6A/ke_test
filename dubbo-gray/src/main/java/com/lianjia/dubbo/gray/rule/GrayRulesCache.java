@@ -33,7 +33,7 @@ public class GrayRulesCache {
         for (GrayRule grayRule : grayRuleList) {
 
             //haven't gray machine
-            if (CollectionUtils.isEmpty(grayRule.getServerIpSet())) {
+            if (CollectionUtils.isEmpty(grayRule.getGrayServerIpSet())) {
                 continue;
             }
 
@@ -47,7 +47,7 @@ public class GrayRulesCache {
                 }
             }
 
-            for (String serverIp : grayRule.getServerIpSet()) {
+            for (String serverIp : grayRule.getGrayServerIpSet()) {
                 _appRulesMap.put(generateKey(serverIp, String.valueOf(grayRule.getServerPort())), grayRule);
             }
 
