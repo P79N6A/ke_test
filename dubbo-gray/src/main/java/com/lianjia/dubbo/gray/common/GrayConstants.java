@@ -30,6 +30,12 @@ public class GrayConstants {
     //当前作业城市编码
     public static final String FILTER_PARAM_CUR_WORK_CITYCODE = FILTER_PARAM_PREFIX + "curworkcitycode";
 
+    //apollo 灰度配置 key
+    public static final String DUBBO_GRAY_KEY = "dubboGrayJson";
+
+    //apollo 灰度配置 nameSpace
+    public static final String DUBBO_GRAY_NAMESPACE = "dubbo-gray-rule";
+
     //左边中括号
     public static final String BRACKET_LEFT = "[";
 

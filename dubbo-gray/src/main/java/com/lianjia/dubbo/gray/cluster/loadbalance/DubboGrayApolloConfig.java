@@ -27,13 +27,17 @@ public class DubboGrayApolloConfig implements InitializingBean {
 
     public static final Logger logger = LoggerFactory.getLogger(DubboGrayApolloConfig.class);
 
-    public static final String DUBBO_GRAY_KEY = "dubboGrayJson";
 
-    @ApolloConfig
+
+    @ApolloConfig(GrayConstants.DUBBO_GRAY_NAMESPACE)
     private Config apolloConfig;
 
     public String getDubboGrayJson() {
-        String temp = apolloConfig.getProperty(DUBBO_GRAY_KEY, GrayConstants.EMPTY_STR);
+        if (null == apolloConfig){
+            return null;
+        }
+
+        String temp = apolloConfig.getProperty(GrayConstants.DUBBO_GRAY_KEY, GrayConstants.EMPTY_STR);
         logger.info("dubboGrayJson:{}", temp);
         return temp;
     }
@@ -42,13 +46,15 @@ public class DubboGrayApolloConfig implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         //load config info to  GrayRulesCache
         updateGrayRulesCache(getDubboGrayJson());
-
+        if (null == apolloConfig){
+            return;
+        }
         //add change event
         apolloConfig.addChangeListener(new ConfigChangeListener() {
             @Override
             public void onChange(ConfigChangeEvent changeEvent) {
                 //update injected value of batch if it is changed in Apollo
-                if (changeEvent.isChanged(DUBBO_GRAY_KEY)) {
+                if (changeEvent.isChanged(GrayConstants.DUBBO_GRAY_KEY)) {
                     updateGrayRulesCache(getDubboGrayJson());
                 }
             }
