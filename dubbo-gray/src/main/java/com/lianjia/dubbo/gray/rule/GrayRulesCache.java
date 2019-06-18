@@ -1,6 +1,7 @@
 package com.lianjia.dubbo.gray.rule;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.lianjia.dubbo.gray.common.GrayConstants;
 import com.lianjia.dubbo.gray.common.MapUtil;
@@ -17,9 +18,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GrayRulesCache {
 
     /**
-     * 灰度规则Map
+     * key：server+port
+     * value：application-灰度应用名称
      */
-    private static volatile Map<String, Map<String, GrayRule>> grayRuleHashMap = new ConcurrentHashMap<>();
+    private static volatile Map<String, String> serverIpPortWithApplicationMap = new ConcurrentHashMap<>();
+
+    /**
+     * 灰度规则Map
+     * key：application-灰度应用名称
+     */
+    private static volatile Map<String, GrayRule> grayRuleHashMap = new ConcurrentHashMap<>();
+
 
     private GrayRulesCache() {
     }
@@ -29,33 +38,34 @@ public class GrayRulesCache {
             return;
         }
 
-        Map _grayRuleHashMap = new HashMap(grayRuleList.size());
+        Map<String, GrayRule> _grayRuleHashMap = new HashMap(grayRuleList.size());
+        Map<String, String> _serverIpPortWithApplicationMap = new HashMap();
         for (GrayRule grayRule : grayRuleList) {
-
             //haven't gray machine
             if (CollectionUtils.isEmpty(grayRule.getGrayServerIpSet())) {
                 continue;
             }
 
-            Map _appRulesMap = new HashMap();
+            // 设置 application 与 GrayRule 的 对应关系
+            if (null == _grayRuleHashMap.get(grayRule.getApplication())) {
+                _grayRuleHashMap.put(grayRule.getApplication(), grayRule);
+            }
 
-            //contains appLication key
-            if (_grayRuleHashMap.containsKey(grayRule.getApplication())) {
-                _appRulesMap = grayRuleHashMap.get(grayRule.getApplication());
-                if (_appRulesMap == null) {
-                    _appRulesMap = new HashMap();
+            // 设置 serverIp+ port 与 application 的 对应关系
+            for (String serverIp : grayRule.getGrayServerIpSet()) {
+                if (null == _serverIpPortWithApplicationMap.get(
+                        generateKey(serverIp, String.valueOf(grayRule.getServerPort())))) {
+                    _serverIpPortWithApplicationMap.put(generateKey(serverIp, String.valueOf(grayRule.getServerPort())), grayRule.getApplication());
                 }
             }
-
-            for (String serverIp : grayRule.getGrayServerIpSet()) {
-                _appRulesMap.put(generateKey(serverIp, String.valueOf(grayRule.getServerPort())), grayRule);
-            }
-
-            _grayRuleHashMap.put(grayRule.getApplication(), _appRulesMap);
         }
 
         if (!MapUtil.isEmpty(_grayRuleHashMap)) {
             grayRuleHashMap = _grayRuleHashMap;
+        }
+
+        if (!MapUtil.isEmpty(_serverIpPortWithApplicationMap)) {
+            serverIpPortWithApplicationMap = _serverIpPortWithApplicationMap;
         }
     }
 
@@ -63,22 +73,22 @@ public class GrayRulesCache {
         return MapUtil.isEmpty(grayRuleHashMap);
     }
 
-    public static GrayRule getGrayRuleByServerAndPort(String applicationName, String server, String port) {
+    public static GrayRule getGrayRuleByServerAndPort(String server, int port) {
+        return getGrayRuleByServerAndPort(server,String.valueOf(port));
+    }
+
+    public static GrayRule getGrayRuleByServerAndPort(String server, String port) {
         if (isEmpty()) {
             return null;
         }
 
-        Map<String, GrayRule> appRulesMap = getAppGrayRules(applicationName);
-        if (MapUtil.isEmpty(appRulesMap)) {
+        String applicationName = serverIpPortWithApplicationMap.get(generateKey(server, port));
+        if (StringUtils.isEmpty(applicationName)) {
             return null;
         }
 
-        return appRulesMap.get(generateKey(server, port));
-
-    }
-
-    public static Map<String, GrayRule> getAppGrayRules(String applicationName) {
         return grayRuleHashMap.get(applicationName);
+
     }
 
     private static String generateKey(String serverIp, String serverPort) {

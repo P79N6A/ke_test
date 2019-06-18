@@ -5,7 +5,6 @@ import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.CollectionUtils;
-import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
@@ -14,7 +13,6 @@ import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
-import org.apache.skywalking.apm.toolkit.trace.TraceContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +57,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         GrayRule _grayRule = null;
 
         for (Invoker invoker : invokers) {
-            GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort(
-                    invoker.getUrl().getParameter(GrayConstants.PARAM_APPLICATION), invoker.getUrl().getIp(), String.valueOf(invoker.getUrl().getPort()));
+            GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort(invoker.getUrl().getIp(), invoker.getUrl().getPort());
             if (checkNullOfGrayParam(grayRule)) {
                 // 灰度机器
                 _invokers.add(invoker);
@@ -103,7 +100,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
             return false;
         }
         //ketrace ucid
-        logger.info("get ucid from ketrace :", TraceContext.getTargetValue(GrayConstants.FILTER_PARAM_UCID));
+//        logger.info("get ucid from ketrace :", TraceContext.getTargetValue(GrayConstants.FILTER_PARAM_UCID));
 
         // 灰度流量 ucId
         IParamProcessor ucIdProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID);
