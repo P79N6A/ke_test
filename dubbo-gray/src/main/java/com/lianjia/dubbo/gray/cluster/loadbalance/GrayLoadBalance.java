@@ -60,7 +60,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         for (Invoker invoker : invokers) {
             GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort(
-                    url.getParameter(GrayConstants.PARAM_APPLICATION), invoker.getUrl().getIp(), String.valueOf(invoker.getUrl().getPort()));
+                    invoker.getUrl().getParameter(GrayConstants.PARAM_APPLICATION), invoker.getUrl().getIp(), String.valueOf(invoker.getUrl().getPort()));
             if (checkNullOfGrayParam(grayRule)) {
                 // 灰度机器
                 _invokers.add(invoker);
