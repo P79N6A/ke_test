@@ -1,11 +1,8 @@
 package com.lianjia.dubbo.gray.filter;
 
-import com.alibaba.dubbo.common.utils.StringUtils;
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
-
-import java.io.*;
 
 /**
  * @Description: 城市计算百分比的工具类
