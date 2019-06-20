@@ -1,37 +1,43 @@
-import com.alibaba.fastjson.JSONArray;
+import com.lianjia.dubbo.gray.cluster.loadbalance.DubboGrayApolloConfig;
+import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
 /**
  * @author liupinghe
  */
 public class JSONTest {
 
+    /**
+     * 验证 示例 代码，updateGrayRulesCache 是 private 方法，此代码放到 DubboGrayApolloConfig 类即可正常执行
+     *
+     * @param args
+     */
     public static void main(String[] args) {
-        List<GrayRule> grayRuleList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            GrayRule grayRule = new GrayRule();
-            grayRule.setApplication("application_" + i);
-            grayRule.setOpen(true);
-            Set set = new HashSet<String>(){};
-            set.add("10.33.76.22");
-            grayRule.setGrayServerIpSet(set);
-            grayRule.setServerPort(20881);
-            Set<String> ucIdSet = new HashSet<>();
-            ucIdSet.add("123456");
-            ucIdSet.add("123");
-            grayRule.setGrayUcIdSet(ucIdSet);
-            grayRuleList.add(grayRule);
+        String dubboGray = "[\n" +
+                "    {\n" +
+                "        \"application\":\"sop.mls.lianjia.com\",\n" +
+                "        \"isOpen\":\"true\",\n" +
+                "        \"grayServerIpMap\":{\n" +
+                "            \"10.200.16.138\":{\n" +
+                "                \"grayUcIdSet\":[\n" +
+                "                    \"1000001000024736\",\n" +
+                "                    \"1000001000024721\"\n" +
+                "                ],\n" +
+                "                \"grayCityCodeMap\":{\n" +
+                "                    \"666666\":\"20\"\n" +
+                "                }\n" +
+                "            }\n" +
+                "        },\n" +
+                "        \"serverPort\":\"28640\"\n" +
+                "    }\n" +
+                "]";
+        DubboGrayApolloConfig d = new DubboGrayApolloConfig();
+//        d.updateGrayRulesCache(dubboGray);
 
-        }
-
-        String json = JSONArray.toJSONString(grayRuleList);
-        System.out.println(json);
-
+        GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort("10.200.16.138", 28640);
+        RuleInfo ruleInfo = GrayRulesCache.getRuleInfoByGrayRule(grayRule, "10.200.16.138");
+        System.out.println(ruleInfo);
     }
 
 

@@ -3,7 +3,7 @@ package com.lianjia.dubbo.gray.filter.params;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.lianjia.dubbo.gray.common.GrayConstants;
-import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
 /**
  * @Description: 类信息描述
@@ -15,17 +15,17 @@ public abstract class AbstractParamProcessor implements IParamProcessor {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractParamProcessor.class);
 
-    protected abstract boolean checkIsGrayFlow(String value, GrayRule _grayRule);
+    protected abstract boolean checkIsGrayFlow(String value, RuleInfo _ruleInfo);
 
     @Override
-    public boolean isGrayFlow(String value, GrayRule _grayRule) {
+    public boolean isGrayFlow(String value, RuleInfo _ruleInfo) {
         String valueParsed = null;
         try {
             valueParsed = getFilterParamValue(value);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return checkIsGrayFlow(valueParsed, _grayRule);
+        return checkIsGrayFlow(valueParsed, _ruleInfo);
     }
 
     /**

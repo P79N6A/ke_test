@@ -6,7 +6,7 @@ import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.lianjia.dubbo.gray.common.GrayConstants;
-import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
 /**
  * @Description: 类信息描述
@@ -29,18 +29,18 @@ public class UcIdParamProcessor extends AbstractParamCachableProcessor {
 
 
     @Override
-    public boolean checkIsGrayFlow(String ucId, GrayRule _grayRule) {
+    public boolean checkIsGrayFlow(String ucId, RuleInfo _ruleInfo) {
 
-        log.debug("ucId:{},ucIdSet:{}", ucId, _grayRule.getGrayUcIdSet());
+        log.debug("ucId:{},ucIdSet:{}", ucId, _ruleInfo.getGrayUcIdSet());
         if (StringUtils.isEmpty(ucId)) {
             return false;
         }
 
-        if (CollectionUtils.isEmpty(_grayRule.getGrayUcIdSet())){
+        if (CollectionUtils.isEmpty(_ruleInfo.getGrayUcIdSet())) {
             return false;
         }
 
-        return _grayRule.getGrayUcIdSet().contains(ucId);
+        return _ruleInfo.getGrayUcIdSet().contains(ucId);
     }
 
     @Override

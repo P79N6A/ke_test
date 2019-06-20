@@ -28,12 +28,11 @@ public class DubboGrayApolloConfig implements InitializingBean {
     public static final Logger logger = LoggerFactory.getLogger(DubboGrayApolloConfig.class);
 
 
-
     @ApolloConfig(GrayConstants.DUBBO_GRAY_NAMESPACE)
     private Config apolloConfig;
 
     public String getDubboGrayJson() {
-        if (null == apolloConfig){
+        if (null == apolloConfig) {
             return null;
         }
 
@@ -46,7 +45,7 @@ public class DubboGrayApolloConfig implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         //load config info to  GrayRulesCache
         updateGrayRulesCache(getDubboGrayJson());
-        if (null == apolloConfig){
+        if (null == apolloConfig) {
             return;
         }
         //add change event

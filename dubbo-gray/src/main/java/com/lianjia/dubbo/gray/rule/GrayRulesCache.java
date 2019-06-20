@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.lianjia.dubbo.gray.common.GrayConstants;
 import com.lianjia.dubbo.gray.common.MapUtil;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,11 @@ public class GrayRulesCache {
     private GrayRulesCache() {
     }
 
+    /**
+     * 更新缓存
+     *
+     * @param grayRuleList
+     */
     public static void updateGrayRules(List<GrayRule> grayRuleList) {
         if (CollectionUtils.isEmpty(grayRuleList)) {
             return;
@@ -42,7 +48,7 @@ public class GrayRulesCache {
         Map<String, String> _serverIpPortWithApplicationMap = new HashMap();
         for (GrayRule grayRule : grayRuleList) {
             //haven't gray machine
-            if (CollectionUtils.isEmpty(grayRule.getGrayServerIpSet())) {
+            if (MapUtil.isEmpty(grayRule.getGrayServerIpMap())) {
                 continue;
             }
 
@@ -52,7 +58,7 @@ public class GrayRulesCache {
             }
 
             // 设置 serverIp+ port 与 application 的 对应关系
-            for (String serverIp : grayRule.getGrayServerIpSet()) {
+            for (String serverIp : grayRule.getGrayServerIpMap().keySet()) {
                 if (null == _serverIpPortWithApplicationMap.get(
                         generateKey(serverIp, String.valueOf(grayRule.getServerPort())))) {
                     _serverIpPortWithApplicationMap.put(generateKey(serverIp, String.valueOf(grayRule.getServerPort())), grayRule.getApplication());
@@ -73,8 +79,15 @@ public class GrayRulesCache {
         return MapUtil.isEmpty(grayRuleHashMap);
     }
 
+    /**
+     * 通过 server port 拿到缓存
+     *
+     * @param server
+     * @param port
+     * @return
+     */
     public static GrayRule getGrayRuleByServerAndPort(String server, int port) {
-        return getGrayRuleByServerAndPort(server,String.valueOf(port));
+        return getGrayRuleByServerAndPort(server, String.valueOf(port));
     }
 
     public static GrayRule getGrayRuleByServerAndPort(String server, String port) {
@@ -97,5 +110,12 @@ public class GrayRulesCache {
 
     public static String getStrOfContent() {
         return JSON.toJSONString(grayRuleHashMap);
+    }
+
+    public static RuleInfo getRuleInfoByGrayRule(GrayRule grayRule, String serverIp) {
+        if (null == grayRule) {
+            return null;
+        }
+        return grayRule.getGrayServerIpMap().get(serverIp);
     }
 }

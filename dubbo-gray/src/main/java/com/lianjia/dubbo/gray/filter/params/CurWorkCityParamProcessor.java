@@ -4,9 +4,9 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.RpcContext;
-import com.lianjia.dubbo.gray.filter.CityFlowPercentUtil;
 import com.lianjia.dubbo.gray.common.GrayConstants;
-import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import com.lianjia.dubbo.gray.filter.CityFlowPercentUtil;
+import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
 /**
  * @Description: 类信息描述
@@ -28,25 +28,25 @@ public class CurWorkCityParamProcessor extends AbstractParamCachableProcessor {
     }
 
     @Override
-    public boolean checkIsGrayFlow(String curWorkCityCode, GrayRule _grayRule) {
-        log.debug("curWorkCityCode:{},curWorkCityCodeMap:{}", curWorkCityCode, _grayRule.getGrayCurWorkCityCodeMap());
+    public boolean checkIsGrayFlow(String curWorkCityCode, RuleInfo _ruleInfo) {
+        log.debug("curWorkCityCode:{},curWorkCityCodeMap:{}", curWorkCityCode, _ruleInfo.getGrayCurWorkCityCodeMap());
 
         if (StringUtils.isEmpty(curWorkCityCode)) {
             return false;
         }
 
         //当前作业城市配置为空
-        if (_grayRule == null || _grayRule.getGrayCurWorkCityCodeMap() == null
-                || _grayRule.getGrayCurWorkCityCodeMap().size() == 0) {
+        if (_ruleInfo == null || _ruleInfo.getGrayCurWorkCityCodeMap() == null
+                || _ruleInfo.getGrayCurWorkCityCodeMap().size() == 0) {
             return false;
         }
 
         //不包含当前城市
-        if (!_grayRule.getGrayCurWorkCityCodeMap().containsKey(curWorkCityCode)) {
+        if (!_ruleInfo.getGrayCurWorkCityCodeMap().containsKey(curWorkCityCode)) {
             return false;
         }
 
-        int limit = _grayRule.getGrayCurWorkCityCodeMap().get(curWorkCityCode);
+        int limit = _ruleInfo.getGrayCurWorkCityCodeMap().get(curWorkCityCode);
         //未开启百分比
         if (limit <= 0) {
             return true;

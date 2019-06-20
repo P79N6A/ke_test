@@ -1,9 +1,6 @@
 package com.lianjia.dubbo.gray.rule.domain;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author liupinghe
@@ -18,7 +15,7 @@ public class GrayRule {
     /**
      * 灰度机器IP组
      */
-    private Set<String> grayServerIpSet;
+    private Map<String, RuleInfo> grayServerIpMap;
 
     /**
      * 灰度应用端口
@@ -29,20 +26,6 @@ public class GrayRule {
      */
     private boolean isOpen;
 
-    /**
-     * 灰度账号
-     */
-    private Set<String> grayUcIdSet;
-
-    /**
-     * 当前城市
-     */
-    private Map<String, Integer> grayCityCodeMap;
-
-    /**
-     * 当前作业城市
-     */
-    private Map<String, Integer> grayCurWorkCityCodeMap;
 
     public boolean isOpen() {
         return isOpen;
@@ -60,14 +43,6 @@ public class GrayRule {
         this.application = application;
     }
 
-    public Set<String> getGrayServerIpSet() {
-        return grayServerIpSet;
-    }
-
-    public GrayRule setGrayServerIpSet(Set<String> grayServerIpSet) {
-        this.grayServerIpSet = grayServerIpSet;
-        return this;
-    }
 
     public int getServerPort() {
         return serverPort;
@@ -77,30 +52,12 @@ public class GrayRule {
         this.serverPort = serverPort;
     }
 
-    public Set<String> getGrayUcIdSet() {
-        return grayUcIdSet;
+    public Map<String, RuleInfo> getGrayServerIpMap() {
+        return grayServerIpMap;
     }
 
-    public void setGrayUcIdSet(Set<String> grayUcIdSet) {
-        this.grayUcIdSet = grayUcIdSet;
-    }
-
-    public Map<String, Integer> getGrayCityCodeMap() {
-        return grayCityCodeMap;
-    }
-
-    public GrayRule setGrayCityCodeMap(Map<String, Integer> grayCityCodeMap) {
-        this.grayCityCodeMap = grayCityCodeMap;
+    public GrayRule setGrayServerIpMap(Map<String, RuleInfo> grayServerIpMap) {
+        this.grayServerIpMap = grayServerIpMap;
         return this;
     }
-
-    public Map<String, Integer> getGrayCurWorkCityCodeMap() {
-        return grayCurWorkCityCodeMap;
-    }
-
-    public GrayRule setGrayCurWorkCityCodeMap(Map<String, Integer> grayCurWorkCityCodeMap) {
-        this.grayCurWorkCityCodeMap = grayCurWorkCityCodeMap;
-        return this;
-    }
-
 }

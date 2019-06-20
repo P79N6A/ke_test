@@ -1,6 +1,6 @@
 package com.lianjia.dubbo.gray.filter.params;
 
-import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
 /**
  * @Description: 类信息描述
@@ -18,5 +18,5 @@ public interface IParamProcessor {
 
     void clear();
 
-    boolean isGrayFlow(String value, GrayRule _grayRule);
+    boolean isGrayFlow(String value, RuleInfo _ruleInfo);
 }

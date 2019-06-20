@@ -4,15 +4,16 @@ package com.lianjia.dubbo.gray.cluster.loadbalance;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import com.lianjia.dubbo.gray.common.GrayConstants;
+import com.lianjia.dubbo.gray.common.MapUtil;
 import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
 import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,14 +55,14 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         List<Invoker<T>> excludeGrayInvokerList = new ArrayList<>();
         // 灰度机器invoker列表
         List<Invoker<T>> _invokers = new ArrayList<>();
-        GrayRule _grayRule = null;
+        RuleInfo _ruleInfo = null;
 
         for (Invoker invoker : invokers) {
             GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort(invoker.getUrl().getIp(), invoker.getUrl().getPort());
             if (checkNullOfGrayParam(grayRule)) {
                 // 灰度机器
                 _invokers.add(invoker);
-                _grayRule = grayRule;
+                _ruleInfo = GrayRulesCache.getRuleInfoByGrayRule(grayRule, invoker.getUrl().getIp());
                 logger.info("have gray machine");
                 continue;
             }
@@ -69,7 +70,7 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         }
 
         if (_invokers.size() > 0) {
-            if (isGrayReq(_grayRule)) {
+            if (isGrayReq(_ruleInfo)) {
                 logger.info("loadbablance：gray");
                 if (_invokers.size() == 1) {
                     return _invokers.get(0);
@@ -90,13 +91,13 @@ public class GrayLoadBalance extends AbstractLoadBalance {
     private boolean checkNullOfGrayParam(GrayRule grayRule) {
         if (grayRule == null) return false;
         if (!grayRule.isOpen()) return false;
-        if (CollectionUtils.isEmpty(grayRule.getGrayServerIpSet())) return false;
+        if (MapUtil.isEmpty(grayRule.getGrayServerIpMap())) return false;
         if (grayRule.getServerPort() <= 0) return false;
         return true;
     }
 
-    private boolean isGrayReq(GrayRule _grayRule) {
-        if (null == _grayRule) {
+    private boolean isGrayReq(RuleInfo _ruleInfo) {
+        if (null == _ruleInfo) {
             return false;
         }
         //ketrace ucid
@@ -104,19 +105,19 @@ public class GrayLoadBalance extends AbstractLoadBalance {
 
         // 灰度流量 ucId
         IParamProcessor ucIdProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID);
-        if (ucIdProcessror.isGrayFlow(ucIdProcessror.getGrayValue(), _grayRule)) {
+        if (ucIdProcessror.isGrayFlow(ucIdProcessror.getGrayValue(), _ruleInfo)) {
             return true;
         }
 
         // 灰度流量 cityCode
         IParamProcessor cityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE);
-        if (cityCodeProcessror.isGrayFlow(cityCodeProcessror.getGrayValue(), _grayRule)) {
+        if (cityCodeProcessror.isGrayFlow(cityCodeProcessror.getGrayValue(), _ruleInfo)) {
             return true;
         }
 
         // 灰度流量 curWorkCityCode
         IParamProcessor curCityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
-        if (curCityCodeProcessror.isGrayFlow(curCityCodeProcessror.getGrayValue(), _grayRule)) {
+        if (curCityCodeProcessror.isGrayFlow(curCityCodeProcessror.getGrayValue(), _ruleInfo)) {
             return true;
         }
 

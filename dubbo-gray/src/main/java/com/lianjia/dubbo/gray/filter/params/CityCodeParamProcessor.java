@@ -4,9 +4,9 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.rpc.RpcContext;
-import com.lianjia.dubbo.gray.filter.CityFlowPercentUtil;
 import com.lianjia.dubbo.gray.common.GrayConstants;
-import com.lianjia.dubbo.gray.rule.domain.GrayRule;
+import com.lianjia.dubbo.gray.filter.CityFlowPercentUtil;
+import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
 /**
  * @Description: 类信息描述
@@ -28,23 +28,23 @@ public class CityCodeParamProcessor extends AbstractParamCachableProcessor {
     }
 
     @Override
-    public boolean checkIsGrayFlow(String cityCode, GrayRule _grayRule) {
-        log.debug("cityCode:{},cityCodeMap:{}", cityCode, _grayRule.getGrayCityCodeMap());
+    public boolean checkIsGrayFlow(String cityCode, RuleInfo _ruleInfo) {
+        log.debug("cityCode:{},cityCodeMap:{}", cityCode, _ruleInfo.getGrayCityCodeMap());
         if (StringUtils.isEmpty(cityCode)) {
             return false;
         }
 
-        if (_grayRule == null || _grayRule.getGrayCityCodeMap() == null
-                || _grayRule.getGrayCityCodeMap().size() == 0){
+        if (_ruleInfo == null || _ruleInfo.getGrayCityCodeMap() == null
+                || _ruleInfo.getGrayCityCodeMap().size() == 0) {
             return false;
         }
 
         //不包含当前城市，直接返回false
-        if (!_grayRule.getGrayCityCodeMap().containsKey(cityCode)){
+        if (!_ruleInfo.getGrayCityCodeMap().containsKey(cityCode)) {
             return false;
         }
 
-        Integer limit = _grayRule.getGrayCityCodeMap().get(cityCode);
+        Integer limit = _ruleInfo.getGrayCityCodeMap().get(cityCode);
         //未开启百分比
         if (limit <= 0) {
             return true;
