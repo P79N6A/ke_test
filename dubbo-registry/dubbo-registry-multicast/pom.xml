@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>com.lianjia.cs</groupId>
 		<artifactId>dubbo-registry</artifactId>
-		<version>1.0.2-gray-SNAPSHOT</version>
+		<version>1.0.1-gray</version>
 	</parent>
 	<artifactId>dubbo-registry-multicast</artifactId>
 	<packaging>jar</packaging>
