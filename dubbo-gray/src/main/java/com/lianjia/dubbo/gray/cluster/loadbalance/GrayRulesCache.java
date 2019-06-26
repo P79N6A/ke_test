@@ -47,14 +47,15 @@ class GrayRulesCache {
         Map<String, GrayRule> _grayRuleHashMap = new HashMap(grayRuleList.size());
         Map<String, String> _serverIpPortWithApplicationMap = new HashMap();
         for (GrayRule grayRule : grayRuleList) {
-            //haven't gray machine
-            if (MapUtil.isEmpty(grayRule.getGrayServerIpMap())) {
-                continue;
-            }
 
             // 设置 application 与 GrayRule 的 对应关系
             if (null == _grayRuleHashMap.get(grayRule.getApplication())) {
                 _grayRuleHashMap.put(grayRule.getApplication(), grayRule);
+            }
+
+            //haven't gray machine
+            if (MapUtil.isEmpty(grayRule.getGrayServerIpMap())) {
+                continue;
             }
 
             // 设置 serverIp+ port 与 application 的 对应关系
