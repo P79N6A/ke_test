@@ -35,9 +35,9 @@ public class JSONTest {
         DubboGrayApolloConfig d = new DubboGrayApolloConfig();
 //        d.updateGrayRulesCache(dubboGray);
 
-        GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort("10.200.16.138", 28640);
-        RuleInfo ruleInfo = GrayRulesCache.getRuleInfoByGrayRule(grayRule, "10.200.16.138");
-        System.out.println(ruleInfo);
+//        GrayRule grayRule = GrayRulesCache.getGrayRuleByServerAndPort("10.200.16.138", 28640);
+//        RuleInfo ruleInfo = GrayRulesCache.getRuleInfoByGrayRule(grayRule, "10.200.16.138");
+//        System.out.println(ruleInfo);
     }
 
 
