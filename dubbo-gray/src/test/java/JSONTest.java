@@ -1,7 +1,4 @@
 import com.lianjia.dubbo.gray.cluster.loadbalance.DubboGrayApolloConfig;
-import com.lianjia.dubbo.gray.rule.GrayRulesCache;
-import com.lianjia.dubbo.gray.rule.domain.GrayRule;
-import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
 /**
  * @author liupinghe
