@@ -1,4 +1,4 @@
-package com.lianjia.dubbo.gray.rule;
+package com.lianjia.dubbo.gray.cluster.loadbalance;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author liupinghe
  */
-public class GrayRulesCache {
+class GrayRulesCache {
 
     /**
      * key：server+port
@@ -70,9 +70,8 @@ public class GrayRulesCache {
             grayRuleHashMap = _grayRuleHashMap;
         }
 
-        if (!MapUtil.isEmpty(_serverIpPortWithApplicationMap)) {
-            serverIpPortWithApplicationMap = _serverIpPortWithApplicationMap;
-        }
+        //serIpPortWithApplication is could be null ,which means no gray rules
+        serverIpPortWithApplicationMap = _serverIpPortWithApplicationMap;
     }
 
     public static boolean isEmpty() {

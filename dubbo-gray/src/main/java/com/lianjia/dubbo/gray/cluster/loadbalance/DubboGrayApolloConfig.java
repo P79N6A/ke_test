@@ -11,7 +11,6 @@ import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfig;
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import com.lianjia.dubbo.gray.common.GrayConstants;
-import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Configuration;

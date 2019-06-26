@@ -11,7 +11,6 @@ import com.lianjia.dubbo.gray.common.GrayConstants;
 import com.lianjia.dubbo.gray.common.MapUtil;
 import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
-import com.lianjia.dubbo.gray.rule.GrayRulesCache;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
