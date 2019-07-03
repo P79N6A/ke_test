@@ -30,6 +30,9 @@ public class GrayConstants {
     //当前作业城市编码
     public static final String FILTER_PARAM_CUR_WORK_CITYCODE = FILTER_PARAM_PREFIX + "curworkcitycode";
 
+    //用户自定义参数
+    public static final String FILTER_PARAM_ATTACHMENT = FILTER_PARAM_PREFIX + "attachment";
+
     //apollo 灰度配置 key
     public static final String DUBBO_GRAY_KEY = "dubboGrayJson";
 

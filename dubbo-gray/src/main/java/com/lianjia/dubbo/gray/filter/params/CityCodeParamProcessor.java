@@ -14,7 +14,7 @@ import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
  * @Date: 2019/5/28 11:22 AM
  * @Version: 1.0
  */
-public class CityCodeParamProcessor extends AbstractParamCachableProcessor {
+public class CityCodeParamProcessor extends AbstractParamCachableProcessor<String> {
 
     public static final Logger log = LoggerFactory.getLogger(CityCodeParamProcessor.class);
 
@@ -28,8 +28,8 @@ public class CityCodeParamProcessor extends AbstractParamCachableProcessor {
     }
 
     @Override
-    public boolean checkIsGrayFlow(String cityCode, RuleInfo _ruleInfo) {
-        log.debug("cityCode:{},cityCodeMap:{}", cityCode, _ruleInfo.getGrayCityCodeMap());
+    public boolean checkIsGrayFlow(String key, RuleInfo _ruleInfo) {
+        String cityCode = this.getGrayValue(key);
         if (StringUtils.isEmpty(cityCode)) {
             return false;
         }
@@ -38,6 +38,8 @@ public class CityCodeParamProcessor extends AbstractParamCachableProcessor {
                 || _ruleInfo.getGrayCityCodeMap().size() == 0) {
             return false;
         }
+
+        log.debug("cityCode:{},cityCodeMap:{}", cityCode, _ruleInfo.getGrayCityCodeMap());
 
         //不包含当前城市，直接返回false
         if (!_ruleInfo.getGrayCityCodeMap().containsKey(cityCode)) {
@@ -51,13 +53,16 @@ public class CityCodeParamProcessor extends AbstractParamCachableProcessor {
         }
 
         return CityFlowPercentUtil.grayFlowMapping(
-                ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).getGrayValue(), limit);
+                this.getGrayValue(GrayConstants.FILTER_PARAM_CITYCODE), limit);
 
     }
 
     @Override
-    public String getGrayValue() {
-        String grayCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CITYCODE);
+    public String getGrayValue(String key) {
+        if (StringUtils.isBlank(key)) {
+            key = GrayConstants.FILTER_PARAM_CITYCODE;
+        }
+        String grayCityCode = RpcContext.getContext().getAttachment(key);
         if (StringUtils.isEmpty(grayCityCode)) {
             grayCityCode = this.getValue();
         }

@@ -4,19 +4,20 @@ package com.lianjia.dubbo.gray.cluster.loadbalance;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
+import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.cluster.loadbalance.AbstractLoadBalance;
 import com.lianjia.dubbo.gray.common.GrayConstants;
 import com.lianjia.dubbo.gray.common.MapUtil;
 import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
 import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
+import com.lianjia.dubbo.gray.filter.params.UserDefinedParamCachableProcessor;
 import com.lianjia.dubbo.gray.rule.domain.GrayRule;
 import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author liupinghe
@@ -99,32 +100,57 @@ public class GrayLoadBalance extends AbstractLoadBalance {
         if (null == _ruleInfo) {
             return false;
         }
-        //ketrace ucid
-//        logger.info("get ucid from ketrace :", TraceContext.getTargetValue(GrayConstants.FILTER_PARAM_UCID));
 
         // 灰度流量 ucId
         IParamProcessor ucIdProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID);
-        if (ucIdProcessror.isGrayFlow(ucIdProcessror.getGrayValue(), _ruleInfo)) {
+        if (ucIdProcessror.isGrayFlow(GrayConstants.FILTER_PARAM_UCID, _ruleInfo)) {
             return true;
         }
 
         // 灰度流量 cityCode
         IParamProcessor cityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE);
-        if (cityCodeProcessror.isGrayFlow(cityCodeProcessror.getGrayValue(), _ruleInfo)) {
+        if (cityCodeProcessror.isGrayFlow(GrayConstants.FILTER_PARAM_CITYCODE, _ruleInfo)) {
             return true;
         }
 
         // 灰度流量 curWorkCityCode
         IParamProcessor curCityCodeProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
-        if (curCityCodeProcessror.isGrayFlow(curCityCodeProcessror.getGrayValue(), _ruleInfo)) {
+        if (curCityCodeProcessror.isGrayFlow(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE, _ruleInfo)) {
             return true;
+        }
+
+        //自定义参数
+        IParamProcessor userAttachmentProcessror = ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_ATTACHMENT);
+        Set<String> attachmentKeySet = getAttachmentKeySet(_ruleInfo);
+        if (CollectionUtils.isNotEmpty(attachmentKeySet)) {
+            for (String attachmentKey : attachmentKeySet) {
+                if (userAttachmentProcessror.isGrayFlow(attachmentKey, _ruleInfo)) {
+                    return true;
+                }
+            }
         }
 
         return false;
     }
 
+    private Set<String> getAttachmentKeySet(RuleInfo ruleInfo) {
+        if (MapUtil.isEmpty(ruleInfo.getAttachmentsMap())) {
+            return null;
+        }
 
-    public static final String NAME = "random";
+        Set<String> rpcAttachmentKeySet = RpcContext.getContext().getAttachments().keySet();
+        if (CollectionUtils.isEmpty(rpcAttachmentKeySet)){
+            return null;
+        }
+
+        Set<String> result = new HashSet<>();
+        for (String key : ruleInfo.getAttachmentsMap().keySet()){
+            if (rpcAttachmentKeySet.contains(UserDefinedParamCachableProcessor.getInstance().generageKey(key))){
+                result.add(key);
+            }
+        }
+        return result;
+    }
 
     private final Random random = new Random();
 

@@ -26,6 +26,11 @@ public class RuleInfo {
      */
     private Map<String, Integer> grayCurWorkCityCodeMap;
 
+    /**
+     * 用户自定义参数
+     */
+    private Map<String, String> attachmentsMap;
+
     public Set<String> getGrayUcIdSet() {
         return grayUcIdSet;
     }
@@ -50,6 +55,15 @@ public class RuleInfo {
 
     public RuleInfo setGrayCurWorkCityCodeMap(Map<String, Integer> grayCurWorkCityCodeMap) {
         this.grayCurWorkCityCodeMap = grayCurWorkCityCodeMap;
+        return this;
+    }
+
+    public Map<String, String> getAttachmentsMap() {
+        return attachmentsMap;
+    }
+
+    public RuleInfo setAttachmentsMap(Map<String, String> attachmentsMap) {
+        this.attachmentsMap = attachmentsMap;
         return this;
     }
 }

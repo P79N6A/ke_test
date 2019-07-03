@@ -14,7 +14,7 @@ import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
  * @Date: 2019/5/28 11:22 AM
  * @Version: 1.0
  */
-public class CurWorkCityParamProcessor extends AbstractParamCachableProcessor {
+public class CurWorkCityParamProcessor extends AbstractParamCachableProcessor<String> {
 
     public static final Logger log = LoggerFactory.getLogger(CurWorkCityParamProcessor.class);
 
@@ -28,7 +28,8 @@ public class CurWorkCityParamProcessor extends AbstractParamCachableProcessor {
     }
 
     @Override
-    public boolean checkIsGrayFlow(String curWorkCityCode, RuleInfo _ruleInfo) {
+    public boolean checkIsGrayFlow(String key, RuleInfo _ruleInfo) {
+        String curWorkCityCode = getGrayValue(key);
         log.debug("curWorkCityCode:{},curWorkCityCodeMap:{}", curWorkCityCode, _ruleInfo.getGrayCurWorkCityCodeMap());
 
         if (StringUtils.isEmpty(curWorkCityCode)) {
@@ -53,12 +54,15 @@ public class CurWorkCityParamProcessor extends AbstractParamCachableProcessor {
         }
 
         return CityFlowPercentUtil.grayFlowMapping(
-                ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).getGrayValue(), limit);
+                this.getGrayValue(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE), limit);
     }
 
     @Override
-    public String getGrayValue() {
-        String curWorkCityCode = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE);
+    public String getGrayValue(String key) {
+        if (StringUtils.isBlank(key)) {
+            key = GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE;
+        }
+        String curWorkCityCode = RpcContext.getContext().getAttachment(key);
         if (StringUtils.isEmpty(curWorkCityCode)) {
             curWorkCityCode = this.getValue();
         }

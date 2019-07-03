@@ -14,7 +14,7 @@ import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
  * @Date: 2019/5/28 11:21 AM
  * @Version: 1.0
  */
-public class UcIdParamProcessor extends AbstractParamCachableProcessor {
+public class UcIdParamProcessor extends AbstractParamCachableProcessor<String> {
 
     public static final Logger log = LoggerFactory.getLogger(UcIdParamProcessor.class);
 
@@ -29,7 +29,9 @@ public class UcIdParamProcessor extends AbstractParamCachableProcessor {
 
 
     @Override
-    public boolean checkIsGrayFlow(String ucId, RuleInfo _ruleInfo) {
+    public boolean checkIsGrayFlow(String key,RuleInfo _ruleInfo) {
+
+        String ucId = this.getGrayValue(key);
 
         log.debug("ucId:{},ucIdSet:{}", ucId, _ruleInfo.getGrayUcIdSet());
         if (StringUtils.isEmpty(ucId)) {
@@ -44,8 +46,11 @@ public class UcIdParamProcessor extends AbstractParamCachableProcessor {
     }
 
     @Override
-    public String getGrayValue() {
-        String grayUcId = RpcContext.getContext().getAttachment(GrayConstants.FILTER_PARAM_UCID);
+    public String getGrayValue(String key) {
+        if (StringUtils.isBlank(key)) {
+            key = GrayConstants.FILTER_PARAM_UCID;
+        }
+        String grayUcId = RpcContext.getContext().getAttachment(key);
         if (StringUtils.isEmpty(grayUcId)) {
             grayUcId = this.getValue();
         }

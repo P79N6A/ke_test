@@ -10,13 +10,18 @@ import com.lianjia.dubbo.gray.rule.domain.RuleInfo;
  */
 public interface IParamProcessor {
 
-    String getValue();
+    /**
+     * 通过 流量标记名称 获取 值
+     *
+     * @param key 通过参数值
+     * @return
+     */
+    String getGrayValue(String key);
 
-    String getGrayValue();
-
-    void setValue(String value);
-
-    void clear();
-
-    boolean isGrayFlow(String value, RuleInfo _ruleInfo);
+    /**
+     * @param key       流量标记名称
+     * @param _ruleInfo 对应灰度规则
+     * @return
+     */
+    boolean isGrayFlow(String key, RuleInfo _ruleInfo);
 }

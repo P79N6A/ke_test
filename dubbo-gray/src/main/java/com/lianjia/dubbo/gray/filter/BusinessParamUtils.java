@@ -1,9 +1,7 @@
 package com.lianjia.dubbo.gray.filter;
 
 import com.alibaba.dubbo.common.utils.CollectionUtils;
-import com.lianjia.dubbo.gray.common.GrayConstants;
-import com.lianjia.dubbo.gray.filter.params.IParamProcessor;
-import com.lianjia.dubbo.gray.filter.params.ParamProcessorFactory;
+import com.lianjia.dubbo.gray.filter.params.*;
 
 
 /**
@@ -20,7 +18,7 @@ public class BusinessParamUtils {
      * @param ucId
      */
     public static void setUcId(String ucId) {
-        ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_UCID).setValue(ucId);
+        UcIdParamProcessor.getInstance().setValue(ucId);
     }
 
     /**
@@ -29,7 +27,7 @@ public class BusinessParamUtils {
      * @param cityCode
      */
     public static void setCityCode(String cityCode) {
-        ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CITYCODE).setValue(cityCode);
+        CityCodeParamProcessor.getInstance().setValue(cityCode);
     }
 
     /**
@@ -39,19 +37,33 @@ public class BusinessParamUtils {
      * @param curWorkCityCode
      */
     public static void setCurWorkCityCode(String curWorkCityCode) {
-        ParamProcessorFactory.getParamProcessByKey(GrayConstants.FILTER_PARAM_CUR_WORK_CITYCODE).setValue(curWorkCityCode);
+        CurWorkCityParamProcessor.getInstance().setValue(curWorkCityCode);
+    }
+
+    /**
+     * 设置 自定义参数
+     *
+     * @param key
+     * @param value
+     */
+    public static void setAttachment(String key, String value) {
+        UserDefinedParamCachableProcessor.getInstance().setAttachment(key, value);
     }
 
 
     /**
      * 提供 外部埋点 逻辑处理完之后，调用clear 清空本次请求的缓存信息
      */
-    public static void clear(){
+    public static void clear() {
         if (CollectionUtils.isEmpty(ParamProcessorFactory.getAllParamProcess())) {
             return;
         }
-        for (IParamProcessor processor : ParamProcessorFactory.getAllParamProcess()){
-            processor.clear();
+        for (IParamProcessor processor : ParamProcessorFactory.getAllParamProcess()) {
+            if (processor instanceof UserDefinedParamCachableProcessor) {
+                ((UserDefinedParamCachableProcessor) processor).clear();
+            } else {
+                ((AbstractParamCachableProcessor<String>) processor).clear();
+            }
         }
     }
 

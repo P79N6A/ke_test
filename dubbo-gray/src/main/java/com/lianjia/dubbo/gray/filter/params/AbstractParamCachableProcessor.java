@@ -9,27 +9,22 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
  * @Date: 2019/5/28 11:17 AM
  * @Version: 1.0
  */
-public abstract class AbstractParamCachableProcessor extends AbstractParamProcessor {
+public abstract class AbstractParamCachableProcessor<T> extends AbstractParamProcessor {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractParamCachableProcessor.class);
 
+    private final ThreadLocal<T> cache = new ThreadLocal<>();
 
-    private final ThreadLocal<String> cache = new ThreadLocal<>();
-
-    @Override
-    public String getValue() {
+    public T getValue() {
         return cache.get();
     }
 
-    @Override
-    public void setValue(String cityCode) {
-        cache.set(cityCode);
+    public void setValue(T value) {
+        cache.set(value);
     }
 
-    @Override
     public void clear() {
         cache.remove();
     }
-
 
 }

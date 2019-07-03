@@ -15,17 +15,11 @@ public abstract class AbstractParamProcessor implements IParamProcessor {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractParamProcessor.class);
 
-    protected abstract boolean checkIsGrayFlow(String value, RuleInfo _ruleInfo);
+    protected abstract boolean checkIsGrayFlow(String key, RuleInfo _ruleInfo);
 
     @Override
-    public boolean isGrayFlow(String value, RuleInfo _ruleInfo) {
-        String valueParsed = null;
-        try {
-            valueParsed = getFilterParamValue(value);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return checkIsGrayFlow(valueParsed, _ruleInfo);
+    public boolean isGrayFlow(String key, RuleInfo _ruleInfo) {
+        return checkIsGrayFlow(key, _ruleInfo);
     }
 
     /**
@@ -44,4 +38,5 @@ public abstract class AbstractParamProcessor implements IParamProcessor {
                 .replaceAll(GrayConstants.DOUBLE_QUOTES, GrayConstants.EMPTY_STR)
                 .replaceAll(GrayConstants.SINGLE_QUOTES, GrayConstants.EMPTY_STR);
     }
+
 }
