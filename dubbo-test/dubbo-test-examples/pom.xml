@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>com.lianjia.cs</groupId>
 		<artifactId>dubbo-test</artifactId>
-		<version>1.0.2-gray</version>
+		<version>1.0.3-gray-SNAPSHOT</version>
 	</parent>
 	<artifactId>dubbo-test-examples</artifactId>
 	<packaging>jar</packaging>
